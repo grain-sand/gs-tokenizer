@@ -52,19 +52,23 @@ describe('Multilingual Tokenizer - English Tests', () => {
     
     const tokens = tokenizer.tokenize(text);
     const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
+    const numberTokens = tokens.filter(token => token.type === 'number').map(token => token.txt);
     
     console.log('English alphanumeric result:', wordTokens);
+    console.log('Number tokens:', numberTokens);
     
     expect(wordTokens).toContain('Version');
     expect(wordTokens).toContain('released');
     expect(wordTokens).toContain('in');
-    expect(wordTokens).toContain('2023');
     expect(wordTokens).toContain('with');
     expect(wordTokens).toContain('API');
     
-    // 数字可能被拆分，所以检查数字组�?
-    expect(wordTokens.some(token => token.includes('2'))).toBe(true);
-    expect(wordTokens.some(token => token.includes('0'))).toBe(true);
-    expect(wordTokens.some(token => token.includes('1'))).toBe(true);
+    // 检查数字类型的token
+    expect(numberTokens).toContain('2.0');
+    expect(numberTokens).toContain('2023');
+    expect(numberTokens).toContain('1.1');
+    
+    // 检查版本前缀
+    expect(wordTokens).toContain('v');
   });
 });

@@ -4,6 +4,7 @@ import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
 import { DateTokenizer } from './DateTokenizer';
 import { URLIPTokenizer } from './URLIPTokenizer';
+import { NumberTokenizer } from './NumberTokenizer';
 import { LanguageDetector } from './LanguageDetector';
 
 /**
@@ -28,6 +29,7 @@ export class MultilingualTokenizer {
     this.tokenizers = [
       new DateTokenizer(),
       new URLIPTokenizer(),
+      new NumberTokenizer(),
       new EnglishTokenizer(),
       new CJKTokenizer(this.customDictionaries)
     ];
@@ -127,34 +129,46 @@ export class MultilingualTokenizer {
       } else {
         const urlIpTokens = urlIpTokenizer.tokenize(token.txt, lang);
         
-        // 3. 对非URL和非IP部分使用相应的语言分词器处理
+        // 3. 对非URL和非IP部分使用数字分词器处理
+        const numberTokenizer = this.tokenizers.find(t => t instanceof NumberTokenizer);
+        if (!numberTokenizer) return finalTokens;
+        
         for (const urlIpToken of urlIpTokens) {
           if (urlIpToken.type === 'url' || urlIpToken.type === 'ip') {
             finalTokens.push(urlIpToken);
           } else {
-            let subTokens: Token[] = [];
+            const numberTokens = numberTokenizer.tokenize(urlIpToken.txt, lang);
             
-            if (lang === 'en') {
-              const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
-              if (englishTokenizer) {
-                subTokens = (englishTokenizer as any).tokenize(urlIpToken.txt, lang);
+            // 4. 对非数字部分使用相应的语言分词器处理
+            for (const numberToken of numberTokens) {
+              if (numberToken.type === 'number') {
+                finalTokens.push(numberToken);
+              } else {
+                let subTokens: Token[] = [];
+                
+                if (lang === 'en') {
+                  const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
+                  if (englishTokenizer) {
+                    subTokens = (englishTokenizer as any).tokenize(numberToken.txt, lang);
+                  }
+                } else if (['zh', 'ja', 'ko'].includes(lang)) {
+                  const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
+                  if (cjkTokenizer) {
+                    subTokens = (cjkTokenizer as any).tokenize(numberToken.txt, lang);
+                  }
+                } else {
+                  const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
+                  if (cjkTokenizer) {
+                    subTokens = (cjkTokenizer as any).tokenize(numberToken.txt, lang);
+                  }
+                }
+                
+                if (subTokens.length > 0) {
+                  finalTokens.push(...subTokens);
+                } else {
+                  finalTokens.push(numberToken);
+                }
               }
-            } else if (['zh', 'ja', 'ko'].includes(lang)) {
-              const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
-              if (cjkTokenizer) {
-                subTokens = (cjkTokenizer as any).tokenize(urlIpToken.txt, lang);
-              }
-            } else {
-              const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
-              if (cjkTokenizer) {
-                subTokens = (cjkTokenizer as any).tokenize(urlIpToken.txt, lang);
-              }
-            }
-            
-            if (subTokens.length > 0) {
-              finalTokens.push(...subTokens);
-            } else {
-              finalTokens.push(urlIpToken);
             }
           }
         }

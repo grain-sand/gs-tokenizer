@@ -5,8 +5,8 @@
 export interface Token {
   /** Token的文本内容 */
   txt: string;
-  /** Token类型：单词、标点符号、空格、其他、表情符号、日期、URL、IP地址 */
-  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'url' | 'ip';
+  /** Token类型：单词、标点符号、空格、其他、表情符号、日期、URL、IP地址、数字 */
+  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'url' | 'ip' | 'number';
   /** Token的语言代码（可选） */
   lang?: string;
   /** Token的来源（可选），如自定义词库名称 */

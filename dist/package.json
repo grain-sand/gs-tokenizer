@@ -1,14 +1,50 @@
 {
-  "name": "gs-multilingual-tokenizer",
+  "name": "gs-tokenizer",
   "version": "0.1.0",
+  "description": "A powerful and lightweight multilingual tokenizer library supporting English, Chinese, Japanese, and Korean.",
+  "description_cn": "一个功能强大且轻量级的多语言分词器库，支持英语、中文、日语和韩语。",
+  "description_ja": "英語、中国語、日本語、韓国語に対応した強力で軽量な多言語トークナイザーライブラリです。",
+  "description_ko": "영어, 중국어, 일본어, 한국어를 지원하는 강력하고 가벼운 다국어 토크나이저 라이브러리입니다.",
   "type": "module",
   "main": "lib/index.cjs",
   "module": "lib/index.js",
   "exports": {
-    "import": "./lib/index.js",
-    "require": "./lib/index.cjs"
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs",
+      "types": "./lib/index.d.ts"
+    },
+    "./core": {
+      "import": "./lib/core.js",
+      "require": "./lib/core.cjs",
+      "types": "./lib/core.d.ts"
+    },
+    "./lexicon": {
+      "import": "./lib/lexicon/index.js",
+      "types": "./lib/lexicon/index.d.ts"
+    }
   },
   "types": "lib/index.d.ts",
+  "keywords": [
+    "tokenizer",
+    "multilingual",
+    "nlp",
+    "natural-language-processing",
+    "english",
+    "chinese",
+    "japanese",
+    "korean",
+    "cjk"
+  ],
+  "homepage": "https://github.com/grain-sand/gs-tokenizer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grain-sand/gs-tokenizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/grain-sand/gs-tokenizer/issues"
+  },
+  "author": "grain-sand",
   "license": "MIT",
   "dependencies": {}
 }

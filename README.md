@@ -1,6 +1,13 @@
-# Multilingual Tokenizer
+# gs-tokenizer
 
 A powerful and lightweight multilingual tokenizer library that provides natural language processing capabilities for multiple languages including English, Chinese, Japanese, and Korean.
+
+## Documentation
+
+- [English README](README.md)
+- [中文 README](README.cn.md)
+- [日本語 README](README.ja.md)
+- [한국어 README](README.ko.md)
 
 ## Features
 
@@ -18,7 +25,13 @@ A powerful and lightweight multilingual tokenizer library that provides natural 
 ## Installation
 
 ```bash
-npm install gs-multilingual-tokenizer
+yarn add gs-tokenizer
+```
+
+### Alternative Installation
+
+```bash
+npm install gs-tokenizer
 ```
 
 ## Usage
@@ -26,7 +39,7 @@ npm install gs-multilingual-tokenizer
 ### Basic Usage
 
 ```javascript
-import { MultilingualTokenizer, createTokenizer } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer, createTokenizer } from 'gs-tokenizer';
 
 // Create tokenizer instance
 const tokenizer = new MultilingualTokenizer();
@@ -48,7 +61,7 @@ console.log(words);
 The quick module provides convenient static methods for easy integration:
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-multilingual-tokenizer';
+import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
 
 // Direct tokenization without creating an instance
 const text = 'Hello world! 我爱北京天安门。';
@@ -81,7 +94,7 @@ console.log(tokens.filter(token => token.src === 'tech'));
 #### Without Built-in Lexicon
 
 ```javascript
-import { MultilingualTokenizer } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
 // Create tokenizer without using built-in lexicon
 const tokenizer = new MultilingualTokenizer({
@@ -143,7 +156,7 @@ Main tokenizer class that handles multilingual text processing.
 #### Constructor
 
 ```typescript
-import { MultilingualTokenizer, TokenizerOptions } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
 new MultilingualTokenizer(options?: TokenizerOptions)
 ```
@@ -170,7 +183,7 @@ Factory function to create a new MultilingualTokenizer instance with optional co
 The quick module provides convenient static methods:
 
 ```typescript
-import { Token } from 'gs-multilingual-tokenizer';
+import { Token } from 'gs-tokenizer';
 
 // Tokenize text
 function tokenize(text: string, language?: string): Token[];
@@ -207,7 +220,7 @@ interface Token {
 #### `TokenizerOptions` Interface
 
 ```typescript
-import { LexiconEntry } from 'gs-multilingual-tokenizer';
+import { LexiconEntry } from 'gs-tokenizer';
 
 interface TokenizerOptions {
   customDictionaries?: Record<string, LexiconEntry[]>;
@@ -245,3 +258,5 @@ npm run test:mixed    # Run mixed language tests
 ## License
 
 MIT
+
+[GitHub Repository](https://github.com/grain-sand/gs-tokenizer)

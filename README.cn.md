@@ -1,6 +1,13 @@
-  # 多语言分词器
+  # gs-tokenizer - 多语言分词器
 
 一个功能强大且轻量级的多语言分词器库，为英语、中文、日语和韩语等多种语言提供自然语言处理能力。
+
+## 文档
+
+- [English README](README.md)
+- [中文 README](README.cn.md)
+- [日本語 README](README.ja.md)
+- [한국어 README](README.ko.md)
 
 ## 特性
 
@@ -18,7 +25,13 @@
 ## 安装
 
 ```bash
-npm install gs-multilingual-tokenizer
+yarn add gs-tokenizer
+```
+
+### 其他安装方式
+
+```bash
+npm install gs-tokenizer
 ```
 
 ## 使用
@@ -26,7 +39,7 @@ npm install gs-multilingual-tokenizer
 ### 基本用法
 
 ```javascript
-import { MultilingualTokenizer, createTokenizer } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer, createTokenizer } from 'gs-tokenizer';
 
 // 创建分词器实例
 const tokenizer = new MultilingualTokenizer();
@@ -48,7 +61,7 @@ console.log(words);
 quick模块提供了便捷的静态方法，方便快速集成：
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-multilingual-tokenizer';
+import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
 
 // 直接分词，无需创建实例
 const text = 'Hello world! 我爱北京天安门。';
@@ -81,7 +94,7 @@ console.log(tokens.filter(token => token.src === 'tech'));
 #### 不使用内置词库
 
 ```javascript
-import { MultilingualTokenizer } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
 // 创建不使用内置词库的分词器
 const tokenizer = new MultilingualTokenizer({
@@ -143,7 +156,7 @@ const tokens = tokenizer.tokenize(text, 'zh');
 #### 构造函数
 
 ```typescript
-import { MultilingualTokenizer, TokenizerOptions } from 'gs-multilingual-tokenizer';
+import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
 new MultilingualTokenizer(options?: TokenizerOptions)
 ```
@@ -170,7 +183,7 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 quick模块提供了便捷的静态方法：
 
 ```typescript
-import { Token } from 'gs-multilingual-tokenizer';
+import { Token } from 'gs-tokenizer';
 
 // 分词文本
 function tokenize(text: string, language?: string): Token[];
@@ -207,7 +220,7 @@ interface Token {
 #### `TokenizerOptions` 接口
 
 ```typescript
-import { LexiconEntry } from 'gs-multilingual-tokenizer';
+import { LexiconEntry } from 'gs-tokenizer';
 
 interface TokenizerOptions {
   customDictionaries?: Record<string, LexiconEntry[]>;
@@ -245,3 +258,5 @@ npm run test:mixed    # 运行混合语言测试
 ## 许可证
 
 MIT
+
+[GitHub 仓库](https://github.com/grain-sand/gs-tokenizer)

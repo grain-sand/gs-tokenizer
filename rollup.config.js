@@ -130,8 +130,7 @@ const mainConfigJs = {
 	plugins: [...plugins,
 		copy({
 			targets: [
-				{src: 'README.md', dest: 'dist'},
-				{src: 'README.cn.md', dest: 'dist'}
+				{src: '*.md', dest: 'dist'},
 			]
 		})
 	]

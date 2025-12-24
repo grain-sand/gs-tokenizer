@@ -17,7 +17,7 @@ import {
 import { 
   LexiconLoader,
   LexiconConfig
-} from '../dist/lib/index.js';
+} from '../dist/lib';
 
 // 测试主入口模块
 import {
@@ -27,7 +27,7 @@ import {
   removeCustomWord,
   setDefaultLanguages,
   setDefaultTypes
-} from '../dist/lib/index.js';
+} from '../dist/lib';
 
 describe('dist 构建产物测试', () => {
   describe('核心模块 (core)', () => {

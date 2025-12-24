@@ -1,5 +1,5 @@
 {
-  "name": "gs-multilingual-tokenizer-dev",
+  "name": "gs-tokenizer-dev",
   "version": "1.0.0",
   "scripts": {
 	"build": "rollup -c --compact",

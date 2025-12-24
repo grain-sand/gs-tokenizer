@@ -21,6 +21,7 @@ export {zh_CN_Transportation} from './zh-CN/transportation';
 export {zh_CN_Appliances} from './zh-CN/appliances';
 export {zh_CN_Furniture} from './zh-CN/furniture';
 export {zh_CN_Pets} from './zh-CN/pets';
+export {zh_CN_OtherNames} from './zh-CN/otherNames';
 
 // 繁体中文词库
 export {zh_TW_FirstName} from './zh-TW/firstNames';

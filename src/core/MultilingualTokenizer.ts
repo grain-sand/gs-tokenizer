@@ -62,6 +62,12 @@ export class MultilingualTokenizer {
         lang
       });
     }
+    
+    // 更新CJKTokenizer实例中的customDictionaries
+    const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
+    if (cjkTokenizer) {
+      (cjkTokenizer as any).customDictionaries = this.customDictionaries;
+    }
   }
 
   /**

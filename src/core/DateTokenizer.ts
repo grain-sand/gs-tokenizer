@@ -8,7 +8,7 @@ import { LanguageTokenizer } from './LanguageTokenizer';
  */
 export class DateTokenizer implements LanguageTokenizer {
   /** 综合日期时间正则表达式，用于匹配多种日期和时间格式 */
-  private comprehensiveDatePattern: RegExp = /\d{8}|\d{4}[-/.]\d{2}[-/.]\d{2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s+\d{4})?|\d{4}年\d{1,2}月(?:\d{1,2}日)?|\d{1,2}月\d{1,2}日(?:\d{4}年)?|\d+(?:小时|分钟|秒|毫秒|天|周|月|年|\s+(?:hours?|minutes?|seconds?|milliseconds?|days?|weeks?|months?|years?))/gi;
+  private comprehensiveDatePattern: RegExp = /\d{8}|\d{4}[-/.]\d{2}[-/.]\d{2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s+\d{4})?|\d{4}年\d{1,2}月(?:\d{1,2}日)?|\d{1,2}月\d{1,2}日(?:\d{4}年)?|\d+(?:小时|分钟|秒|毫秒|天|周|月|年|\s+(?:hours?|minutes?|seconds?|milliseconds?|days?|weeks?|months?|years?))|(?:[零一二三四五六七八九十百千万亿]+)(?:小时|分钟|秒|毫秒|天|周|月|年)/gi;
 
   /**
    * 检测文本的语言
@@ -105,6 +105,11 @@ export class DateTokenizer implements LanguageTokenizer {
       return true;
     }
     
+    // 处理时间格式：中文数字+时间单位
+    if (/^[零一二三四五六七八九十百千万亿]+(?:小时|分钟|秒|毫秒|天|周|月|年)$/.test(text)) {
+      return true;
+    }
+    
     // 处理不同的日期格式
     let year: number, month: number, day: number;
     
@@ -165,6 +170,23 @@ export class DateTokenizer implements LanguageTokenizer {
     }
     
     return this.isValidDateComponents(year, month, day);
+  }
+  
+  // 验证中文数字+时间单位格式
+  private isValidChineseNumberTime(text: string): boolean {
+    // 简单验证：确保包含有效的中文数字和时间单位
+    const chineseNumberPattern = /^[零一二三四五六七八九十百千万亿]+$/;
+    const timeUnitPattern = /(小时|分钟|秒|毫秒|天|周|月|年)$/;
+    
+    const numberPart = text.replace(timeUnitPattern, '');
+    const unitPart = text.match(timeUnitPattern)?.[1] || '';
+    
+    if (!numberPart || !unitPart) return false;
+    
+    // 验证中文数字格式
+    // 检查是否包含有效的中文数字组合
+    const validPattern = /^(?:[零一二三四五六七八九]|十[零一二三四五六七八九]?|百[零一二三四五六七八九]?|千[零一二三四五六七八九]?|万[零一二三四五六七八九]?|亿[零一二三四五六七八九]?)+$/;
+    return validPattern.test(numberPart);
   }
   
   // 验证日期组件是否有效

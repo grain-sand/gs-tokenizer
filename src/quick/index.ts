@@ -12,7 +12,7 @@ export class QuickUseTokenizer {
 	/** 默认加载的语言 */
 	private static defaultLanguages: string[] = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR'];
 	/** 默认加载的词库类型 */
-	private static defaultTypes: string[] = ['lastName', 'firstName', 'famousName', 'famousWorks', 'honorific', 'nickname', 'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm', 'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation', 'appliances', 'furniture', 'pets'];
+	private static defaultTypes: string[] = ['lastName', 'firstName', 'famousName', 'famousWorks', 'honorific', 'nickname', 'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm', 'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation', 'appliances', 'furniture', 'pets', 'otherNames'];
 
 	/**
 	 * 获取分词器实例（单例模式）
@@ -24,6 +24,24 @@ export class QuickUseTokenizer {
 				defaultLanguage: 'zh'
 			};
 			QuickUseTokenizer.instance = createTokenizer(options);
+			
+			// 加载默认词库并应用到分词器
+			const lexiconLoader = QuickUseTokenizer.getLexiconLoader();
+			const lexicons = lexiconLoader.getLexicons();
+			
+			console.log('Loaded lexicons:', lexicons.map(l => ({ name: l.name, size: l.data.size, hasDouyin: l.data.has('抖音') })));
+			
+			// 将加载的词库添加到自定义词库中
+			lexicons.forEach(lexicon => {
+				const lang = lexicon.lang.replace('-', '').toLowerCase().slice(0, 2); // 转换为 'zh', 'en', 'ja', 'ko'
+				console.log(`Adding lexicon ${lexicon.name} with ${lexicon.data.size} words to lang ${lang}`);
+				QuickUseTokenizer.instance?.addCustomDictionary(
+					Array.from(lexicon.data),
+					lang,
+					lexicon.priority,
+					lexicon.name
+				);
+			});
 		}
 		return QuickUseTokenizer.instance;
 	}

@@ -84,6 +84,9 @@ export class CJKTokenizer implements LanguageTokenizer {
 
 			while (i < processedTokens.length) {
 				let matched = false;
+				let bestMatch: { length: number; text: string } | null = null;
+				let bestPriority = -1;
+
 				// 尝试匹配最长的自定义词
 				for (let j = Math.min(5, processedTokens.length - i); j >= 1; j--) {
 					if (j > 1 && processedTokens.slice(i, i + j).some(t => t.type !== 'word')) {
@@ -94,24 +97,33 @@ export class CJKTokenizer implements LanguageTokenizer {
 						.map(token => token.txt)
 						.join('');
 
-					for (const lexicon of customLexicons.sort((a, b) => b.priority - a.priority)) {
+					// 查找是否有词库包含该候选词
+					for (const lexicon of customLexicons) {
 						if (lexicon.data.has(candidate)) {
-							mergedTokens.push({
-								txt: candidate,
-								type: 'word',
-								lang: language,
-								src: ''
-							});
-							i += j;
-							matched = true;
-							break;
+							// 如果找到匹配词
+							if (!bestMatch || j > bestMatch.length || 
+							   (j === bestMatch.length && lexicon.priority > bestPriority)) {
+								// 优先选择更长的词，或者相同长度下优先级更高的词
+								bestMatch = { length: j, text: candidate };
+								bestPriority = lexicon.priority;
+							}
+							// 继续检查是否有更高优先级的词库包含相同词
 						}
 					}
-
-					if (matched) break;
 				}
 
-				if (!matched) {
+				if (bestMatch) {
+					// 有最佳匹配词
+					mergedTokens.push({
+						txt: bestMatch.text,
+						type: 'word',
+						lang: language,
+						src: ''
+					});
+					i += bestMatch.length;
+					matched = true;
+				} else {
+					// 没有匹配词，使用原始token
 					mergedTokens.push({
 						...processedTokens[i],
 						src: ''

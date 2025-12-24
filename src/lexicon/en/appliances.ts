@@ -1,0 +1,3 @@
+const value = `Air ConditionerBlenderCameraCoffee MakerComputerDeep FryerDehumidifierDishwasherDryerElectric KettleExternal Hard DriveFanFitness TrackerFood ProcessorGrillHeadphonesHeaterHumidifierIronJuicerKeyboardLaptopMicrowaveMixerModemMonitorMouseOvenPressure CookerPrinterProjectorRefrigeratorRice CookerRobot VacuumRouterScannerSlow CookerSmart WatchSmartphoneSpeakerSteam CleanerStoveTabletTelevisionToasterToaster OvenUSB DriveVacuum CleanerVideo CameraWashing MachineWater Heater`;
+
+export const en_US_Appliances: string = value;

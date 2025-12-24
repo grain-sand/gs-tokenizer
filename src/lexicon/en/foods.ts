@@ -1,0 +1,3 @@
+const value = `AppleArtichokeAsparagusAvocadoBananaBell PepperBlueberryBok ChoyBroccoliBrussels SproutsCabbageCarrotCauliflowerCeleryCherryCornCucumberEggplantGarlicGingerGrapeGreen BeansKaleKiwiLemonLettuceLimeMangoMushroomOkraOnionOrangePeachPearPeasPineapplePlumPotatoPumpkinRadishRaspberrySpinachSquashStrawberrySweet PotatoTomatoTurnipWatermelonYamZucchini`;
+
+export const en_US_Foods: string = value;

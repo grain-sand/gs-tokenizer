@@ -1,0 +1,3 @@
+const value = `AcetaminophenAdvairAllegraAmoxicillinAspirinAtenololAtorvastatinAzithromycinBenadrylCetirizineCiprofloxacinClaritinClopidogrelCoumadinDexamethasoneDiphenhydramineEnalaprilFexofenadineFloventFurosemideHumulinHydrochlorothiazideHydrocortisoneIbuprofenInsulinLansoprazoleLantusLipitorLoratadineLosartanMetforminMetoprololNaproxenNovologOmeprazoleParacetamolPlavixPrednisoneProventilPseudoephedrineRanitidineSimvastatinSingulairSpironolactoneSudafedValsartanVentolinWarfarinZyrtec`;
+
+export const en_US_Medicines: string = value;

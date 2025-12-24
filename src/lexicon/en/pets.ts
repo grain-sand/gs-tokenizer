@@ -1,0 +1,3 @@
+const value = `AngelfishAustralian ShepherdBeagleBetta FishBirdBorder CollieBoston TerrierBoxerBudgieBulldogCanaryCatChihuahuaCockatielCocker SpanielDachshundDogFerretFinchFishGerman ShepherdGolden RetrieverGoldfishGreat DaneGuinea PigGuppyHamsterKoi FishLabrador RetrieverLizardLovebirdMacawMollieMouseParrotPlatyPomeranianPoodleRabbitRatRottweilerSaint BernardShih TzuSiberian HuskySnakeSwordtailTetraTropical FishTurtleYorkshire Terrier`;
+
+export const en_US_Pets: string = value;

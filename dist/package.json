@@ -1,0 +1,14 @@
+{
+  "name": "gs-multilingual-tokenizer",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "lib/index.cjs",
+  "module": "lib/index.js",
+  "exports": {
+    "import": "./lib/index.js",
+    "require": "./lib/index.cjs"
+  },
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "dependencies": {}
+}

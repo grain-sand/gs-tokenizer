@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions":{
+    "outDir": "dist/lib/lexicon",
+    "declaration": true,
+    "declarationDir": "dist/lib/lexicon",
+    "baseUrl": "./src/lexicon"
+  },
+  "include": [
+    "src/lexicon/**/*.ts"
+  ],
+}

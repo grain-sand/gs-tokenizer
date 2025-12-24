@@ -1,0 +1,3 @@
+const value = `AirplaneAmbulanceBicycleBoatBusCable CarCarCargo ShipCoach BusConvertibleCoupeCruise ShipDouble-Decker BusElectric ScooterFerryFire TruckFunicularHatchbackHelicopterHoverboardJetLimousineLyftMetroMinivanMonorailMotorcyclePlanePolice CarRide-HailingRoller SkatesSUVSchool BusScooterSedanSegwayShipSkateboardSkatesSports CarSubwayTaxiTaxi CabTrainTramTrolleybusTruckUberVanYacht`;
+
+export const en_US_Transportation: string = value;

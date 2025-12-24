@@ -1,0 +1,3 @@
+const value = `ArmaniAudemars PiguetBalenciagaBentleyBlancpainBottega VenetaBreguetBreitlingBrioniBugattiBurberryCartierCelineChanelChopardDiorDolce & GabbanaDunhillErmenegildo ZegnaFendiFerrariGivenchyGucciHermèsHublotIWC SchaffhausenJaeger-LeCoultreKitonLamborghiniLonginesLoro PianaLouis VuittonMontblancOmegaPaneraiPatek PhilippePradaRalph Lauren Purple LabelRichard MilleRolexRolls-RoyceSaint LaurentStefano RicciTag HeuerTiffany & Co.Tom FordVacheron ConstantinValentinoVersaceZenith`;
+
+export const en_US_Luxury: string = value;

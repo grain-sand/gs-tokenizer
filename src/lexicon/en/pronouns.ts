@@ -1,0 +1,3 @@
+const value = `Iabsolutelyagainallalmostalreadyalwaysanotheranybothcompletelyeitherenoughextremelyfairlyfewheherhersherselfhimhimselfhishowititsitselfleastlesslittlemanymeminemoremostmostlymuchmymyselfnearlynevernoneoftenonceoneonesoneselfotherothersouroursourselvespartiallyprettyquiterarelyratherseldomseveralshesosomesometimesstillsuchthattheirtheirsthemthemselvesthesetheythisthosetoototallytwiceusverywewhatwhenwherewhichwhowhomwhosewhyyetyouyouryoursyourselfyourselves`;
+
+export const en_US_Pronouns: string = value;

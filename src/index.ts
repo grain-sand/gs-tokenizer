@@ -1,4 +1,5 @@
 export * from './quick';
+export * from './lexicon';
 
-export type { TokenizerOptions, Token } from './core';
-export { createTokenizer } from './core';
+export type {TokenizerOptions, Token} from './core';
+export {createTokenizer, MultilingualTokenizer} from './core';

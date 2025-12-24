@@ -11,13 +11,13 @@ import {
   createTokenizer,
   TokenizerOptions,
   Token
-} from '../dist/lib/core.js';
+} from '../dist';
 
 // 测试词库模块和 LexiconLoader
 import { 
   LexiconLoader,
   LexiconConfig
-} from '../dist/lib';
+} from '../dist';
 
 // 测试主入口模块
 import {
@@ -27,7 +27,7 @@ import {
   removeCustomWord,
   setDefaultLanguages,
   setDefaultTypes
-} from '../dist/lib';
+} from '../dist';
 
 describe('dist 构建产物测试', () => {
   describe('核心模块 (core)', () => {

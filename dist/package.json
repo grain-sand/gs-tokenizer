@@ -20,9 +20,10 @@
       "types": "./lib/core.d.ts"
     },
     "./lexicon": {
-      "import": "./lib/lexicon/index.js",
-      "types": "./lib/lexicon/index.d.ts"
-    }
+		"import": "./lib/lexicon.js",
+		"require": "./lib/lexicon.cjs",
+		"types": "./lib/lexicon.d.ts"
+	}
   },
   "types": "lib/index.d.ts",
   "keywords": [

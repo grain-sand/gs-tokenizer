@@ -1,6 +1,6 @@
 {
   "name": "gs-tokenizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A powerful and lightweight multilingual tokenizer library supporting English, Chinese, Japanese, and Korean.",
   "description_cn": "一个功能强大且轻量级的多语言分词器库，支持英语、中文、日语和韩语。",
   "description_ja": "英語、中国語、日本語、韓国語に対応した強力で軽量な多言語トークナイザーライブラリです。",

@@ -7,8 +7,8 @@ import { LanguageTokenizer } from './LanguageTokenizer';
  * @implements {LanguageTokenizer}
  */
 export class DateTokenizer implements LanguageTokenizer {
-  /** 综合日期正则表达式，用于匹配多种日期格式 */
-  private comprehensiveDatePattern: RegExp = /\d{8}|\d{4}[-/.]\d{2}[-/.]\d{2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s+\d{4})?|\d{4}年\d{1,2}月(?:\d{1,2}日)?|\d{1,2}月\d{1,2}日(?:\d{4}年)?/gi;
+  /** 综合日期时间正则表达式，用于匹配多种日期和时间格式 */
+  private comprehensiveDatePattern: RegExp = /\d{8}|\d{4}[-/.]\d{2}[-/.]\d{2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2}(?:,\s+\d{4})?|\d{4}年\d{1,2}月(?:\d{1,2}日)?|\d{1,2}月\d{1,2}日(?:\d{4}年)?|\d+(?:小时|分钟|秒|毫秒|天|周|月|年|\s+(?:hours?|minutes?|seconds?|milliseconds?|days?|weeks?|months?|years?))/gi;
 
   /**
    * 检测文本的语言
@@ -98,8 +98,13 @@ export class DateTokenizer implements LanguageTokenizer {
     return tokens;
   }
 
-  // 简单的日期验证，确保日期格式合理
+  // 简单的日期时间验证，确保日期格式合理，时间格式直接通过验证
   private isValidDate(text: string): boolean {
+    // 处理时间格式：数字+时间单位
+    if (/^\d+(?:小时|分钟|秒|毫秒|天|周|月|年|\s+(?:hours?|minutes?|seconds?|milliseconds?|days?|weeks?|months?|years?))$/.test(text)) {
+      return true;
+    }
+    
     // 处理不同的日期格式
     let year: number, month: number, day: number;
     

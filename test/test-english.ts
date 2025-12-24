@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { MultilingualTokenizer } from "../src/core";
+import { MultilingualTokenizer } from "../src";
 
 describe('Multilingual Tokenizer - English Tests', () => {
   let tokenizer: MultilingualTokenizer;
@@ -62,7 +62,7 @@ describe('Multilingual Tokenizer - English Tests', () => {
     expect(wordTokens).toContain('with');
     expect(wordTokens).toContain('API');
     
-    // 数字可能被拆分，所以检查数字组�?
+    // 数字可能被拆分，所以检查数字组�?
     expect(wordTokens.some(token => token.includes('2'))).toBe(true);
     expect(wordTokens.some(token => token.includes('0'))).toBe(true);
     expect(wordTokens.some(token => token.includes('1'))).toBe(true);

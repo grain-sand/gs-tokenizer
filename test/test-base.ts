@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { createTokenizer, MultilingualTokenizer } from "../src/core";
+import { createTokenizer, MultilingualTokenizer } from "../src";
 
 // // const console = (top as any).console;
 

@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MultilingualTokenizer, createTokenizer } from '../src/core';
-import { Token } from '../src/core/types';
+import { MultilingualTokenizer, createTokenizer } from '../src';
 
 describe('URL and IP Tokenization', () => {
   let tokenizer: MultilingualTokenizer;

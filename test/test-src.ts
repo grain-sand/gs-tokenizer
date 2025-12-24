@@ -11,13 +11,13 @@ import {
   createTokenizer,
   TokenizerOptions,
   Token
-} from '../src/core/index.js';
+} from '../src';
 
 // 测试词库模块和 LexiconLoader
 import { 
   LexiconLoader,
   LexiconConfig
-} from '../src/quick/index.js';
+} from '../src';
 
 // 测试主入口模块
 import {
@@ -27,7 +27,7 @@ import {
   removeCustomWord,
   setDefaultLanguages,
   setDefaultTypes
-} from '../src/index.js';
+} from '../src';
 
 describe('src 源码测试', () => {
   describe('核心模块 (core)', () => {

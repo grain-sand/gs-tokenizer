@@ -1,5 +1,5 @@
 ﻿import { describe, expect, it } from "vitest";
-import { MultilingualTokenizer } from "../src/core";
+import { MultilingualTokenizer } from "../src";
 
 describe("Adjective and OtherName Recognition", () => {
   const tokenizer = new MultilingualTokenizer();

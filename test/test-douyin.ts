@@ -1,8 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { QuickUseTokenizer } from '../src/quick';
-import { zh_CN_OtherNames } from '../src/lexicon/zh-CN/otherNames';
+import {describe, expect, it} from 'vitest';
+import {QuickUseTokenizer, zh_CN_OtherNames} from '../src';
 
-describe('Douyin Tokenization Test', () => {;
+describe('Douyin Tokenization Test', () => {
 
   it('should tokenize "抖音" as a single word', () => {
     const text = '我喜欢刷抖音';

@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { MultilingualTokenizer, createTokenizer } from "../src/core";
+import { MultilingualTokenizer, createTokenizer } from "../src";
 
 describe('Multilingual Tokenizer - Name Recognition Tests', () => {
   let tokenizer: MultilingualTokenizer;

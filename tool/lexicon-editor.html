@@ -1,833 +1,839 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>词库编辑工具</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>词库编辑工具</title>
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
-        }
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			line-height: 1.6;
+			color: #333;
+			background-color: #f5f5f5;
+		}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 20px;
+		}
 
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-align: center;
-        }
+		h1 {
+			color: #2c3e50;
+			margin-bottom: 30px;
+			text-align: center;
+		}
 
-        .tool-section {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+		.tool-section {
+			background-color: #fff;
+			border-radius: 8px;
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			display: flex;
+			flex-flow: wrap row;
+			align-items: start;
+			gap: 2vh 3vw;
+		}
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #34495e;
-        }
+		.section-title {
+			font-size: 18px;
+			font-weight: 600;
+			margin-bottom: 15px;
+			color: #34495e;
+		}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+		.form-group {
+			margin-bottom: 15px;
+			display: flex;flex-flow: nowrap row;
+		}
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #555;
-        }
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: 500;
+			color: #555;
+		}
 
-        input[type="file"],
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+		input[type="file"],
+		input[type="text"],
+		textarea,
+		select {
+			width: 100%;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+		}
 
-        textarea {
-            height: 200px;
-            resize: vertical;
-            font-family: monospace;
-        }
+		textarea {
+			height: 200px;
+			resize: vertical;
+			font-family: monospace;
+		}
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+		.btn-group {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 15px;
+			flex-wrap: wrap;
+		}
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
+		button {
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 14px;
+			font-weight: 500;
+			transition: background-color 0.3s;
+		}
 
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
+		.btn-primary {
+			background-color: #3498db;
+			color: white;
+		}
 
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
+		.btn-primary:hover {
+			background-color: #2980b9;
+		}
 
-        .btn-success {
-            background-color: #27ae60;
-            color: white;
-        }
+		.btn-success {
+			background-color: #27ae60;
+			color: white;
+		}
 
-        .btn-success:hover {
-            background-color: #229954;
-        }
+		.btn-success:hover {
+			background-color: #229954;
+		}
 
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-        }
+		.btn-danger {
+			background-color: #e74c3c;
+			color: white;
+		}
 
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
+		.btn-danger:hover {
+			background-color: #c0392b;
+		}
 
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
-        }
+		.btn-secondary {
+			background-color: #95a5a6;
+			color: white;
+		}
 
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-        }
+		.btn-secondary:hover {
+			background-color: #7f8c8d;
+		}
 
-        #wordList {
-            list-style: none;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-        }
+		#wordList {
+			list-style: none;
+			max-height: 400px;
+			width: 100%;
+			overflow-y: auto;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			padding: 10px;
+			display: grid;
+			gap: 10px;
+			grid-template-columns: repeat(auto-fill, 150px);
+		}
 
-        #wordList li {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
+		#wordList li {
+			display: flex;
+			flex-flow: wrap row;
+			align-items: center;
+			justify-content: center;
+			padding: 8px;
+			border-bottom: 1px solid #f0f0f0;
+		}
 
-        #wordList li:last-child {
-            border-bottom: none;
-        }
+		#wordList li:last-child {
+			border-bottom: none;
+		}
 
-        #wordList li:nth-child(odd) {
-            background-color: #fafafa;
-        }
+		#wordList li:nth-child(odd) {
+			background-color: #fafafa;
+		}
 
-        #wordList li.selected {
-            background-color: #e3f2fd;
-        }
+		#wordList li.selected {
+			background-color: #e3f2fd;
+		}
 
-        .word-checkbox {
-            margin-right: 10px;
-        }
+		.word-checkbox {
+			margin-right: 10px;
+		}
 
-        .word-text {
-            flex: 1;
-            font-family: monospace;
-        }
+		.word-text {
+			flex: 1;
+			font-family: monospace;
+		}
 
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-        }
+		.delete-btn {
+			background-color: #e74c3c;
+			color: white;
+			border: none;
+			padding: 5px 10px;
+			border-radius: 3px;
+			cursor: pointer;
+			font-size: 12px;
+		}
 
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
+		.delete-btn:hover {
+			background-color: #c0392b;
+		}
 
-        .status {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+		.status {
+			padding: 10px;
+			margin-bottom: 15px;
+			border-radius: 4px;
+			font-size: 14px;
+		}
 
-        .status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
+		.status.success {
+			background-color: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
 
-        .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+		.status.error {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
 
-        .status.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
+		.status.info {
+			background-color: #d1ecf1;
+			color: #0c5460;
+			border: 1px solid #bee5eb;
+		}
 
-        .stats {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            font-size: 14px;
-            color: #6c757d;
-        }
+		.stats {
+			margin-bottom: 10px;
+			padding: 10px;
+			background-color: #f8f9fa;
+			border-radius: 4px;
+			font-size: 14px;
+			color: #6c757d;
+		}
 
-        .word-count {
-            font-weight: bold;
-            color: #495057;
-        }
+		.word-count {
+			font-weight: bold;
+			color: #495057;
+		}
 
-        #lexiconList {
-            list-style: none;
-            margin-bottom: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
+		#lexiconList {
+			list-style: none;
+			margin-bottom: 15px;
+			max-height: 200px;
+			overflow-y: auto;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			padding: 10px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 5px;
+		}
 
-        #lexiconList li {
-            padding: 5px 10px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+		#lexiconList li {
+			padding: 5px 10px;
+			cursor: pointer;
+			white-space: nowrap;
+		}
 
-        #lexiconList li:last-child {
-            border-bottom: none;
-        }
+		#lexiconList li:last-child {
+			border-bottom: none;
+		}
 
-        #lexiconList li:hover {
-            background-color: #f0f0f0;
-        }
+		#lexiconList li:hover {
+			background-color: #f0f0f0;
+		}
 
-        #lexiconList li.selected {
-            background-color: #3498db;
-            color: white;
-        }
+		#lexiconList li.selected {
+			background-color: #3498db;
+			color: white;
+		}
 
-        .search-group {
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
+		.search-group {
+			display: flex;
+			gap: 10px;
+			align-items: flex-end;
+			margin-bottom: 15px;
+			flex-wrap: wrap;
+		}
 
-        .search-group .form-group {
-            margin-bottom: 0;
-            flex: 1;
-            min-width: 200px;
-        }
+		.search-group .form-group {
+			margin-bottom: 0;
+			flex: 1;
+			min-width: 200px;
+		}
 
-        .selected-count {
-            font-size: 14px;
-            color: #6c757d;
-            margin-right: 10px;
-        }
-    </style>
+		.selected-count {
+			font-size: 14px;
+			color: #6c757d;
+			margin-right: 10px;
+		}
+	</style>
 </head>
 <body>
-    <div class="container">
-        <h1>词库编辑工具</h1>
+	<div class="container">
+		<!-- 目录选择与词库列表 -->
+		<div class="tool-section">
+			<h2 class="section-title">词库目录与选择</h2>
+			<div class="form-group">
+				<button class="btn-primary" id="selectDirBtn">选择词库目录</button>
+			</div>
+			<div class="form-group">
+				<label for="lexiconList">可用词库：</label>
+				<ul id="lexiconList"></ul>
+			</div>
+			<div class="stats" id="fileStats" style="display: none;">
+				当前词库：<span id="currentFileName"></span> |
+				词汇数量：<span class="word-count" id="wordCount">0</span>
+			</div>
+		</div>
 
-        <!-- 目录选择与词库列表 -->
-        <div class="tool-section">
-            <h2 class="section-title">词库目录与选择</h2>
-            <div class="form-group">
-                <button class="btn-primary" id="selectDirBtn">选择词库目录</button>
-            </div>
-            <div class="form-group">
-                <label for="lexiconList">可用词库：</label>
-                <ul id="lexiconList"></ul>
-            </div>
-            <div class="stats" id="fileStats" style="display: none;">
-                当前词库：<span id="currentFileName"></span> |
-                词汇数量：<span class="word-count" id="wordCount">0</span>
-            </div>
-        </div>
+		<!-- 词库内容编辑 -->
+		<div class="tool-section">
+			<div class="search-group" style="width: 100%; ">
+				<label for="searchRegex">正则搜索：</label>
+				<input type="text" id="searchRegex" placeholder="输入正则表达式（如：^food.*）" style="width:50%;">
+				<button class="btn-primary" id="searchBtn">搜索</button>
+				<button class="btn-secondary" id="clearSearchBtn">清除搜索</button>
+			</div>
+			<div class="form-group" style="width: 100%">
+				<label for="newWord">添加新词汇：</label>
+				<input type="text" id="newWord" placeholder="输入新词汇" style="width:50%;">
+				<button class="btn-success" id="addBtn">添加词汇</button>
+			</div>
+			<div class="btn-group" style="width: 100%">
+				<span class="selected-count">已选择 <span id="selectedCount">0</span> 项</span>
+				<button class="btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
+				<button class="btn-primary" id="saveBtn" disabled>保存词库</button>
+				<button class="btn-secondary" id="previewBtn">预览词库</button>
+				<button class="btn-danger" id="clearBtn">清空词库</button>
+			</div>
+			<ul id="wordList"></ul>
+		</div>
 
-        <!-- 词库内容编辑 -->
-        <div class="tool-section">
-            <h2 class="section-title">词库内容</h2>
-            <div class="search-group">
-                <div class="form-group">
-                    <label for="searchRegex">正则搜索：</label>
-                    <input type="text" id="searchRegex" placeholder="输入正则表达式（如：^food.*）">
-                </div>
-                <button class="btn-primary" id="searchBtn">搜索</button>
-                <button class="btn-secondary" id="clearSearchBtn">清除搜索</button>
-            </div>
-            <div class="form-group">
-                <label for="newWord">添加新词汇：</label>
-                <input type="text" id="newWord" placeholder="输入新词汇">
-            </div>
-            <div class="btn-group">
-                <button class="btn-success" id="addBtn">添加词汇</button>
-                <span class="selected-count">已选择 <span id="selectedCount">0</span> 项</span>
-                <button class="btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
-                <button class="btn-primary" id="saveBtn" disabled>保存词库</button>
-                <button class="btn-secondary" id="previewBtn">预览词库</button>
-                <button class="btn-danger" id="clearBtn">清空词库</button>
-            </div>
-            <ul id="wordList"></ul>
-        </div>
+		<!-- 导入文本文件 -->
+		<div class="tool-section">
+			<h2 class="section-title">导入文本</h2>
+			<div class="form-group">
+				<label for="importFile">选择文本文件：</label>
+				<input type="file" id="importFile" accept=".txt">
+			</div>
+			<div class="form-group">
+				<label for="splitRegex">分割正则表达式（默认：\s+）：</label>
+				<input type="text" id="splitRegex" value="\\s+" placeholder="输入正则表达式">
+			</div>
+			<div class="btn-group">
+				<button class="btn-primary" id="importBtn">导入并分割</button>
+				<button class="btn-secondary" id="importPreviewBtn">预览分割结果</button>
+			</div>
+		</div>
 
-        <!-- 导入文本文件 -->
-        <div class="tool-section">
-            <h2 class="section-title">导入文本</h2>
-            <div class="form-group">
-                <label for="importFile">选择文本文件：</label>
-                <input type="file" id="importFile" accept=".txt">
-            </div>
-            <div class="form-group">
-                <label for="splitRegex">分割正则表达式（默认：\s+）：</label>
-                <input type="text" id="splitRegex" value="\\s+" placeholder="输入正则表达式">
-            </div>
-            <div class="btn-group">
-                <button class="btn-primary" id="importBtn">导入并分割</button>
-                <button class="btn-secondary" id="importPreviewBtn">预览分割结果</button>
-            </div>
-        </div>
+		<!-- 状态信息 -->
+		<div id="status" class="status" style="display: none;"></div>
+	</div>
 
-        <!-- 状态信息 -->
-        <div id="status" class="status" style="display: none;"></div>
-    </div>
+	<script>
+		// 全局变量
+		let currentWords = new Set();
+		let filteredWords = [];
+		let selectedWords = new Set();
+		let currentFileName = '';
+		let currentVariableName = '';
+		let currentFileHandle = null;
+		let lexiconDirHandle = null;
+		const UNIT_SEPARATOR = '\u001F';
 
-    <script>
-        // 全局变量
-        let currentWords = new Set();
-        let filteredWords = [];
-        let selectedWords = new Set();
-        let currentFileName = '';
-        let currentVariableName = '';
-        let currentFileHandle = null;
-        let lexiconDirHandle = null;
-        const UNIT_SEPARATOR = '\u001F';
+		// DOM 元素
+		const selectDirBtn = document.getElementById('selectDirBtn');
+		const lexiconList = document.getElementById('lexiconList');
+		const searchRegex = document.getElementById('searchRegex');
+		const searchBtn = document.getElementById('searchBtn');
+		const clearSearchBtn = document.getElementById('clearSearchBtn');
+		const newWord = document.getElementById('newWord');
+		const addBtn = document.getElementById('addBtn');
+		const wordList = document.getElementById('wordList');
+		const selectedCount = document.getElementById('selectedCount');
+		const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+		const saveBtn = document.getElementById('saveBtn');
+		const previewBtn = document.getElementById('previewBtn');
+		const clearBtn = document.getElementById('clearBtn');
+		const importFile = document.getElementById('importFile');
+		const splitRegex = document.getElementById('splitRegex');
+		const importBtn = document.getElementById('importBtn');
+		const importPreviewBtn = document.getElementById('importPreviewBtn');
+		const status = document.getElementById('status');
+		const fileStats = document.getElementById('fileStats');
+		const currentFileNameEl = document.getElementById('currentFileName');
+		const wordCountEl = document.getElementById('wordCount');
 
-        // DOM 元素
-        const selectDirBtn = document.getElementById('selectDirBtn');
-        const lexiconList = document.getElementById('lexiconList');
-        const searchRegex = document.getElementById('searchRegex');
-        const searchBtn = document.getElementById('searchBtn');
-        const clearSearchBtn = document.getElementById('clearSearchBtn');
-        const newWord = document.getElementById('newWord');
-        const addBtn = document.getElementById('addBtn');
-        const wordList = document.getElementById('wordList');
-        const selectedCount = document.getElementById('selectedCount');
-        const batchDeleteBtn = document.getElementById('batchDeleteBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const previewBtn = document.getElementById('previewBtn');
-        const clearBtn = document.getElementById('clearBtn');
-        const importFile = document.getElementById('importFile');
-        const splitRegex = document.getElementById('splitRegex');
-        const importBtn = document.getElementById('importBtn');
-        const importPreviewBtn = document.getElementById('importPreviewBtn');
-        const status = document.getElementById('status');
-        const fileStats = document.getElementById('fileStats');
-        const currentFileNameEl = document.getElementById('currentFileName');
-        const wordCountEl = document.getElementById('wordCount');
+		// 初始化事件监听
+		function initEventListeners() {
+			// 目录选择
+			selectDirBtn.addEventListener('click', handleDirectorySelect);
 
-        // 初始化事件监听
-        function initEventListeners() {
-            // 目录选择
-            selectDirBtn.addEventListener('click', handleDirectorySelect);
+			// 搜索相关
+			searchBtn.addEventListener('click', performSearch);
+			searchRegex.addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') {
+					performSearch();
+				}
+			});
+			clearSearchBtn.addEventListener('click', clearSearch);
 
-            // 搜索相关
-            searchBtn.addEventListener('click', performSearch);
-            searchRegex.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    performSearch();
-                }
-            });
-            clearSearchBtn.addEventListener('click', clearSearch);
+			// 添加词汇
+			addBtn.addEventListener('click', addWord);
+			newWord.addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') {
+					addWord();
+				}
+			});
 
-            // 添加词汇
-            addBtn.addEventListener('click', addWord);
-            newWord.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addWord();
-                }
-            });
+			// 批量删除
+			batchDeleteBtn.addEventListener('click', batchDeleteWords);
 
-            // 批量删除
-            batchDeleteBtn.addEventListener('click', batchDeleteWords);
+			// 保存词库
+			saveBtn.addEventListener('click', saveLexicon);
 
-            // 保存词库
-            saveBtn.addEventListener('click', saveLexicon);
+			// 预览词库
+			previewBtn.addEventListener('click', previewLexicon);
 
-            // 预览词库
-            previewBtn.addEventListener('click', previewLexicon);
+			// 清空词库
+			clearBtn.addEventListener('click', clearWords);
 
-            // 清空词库
-            clearBtn.addEventListener('click', clearWords);
+			// 导入并分割
+			importBtn.addEventListener('click', importAndSplit);
 
-            // 导入并分割
-            importBtn.addEventListener('click', importAndSplit);
+			// 预览分割结果
+			importPreviewBtn.addEventListener('click', previewImportSplit);
+		}
 
-            // 预览分割结果
-            importPreviewBtn.addEventListener('click', previewImportSplit);
-        }
+		// 选择目录
+		async function handleDirectorySelect() {
+			try {
+				lexiconDirHandle = await window.showDirectoryPicker();
+				await loadLexiconList();
+				showStatus('成功加载词库目录', 'success');
+			} catch (error) {
+				if (error.name !== 'AbortError') {
+					showStatus(`目录选择失败：${error.message}`, 'error');
+					console.error('目录选择错误:', error);
+				}
+			}
+		}
 
-        // 选择目录
-        async function handleDirectorySelect() {
-            try {
-                lexiconDirHandle = await window.showDirectoryPicker();
-                await loadLexiconList();
-                showStatus('成功加载词库目录', 'success');
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    showStatus(`目录选择失败：${error.message}`, 'error');
-                    console.error('目录选择错误:', error);
-                }
-            }
-        }
+		// 加载词库列表
+		async function loadLexiconList() {
+			if (!lexiconDirHandle) return;
 
-        // 加载词库列表
-        async function loadLexiconList() {
-            if (!lexiconDirHandle) return;
+			lexiconList.innerHTML = '';
+			const lexiconFiles = [];
 
-            lexiconList.innerHTML = '';
-            const lexiconFiles = [];
+			// 遍历目录中的所有文件
+			for await (const entry of lexiconDirHandle.values()) {
+				if (entry.kind === 'file' && entry.name.endsWith('.ts')) {
+					lexiconFiles.push(entry);
+				}
+			}
 
-            // 遍历目录中的所有文件
-            for await (const entry of lexiconDirHandle.values()) {
-                if (entry.kind === 'file' && entry.name.endsWith('.ts')) {
-                    lexiconFiles.push(entry);
-                }
-            }
+			// 排序并显示
+			lexiconFiles.sort((a, b) => a.name.localeCompare(b.name));
 
-            // 排序并显示
-            lexiconFiles.sort((a, b) => a.name.localeCompare(b.name));
+			lexiconFiles.forEach(file => {
+				const li = document.createElement('li');
+				li.textContent = file.name;
+				li.dataset.filename = file.name;
+				li.addEventListener('click', () => selectLexiconFile(file));
+				lexiconList.appendChild(li);
+			});
+		}
 
-            lexiconFiles.forEach(file => {
-                const li = document.createElement('li');
-                li.textContent = file.name;
-                li.dataset.filename = file.name;
-                li.addEventListener('click', () => selectLexiconFile(file));
-                lexiconList.appendChild(li);
-            });
-        }
+		// 选择词库文件
+		async function selectLexiconFile(fileHandle) {
+			// 更新选中状态
+			document.querySelectorAll('#lexiconList li').forEach(li => {
+				li.classList.remove('selected');
+			});
+			event.target.classList.add('selected');
 
-        // 选择词库文件
-        async function selectLexiconFile(fileHandle) {
-            // 更新选中状态
-            document.querySelectorAll('#lexiconList li').forEach(li => {
-                li.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
+			try {
+				const file = await fileHandle.getFile();
+				const content = await file.text();
+				const {variableName, lexiconContent} = validateLexiconFormat(content);
 
-            try {
-                const file = await fileHandle.getFile();
-                const content = await file.text();
-                const { variableName, lexiconContent } = validateLexiconFormat(content);
+				currentFileName = fileHandle.name;
+				currentVariableName = variableName;
+				currentFileHandle = fileHandle;
 
-                currentFileName = fileHandle.name;
-                currentVariableName = variableName;
-                currentFileHandle = fileHandle;
+				// 解析词库内容
+				const words = lexiconContent
+					.split(UNIT_SEPARATOR)
+					.map(word => word.trim())
+					.filter(word => word.length > 0);
 
-                // 解析词库内容
-                const words = lexiconContent
-                    .split(UNIT_SEPARATOR)
-                    .map(word => word.trim())
-                    .filter(word => word.length > 0);
+				currentWords = new Set(words);
+				filteredWords = Array.from(currentWords);
+				selectedWords.clear();
 
-                currentWords = new Set(words);
-                filteredWords = Array.from(currentWords);
-                selectedWords.clear();
+				// 更新UI
+				updateStats();
+				renderWordList();
+				updateSelectionCount();
+				saveBtn.disabled = false;
+				showStatus(`成功加载词库文件：${currentFileName}，共 ${currentWords.size} 个词汇`, 'success');
+			} catch (error) {
+				showStatus(`词库加载失败：${error.message}`, 'error');
+				console.error('词库加载错误:', error);
+			}
+		}
 
-                // 更新UI
-                updateStats();
-                renderWordList();
-                updateSelectionCount();
-                saveBtn.disabled = false;
-                showStatus(`成功加载词库文件：${currentFileName}，共 ${currentWords.size} 个词汇`, 'success');
-            } catch (error) {
-                showStatus(`词库加载失败：${error.message}`, 'error');
-                console.error('词库加载错误:', error);
-            }
-        }
+		// 验证词库文件格式
+		function validateLexiconFormat(content) {
+			// 检查是否包含 export const 和 = value;
+			const hasExportConst = /export\s+const\s+[a-zA-Z0-9_]+\s*:\s*string\s*=\s*value;/.test(content);
+			const hasValueAssignment = /const\s+value\s*=\s*`/.test(content);
 
-        // 验证词库文件格式
-        function validateLexiconFormat(content) {
-            // 检查是否包含 export const 和 = value;
-            const hasExportConst = /export\s+const\s+[a-zA-Z0-9_]+\s*:\s*string\s*=\s*value;/.test(content);
-            const hasValueAssignment = /const\s+value\s*=\s*`/.test(content);
+			if (!hasExportConst || !hasValueAssignment) {
+				throw new Error('文件格式错误：不符合词库文件格式要求');
+			}
 
-            if (!hasExportConst || !hasValueAssignment) {
-                throw new Error('文件格式错误：不符合词库文件格式要求');
-            }
+			// 提取变量名
+			const variableMatch = content.match(/export\s+const\s+([a-zA-Z0-9_]+)\s*:/);
+			if (!variableMatch) {
+				throw new Error('文件格式错误：无法提取变量名');
+			}
 
-            // 提取变量名
-            const variableMatch = content.match(/export\s+const\s+([a-zA-Z0-9_]+)\s*:/);
-            if (!variableMatch) {
-                throw new Error('文件格式错误：无法提取变量名');
-            }
+			// 提取词库内容
+			const contentMatch = content.match(/const\s+value\s*=\s*`([^`]*)`;/);
+			if (!contentMatch) {
+				throw new Error('文件格式错误：无法提取词库内容');
+			}
 
-            // 提取词库内容
-            const contentMatch = content.match(/const\s+value\s*=\s*`([^`]*)`;/);
-            if (!contentMatch) {
-                throw new Error('文件格式错误：无法提取词库内容');
-            }
+			return {
+				variableName: variableMatch[1],
+				lexiconContent: contentMatch[1]
+			};
+		}
 
-            return {
-                variableName: variableMatch[1],
-                lexiconContent: contentMatch[1]
-            };
-        }
+		// 更新统计信息
+		function updateStats() {
+			if (currentFileName) {
+				currentFileNameEl.textContent = currentFileName;
+				wordCountEl.textContent = currentWords.size;
+				fileStats.style.display = 'block';
+			}
+		}
 
-        // 更新统计信息
-        function updateStats() {
-            if (currentFileName) {
-                currentFileNameEl.textContent = currentFileName;
-                wordCountEl.textContent = currentWords.size;
-                fileStats.style.display = 'block';
-            }
-        }
+		// 渲染词汇列表
+		function renderWordList() {
+			wordList.innerHTML = '';
 
-        // 渲染词汇列表
-        function renderWordList() {
-            wordList.innerHTML = '';
+			if (filteredWords.length === 0) {
+				const emptyLi = document.createElement('li');
+				emptyLi.textContent = currentWords.size === 0 ? '词库为空' : '没有匹配的词汇';
+				wordList.appendChild(emptyLi);
+				return;
+			}
 
-            if (filteredWords.length === 0) {
-                const emptyLi = document.createElement('li');
-                emptyLi.textContent = currentWords.size === 0 ? '词库为空' : '没有匹配的词汇';
-                wordList.appendChild(emptyLi);
-                return;
-            }
+			const batchSize = 1000;
+			let currentIndex = 0;
 
-            const batchSize = 1000;
-            let currentIndex = 0;
+			function renderBatch() {
+				const endIndex = Math.min(currentIndex + batchSize, filteredWords.length);
+				for (let i = currentIndex; i < endIndex; i++) {
+					const word = filteredWords[i];
+					const li = document.createElement('li');
 
-            function renderBatch() {
-                const endIndex = Math.min(currentIndex + batchSize, filteredWords.length);
-                for (let i = currentIndex; i < endIndex; i++) {
-                    const word = filteredWords[i];
-                    const li = document.createElement('li');
+					// 添加复选框
+					const checkbox = document.createElement('input');
+					checkbox.type = 'checkbox';
+					checkbox.className = 'word-checkbox';
+					checkbox.checked = selectedWords.has(word);
+					checkbox.addEventListener('change', () => toggleWordSelection(word));
 
-                    // 添加复选框
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'word-checkbox';
-                    checkbox.checked = selectedWords.has(word);
-                    checkbox.addEventListener('change', () => toggleWordSelection(word));
+					const wordText = document.createElement('span');
+					wordText.className = 'word-text';
+					wordText.textContent = word;
 
-                    const wordText = document.createElement('span');
-                    wordText.className = 'word-text';
-                    wordText.textContent = word;
+					const deleteBtn = document.createElement('button');
+					deleteBtn.className = 'delete-btn';
+					deleteBtn.textContent = '删除';
+					deleteBtn.addEventListener('click', () => deleteWord(word));
 
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'delete-btn';
-                    deleteBtn.textContent = '删除';
-                    deleteBtn.addEventListener('click', () => deleteWord(word));
+					if (selectedWords.has(word)) {
+						li.classList.add('selected');
+					}
 
-                    if (selectedWords.has(word)) {
-                        li.classList.add('selected');
-                    }
+					li.appendChild(checkbox);
+					li.appendChild(wordText);
+					li.appendChild(deleteBtn);
+					wordList.appendChild(li);
+				}
 
-                    li.appendChild(checkbox);
-                    li.appendChild(wordText);
-                    li.appendChild(deleteBtn);
-                    wordList.appendChild(li);
-                }
+				currentIndex = endIndex;
+				if (currentIndex < filteredWords.length) {
+					requestAnimationFrame(renderBatch);
+				}
+			}
 
-                currentIndex = endIndex;
-                if (currentIndex < filteredWords.length) {
-                    requestAnimationFrame(renderBatch);
-                }
-            }
+			renderBatch();
+		}
 
-            renderBatch();
-        }
+		// 切换词汇选择
+		function toggleWordSelection(word) {
+			if (selectedWords.has(word)) {
+				selectedWords.delete(word);
+			} else {
+				selectedWords.add(word);
+			}
+			updateSelectionCount();
+			renderWordList();
+		}
 
-        // 切换词汇选择
-        function toggleWordSelection(word) {
-            if (selectedWords.has(word)) {
-                selectedWords.delete(word);
-            } else {
-                selectedWords.add(word);
-            }
-            updateSelectionCount();
-            renderWordList();
-        }
+		// 更新选择计数
+		function updateSelectionCount() {
+			selectedCount.textContent = selectedWords.size;
+			batchDeleteBtn.disabled = selectedWords.size === 0;
+		}
 
-        // 更新选择计数
-        function updateSelectionCount() {
-            selectedCount.textContent = selectedWords.size;
-            batchDeleteBtn.disabled = selectedWords.size === 0;
-        }
+		// 正则搜索
+		function performSearch() {
+			const regexStr = searchRegex.value.trim();
+			if (!regexStr) {
+				filteredWords = Array.from(currentWords);
+				renderWordList();
+				return;
+			}
 
-        // 正则搜索
-        function performSearch() {
-            const regexStr = searchRegex.value.trim();
-            if (!regexStr) {
-                filteredWords = Array.from(currentWords);
-                renderWordList();
-                return;
-            }
+			try {
+				const regex = new RegExp(regexStr, 'i');
+				filteredWords = Array.from(currentWords).filter(word => regex.test(word));
+				renderWordList();
+				showStatus(`搜索完成，找到 ${filteredWords.length} 个匹配词汇`, 'info');
+			} catch (error) {
+				showStatus('正则表达式格式错误', 'error');
+			}
+		}
 
-            try {
-                const regex = new RegExp(regexStr, 'i');
-                filteredWords = Array.from(currentWords).filter(word => regex.test(word));
-                renderWordList();
-                showStatus(`搜索完成，找到 ${filteredWords.length} 个匹配词汇`, 'info');
-            } catch (error) {
-                showStatus('正则表达式格式错误', 'error');
-            }
-        }
+		// 清除搜索
+		function clearSearch() {
+			searchRegex.value = '';
+			filteredWords = Array.from(currentWords);
+			renderWordList();
+			showStatus('搜索已清除', 'info');
+		}
 
-        // 清除搜索
-        function clearSearch() {
-            searchRegex.value = '';
-            filteredWords = Array.from(currentWords);
-            renderWordList();
-            showStatus('搜索已清除', 'info');
-        }
+		// 添加词汇
+		function addWord() {
+			const word = newWord.value.trim();
+			if (!word) {
+				showStatus('请输入要添加的词汇', 'error');
+				return;
+			}
 
-        // 添加词汇
-        function addWord() {
-            const word = newWord.value.trim();
-            if (!word) {
-                showStatus('请输入要添加的词汇', 'error');
-                return;
-            }
+			currentWords.add(word);
+			newWord.value = '';
+			updateStats();
+			performSearch(); // 保持搜索状态
+			showStatus(`成功添加词汇：${word}`, 'success');
+		}
 
-            currentWords.add(word);
-            newWord.value = '';
-            updateStats();
-            performSearch(); // 保持搜索状态
-            showStatus(`成功添加词汇：${word}`, 'success');
-        }
+		// 删除单个词汇
+		function deleteWord(word) {
+			currentWords.delete(word);
+			selectedWords.delete(word);
+			updateStats();
+			performSearch(); // 保持搜索状态
+			updateSelectionCount();
+			showStatus(`成功删除词汇：${word}`, 'info');
+		}
 
-        // 删除单个词汇
-        function deleteWord(word) {
-            currentWords.delete(word);
-            selectedWords.delete(word);
-            updateStats();
-            performSearch(); // 保持搜索状态
-            updateSelectionCount();
-            showStatus(`成功删除词汇：${word}`, 'info');
-        }
+		// 批量删除词汇
+		function batchDeleteWords() {
+			if (selectedWords.size === 0) {
+				showStatus('没有选择要删除的词汇', 'error');
+				return;
+			}
 
-        // 批量删除词汇
-        function batchDeleteWords() {
-            if (selectedWords.size === 0) {
-                showStatus('没有选择要删除的词汇', 'error');
-                return;
-            }
+			if (confirm(`确定要删除选中的 ${selectedWords.size} 个词汇吗？`)) {
+				selectedWords.forEach(word => {
+					currentWords.delete(word);
+				});
+				selectedWords.clear();
+				updateStats();
+				performSearch(); // 保持搜索状态
+				updateSelectionCount();
+				showStatus(`成功删除 ${selectedWords.size + '个'} 词汇`, 'success');
+			}
+		}
 
-            if (confirm(`确定要删除选中的 ${selectedWords.size} 个词汇吗？`)) {
-                selectedWords.forEach(word => {
-                    currentWords.delete(word);
-                });
-                selectedWords.clear();
-                updateStats();
-                performSearch(); // 保持搜索状态
-                updateSelectionCount();
-                showStatus(`成功删除 ${selectedWords.size + '个'} 词汇`, 'success');
-            }
-        }
+		// 保存词库
+		async function saveLexicon() {
+			if (currentWords.size === 0) {
+				showStatus('词库为空，无需保存', 'error');
+				return;
+			}
 
-        // 保存词库
-        async function saveLexicon() {
-            if (currentWords.size === 0) {
-                showStatus('词库为空，无需保存', 'error');
-                return;
-            }
+			if (!currentFileHandle) {
+				showStatus('未选择词库文件，无法保存', 'error');
+				return;
+			}
 
-            if (!currentFileHandle) {
-                showStatus('未选择词库文件，无法保存', 'error');
-                return;
-            }
-
-            // 按词库格式保存
-            const wordsArray = Array.from(currentWords);
-            const lexiconContent = wordsArray.join(UNIT_SEPARATOR);
-            const fileContent = `const value = \`${lexiconContent}\`;
+			// 按词库格式保存
+			const wordsArray = Array.from(currentWords);
+			const lexiconContent = wordsArray.join(UNIT_SEPARATOR);
+			const fileContent = `const value = \`${lexiconContent}\`;
 
 export const ${currentVariableName}: string = value;`;
 
-            try {
-                // 使用 File System Access API 保存文件
-                const writable = await currentFileHandle.createWritable();
-                await writable.write(fileContent);
-                await writable.close();
-                showStatus('词库保存成功', 'success');
-            } catch (error) {
-                showStatus(`保存失败：${error.message}`, 'error');
-                console.error('保存错误:', error);
-            }
-        }
+			try {
+				// 使用 File System Access API 保存文件
+				const writable = await currentFileHandle.createWritable();
+				await writable.write(fileContent);
+				await writable.close();
+				showStatus('词库保存成功', 'success');
+			} catch (error) {
+				showStatus(`保存失败：${error.message}`, 'error');
+				console.error('保存错误:', error);
+			}
+		}
 
-        // 预览词库
-        function previewLexicon() {
-            if (currentWords.size === 0) {
-                showStatus('词库为空', 'error');
-                return;
-            }
+		// 预览词库
+		function previewLexicon() {
+			if (currentWords.size === 0) {
+				showStatus('词库为空', 'error');
+				return;
+			}
 
-            const wordsArray = Array.from(currentWords);
-            const previewContent = wordsArray.slice(0, 100).join(', ') +
-                (wordsArray.length > 100 ? `... 共 ${wordsArray.length} 个词汇` : '');
+			const wordsArray = Array.from(currentWords);
+			const previewContent = wordsArray.slice(0, 100).join(', ') +
+				(wordsArray.length > 100 ? `... 共 ${wordsArray.length} 个词汇` : '');
 
-            showStatus(`词库预览（前100个词汇）：${previewContent}`, 'info');
-        }
+			showStatus(`词库预览（前100个词汇）：${previewContent}`, 'info');
+		}
 
-        // 清空词库
-        function clearWords() {
-            if (currentWords.size === 0) {
-                showStatus('词库已为空', 'info');
-                return;
-            }
+		// 清空词库
+		function clearWords() {
+			if (currentWords.size === 0) {
+				showStatus('词库已为空', 'info');
+				return;
+			}
 
-            if (confirm(`确定要清空当前词库吗？（共 ${currentWords.size} 个词汇）`)) {
-                currentWords.clear();
-                selectedWords.clear();
-                updateStats();
-                renderWordList();
-                updateSelectionCount();
-                showStatus('词库已清空', 'info');
-            }
-        }
+			if (confirm(`确定要清空当前词库吗？（共 ${currentWords.size} 个词汇）`)) {
+				currentWords.clear();
+				selectedWords.clear();
+				updateStats();
+				renderWordList();
+				updateSelectionCount();
+				showStatus('词库已清空', 'info');
+			}
+		}
 
-        // 导入并分割文本
-        function importAndSplit() {
-            const file = importFile.files[0];
-            if (!file) {
-                showStatus('请选择要导入的文本文件', 'error');
-                return;
-            }
+		// 导入并分割文本
+		function importAndSplit() {
+			const file = importFile.files[0];
+			if (!file) {
+				showStatus('请选择要导入的文本文件', 'error');
+				return;
+			}
 
-            const regexStr = splitRegex.value.trim() || '\\s+';
-            let regex;
+			const regexStr = splitRegex.value.trim() || '\\s+';
+			let regex;
 
-            try {
-                regex = new RegExp(regexStr);
-            } catch (error) {
-                showStatus('正则表达式格式错误', 'error');
-                return;
-            }
+			try {
+				regex = new RegExp(regexStr);
+			} catch (error) {
+				showStatus('正则表达式格式错误', 'error');
+				return;
+			}
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				const text = e.target.result;
 
-                // 分割文本
-                const words = text
-                    .split(regex)
-                    .map(word => word.trim())
-                    .filter(word => word.length > 0);
+				// 分割文本
+				const words = text
+					.split(regex)
+					.map(word => word.trim())
+					.filter(word => word.length > 0);
 
-                if (words.length === 0) {
-                    showStatus('导入文本分割后无有效词汇', 'error');
-                    return;
-                }
+				if (words.length === 0) {
+					showStatus('导入文本分割后无有效词汇', 'error');
+					return;
+				}
 
-                // 添加到当前词库
-                const initialCount = currentWords.size;
-                words.forEach(word => currentWords.add(word));
-                const addedCount = currentWords.size - initialCount;
+				// 添加到当前词库
+				const initialCount = currentWords.size;
+				words.forEach(word => currentWords.add(word));
+				const addedCount = currentWords.size - initialCount;
 
-                updateStats();
-                performSearch(); // 保持搜索状态
-                showStatus(`成功导入 ${words.length} 个词汇，新增 ${addedCount} 个（已去重），当前词库共 ${currentWords.size} 个词汇`, 'success');
-            };
+				updateStats();
+				performSearch(); // 保持搜索状态
+				showStatus(`成功导入 ${words.length} 个词汇，新增 ${addedCount} 个（已去重），当前词库共 ${currentWords.size} 个词汇`, 'success');
+			};
 
-            reader.readAsText(file, 'utf-8');
-        }
+			reader.readAsText(file, 'utf-8');
+		}
 
-        // 预览分割结果
-        function previewImportSplit() {
-            const file = importFile.files[0];
-            if (!file) {
-                showStatus('请选择要预览的文本文件', 'error');
-                return;
-            }
+		// 预览分割结果
+		function previewImportSplit() {
+			const file = importFile.files[0];
+			if (!file) {
+				showStatus('请选择要预览的文本文件', 'error');
+				return;
+			}
 
-            const regexStr = splitRegex.value.trim() || '\\s+';
-            let regex;
+			const regexStr = splitRegex.value.trim() || '\\s+';
+			let regex;
 
-            try {
-                regex = new RegExp(regexStr);
-            } catch (error) {
-                showStatus('正则表达式格式错误', 'error');
-                return;
-            }
+			try {
+				regex = new RegExp(regexStr);
+			} catch (error) {
+				showStatus('正则表达式格式错误', 'error');
+				return;
+			}
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const text = e.target.result;
-                const words = text
-                    .split(regex)
-                    .map(word => word.trim())
-                    .filter(word => word.length > 0);
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				const text = e.target.result;
+				const words = text
+					.split(regex)
+					.map(word => word.trim())
+					.filter(word => word.length > 0);
 
-                const previewWords = words.slice(0, 20);
-                const previewText = previewWords.join(', ');
-                const moreText = words.length > 20 ? `... 等共 ${words.length} 个词汇` : '';
+				const previewWords = words.slice(0, 20);
+				const previewText = previewWords.join(', ');
+				const moreText = words.length > 20 ? `... 等共 ${words.length} 个词汇` : '';
 
-                showStatus(`预览分割结果：${previewText}${moreText}`, 'info');
-            };
+				showStatus(`预览分割结果：${previewText}${moreText}`, 'info');
+			};
 
-            reader.readAsText(file, 'utf-8');
-        }
+			reader.readAsText(file, 'utf-8');
+		}
 
-        // 显示状态信息
-        function showStatus(message, type = 'info') {
-            status.textContent = message;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
+		// 显示状态信息
+		function showStatus(message, type = 'info') {
+			status.textContent = message;
+			status.className = `status ${type}`;
+			status.style.display = 'block';
 
-            // 3秒后自动隐藏
-            setTimeout(() => {
-                status.style.display = 'none';
-            }, 3000);
-        }
+			// 3秒后自动隐藏
+			setTimeout(() => {
+				status.style.display = 'none';
+			}, 3000);
+		}
 
-        // 初始化
-        window.addEventListener('DOMContentLoaded', initEventListeners);
-    </script>
+		// 初始化
+		window.addEventListener('DOMContentLoaded', initEventListeners);
+	</script>
 </body>
 </html>

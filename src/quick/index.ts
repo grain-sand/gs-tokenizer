@@ -29,12 +29,9 @@ export class QuickUseTokenizer {
 			const lexiconLoader = QuickUseTokenizer.getLexiconLoader();
 			const lexicons = lexiconLoader.getLexicons();
 
-			console.log('Loaded lexicons:', lexicons.map(l => ({ name: l.name, size: l.data.size, hasDouyin: l.data.has('抖音') })));
-
 			// 将加载的词库添加到自定义词库中
 			lexicons.forEach(lexicon => {
 				const lang = lexicon.lang.replace('-', '').toLowerCase().slice(0, 2); // 转换为 'zh', 'en', 'ja', 'ko'
-				// console.log(`Adding lexicon ${lexicon.name} with ${lexicon.data.size} words to lang ${lang}`);
 				QuickUseTokenizer.instance?.addCustomDictionary(
 					Array.from(lexicon.data),
 					lang,

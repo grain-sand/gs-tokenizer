@@ -191,7 +191,7 @@ export class MultilingualTokenizer {
     const tokens = this.tokenize(text, options?.language);
     
     // 默认排除标点符号、空格和其他类型
-    const defaultExcludeTypes: Token['type'][] = ['punctuation', 'space', 'other'];
+    const defaultExcludeTypes: Token['type'][] = ['punctuation', 'space'];
     
     // 合并默认排除类型和用户指定的排除类型
     const excludeTypes = [

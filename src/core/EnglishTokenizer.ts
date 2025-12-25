@@ -46,7 +46,7 @@ export class EnglishTokenizer implements LanguageTokenizer {
       
       if (word.match(/^\s+$/)) {
         tokens.push({ txt: word, type: 'space', lang: language, src: '' });
-      } else if (/^\p{Emoji}+$/u.test(word) && !/[0-9]/.test(word)) {
+      } else if (/^\p{Emoji}+$/u.test(word) && !/[0-9#]/.test(word)) {
         tokens.push({ txt: word, type: 'emoji', lang: language, src: '' });
       } else if (word.match(/^[^a-zA-Z0-9]+$/)) {
         tokens.push({ txt: word, type: 'punctuation', lang: language, src: '' });

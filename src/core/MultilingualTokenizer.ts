@@ -4,6 +4,7 @@ import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
 import { DateTokenizer } from './DateTokenizer';
 import { URLIPTokenizer } from './URLIPTokenizer';
+import { SocialTokenizer } from './SocialTokenizer';
 import { NumberTokenizer } from './NumberTokenizer';
 import { LanguageDetector } from './LanguageDetector';
 import * as lexicons from '../lexicon';
@@ -32,6 +33,7 @@ export class MultilingualTokenizer {
     this.tokenizers = [
       new DateTokenizer(),
       new URLIPTokenizer(),
+      new SocialTokenizer(),
       new NumberTokenizer(),
       new EnglishTokenizer(),
       new CJKTokenizer(this.customDictionaries)
@@ -180,88 +182,100 @@ export class MultilingualTokenizer {
       } else {
         const urlIpTokens = urlIpTokenizer.tokenize(token.txt, lang);
         
-        // 3. 对非URL和非IP部分使用数字分词器处理
-        const numberTokenizer = this.tokenizers.find(t => t instanceof NumberTokenizer);
-        if (!numberTokenizer) return finalTokens;
+        // 3. 对非URL和非IP部分使用社交媒体分词器处理
+        const socialTokenizer = this.tokenizers.find(t => t instanceof SocialTokenizer);
+        if (!socialTokenizer) return finalTokens;
         
         for (const urlIpToken of urlIpTokens) {
           if (urlIpToken.type === 'url' || urlIpToken.type === 'ip') {
             finalTokens.push(urlIpToken);
           } else {
-            const numberTokens = numberTokenizer.tokenize(urlIpToken.txt, lang);
+            const socialTokens = socialTokenizer.tokenize(urlIpToken.txt, lang);
             
-            // 4. 对非数字部分使用相应的语言分词器处理
-            for (const numberToken of numberTokens) {
-              if (numberToken.type === 'number') {
-                finalTokens.push(numberToken);
+            // 4. 对非社交媒体部分使用数字分词器处理
+            const numberTokenizer = this.tokenizers.find(t => t instanceof NumberTokenizer);
+            if (!numberTokenizer) return finalTokens;
+        
+            for (const socialToken of socialTokens) {
+              if (socialToken.type === 'hashtag' || socialToken.type === 'mention') {
+                finalTokens.push(socialToken);
               } else {
-                let subTokens: Token[] = [];
+                const numberTokens = numberTokenizer.tokenize(socialToken.txt, lang);
                 
-                if (lang === 'en') {
-                  const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
-                  if (englishTokenizer) {
-                    subTokens = (englishTokenizer as any).tokenize(numberToken.txt, lang);
-                  }
-                } else if (['zh', 'ja', 'ko'].includes(lang)) {
-                    // 处理混合语言：中文句子中的英文单词和数字+字母组合（如Q弹、5G）
-                    const mixedText = numberToken.txt;
+                // 5. 对非数字部分使用相应的语言分词器处理
+                for (const numberToken of numberTokens) {
+                  if (numberToken.type === 'number') {
+                    finalTokens.push(numberToken);
+                  } else {
+                    let subTokens: Token[] = [];
                     
-                    // 优先使用CJKTokenizer处理整个混合文本（包含自定义词库中的词）
-                    const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
-                    if (cjkTokenizer) {
-                      const cjkTokens = (cjkTokenizer as any).tokenize(mixedText, lang);
-                      if (cjkTokens.length > 0) {
-                        // 如果CJKTokenizer成功处理，则使用其结果
-                        subTokens = cjkTokens;
-                      } else {
-                        // 否则使用原有的混合语言处理逻辑
-                        const tokens: Token[] = [];
-                        let lastIndex = 0;
+                    if (lang === 'en') {
+                      const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
+                      if (englishTokenizer) {
+                        subTokens = (englishTokenizer as any).tokenize(numberToken.txt, lang);
+                      }
+                    } else if (['zh', 'ja', 'ko'].includes(lang)) {
+                        // 处理混合语言：中文句子中的英文单词和数字+字母组合（如Q弹、5G）
+                        const mixedText = numberToken.txt;
                         
-                        // 使用正则表达式匹配英文单词和数字+字母组合
-                        const regex = /[a-zA-Z0-9]+[a-zA-Z0-9_-]*|[a-zA-Z0-9]|[a-zA-Z]+/g;
-                        let match;
-                        
-                        while ((match = regex.exec(mixedText)) !== null) {
-                          // 处理匹配部分之前的文本（中文）
-                          if (match.index > lastIndex) {
-                            const chineseText = mixedText.substring(lastIndex, match.index);
-                            const chineseTokens = (cjkTokenizer as any).tokenize(chineseText, lang);
-                            tokens.push(...chineseTokens);
+                        // 优先使用CJKTokenizer处理整个混合文本（包含自定义词库中的词）
+                        const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
+                        if (cjkTokenizer) {
+                          const cjkTokens = (cjkTokenizer as any).tokenize(mixedText, lang);
+                          if (cjkTokens.length > 0) {
+                            // 如果CJKTokenizer成功处理，则使用其结果
+                            subTokens = cjkTokens;
+                          } else {
+                            // 否则使用原有的混合语言处理逻辑
+                            const tokens: Token[] = [];
+                            let lastIndex = 0;
+                            
+                            // 使用正则表达式匹配英文单词和数字+字母组合
+                            const regex = /[a-zA-Z0-9]+[a-zA-Z0-9_-]*|[a-zA-Z0-9]|[a-zA-Z]+/g;
+                            let match;
+                            
+                            while ((match = regex.exec(mixedText)) !== null) {
+                              // 处理匹配部分之前的文本（中文）
+                              if (match.index > lastIndex) {
+                                const chineseText = mixedText.substring(lastIndex, match.index);
+                                const chineseTokens = (cjkTokenizer as any).tokenize(chineseText, lang);
+                                tokens.push(...chineseTokens);
+                              }
+                              
+                              // 处理匹配到的英文或数字+字母组合
+                              const englishText = match[0];
+                              const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
+                              if (englishTokenizer) {
+                                const englishTokens = (englishTokenizer as any).tokenize(englishText, 'en');
+                                tokens.push(...englishTokens);
+                              }
+                              
+                              lastIndex = match.index + match[0].length;
+                            }
+                            
+                            // 处理剩余的中文文本
+                            if (lastIndex < mixedText.length) {
+                              const chineseText = mixedText.substring(lastIndex);
+                              const chineseTokens = (cjkTokenizer as any).tokenize(chineseText, lang);
+                              tokens.push(...chineseTokens);
+                            }
+                            
+                            subTokens = tokens;
                           }
-                          
-                          // 处理匹配到的英文或数字+字母组合
-                          const englishText = match[0];
-                          const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
-                          if (englishTokenizer) {
-                            const englishTokens = (englishTokenizer as any).tokenize(englishText, 'en');
-                            tokens.push(...englishTokens);
-                          }
-                          
-                          lastIndex = match.index + match[0].length;
                         }
-                        
-                        // 处理剩余的中文文本
-                        if (lastIndex < mixedText.length) {
-                          const chineseText = mixedText.substring(lastIndex);
-                          const chineseTokens = (cjkTokenizer as any).tokenize(chineseText, lang);
-                          tokens.push(...chineseTokens);
-                        }
-                        
-                        subTokens = tokens;
+                    } else {
+                      const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
+                      if (cjkTokenizer) {
+                        subTokens = (cjkTokenizer as any).tokenize(numberToken.txt, lang);
                       }
                     }
-                } else {
-                  const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
-                  if (cjkTokenizer) {
-                    subTokens = (cjkTokenizer as any).tokenize(numberToken.txt, lang);
+                    
+                    if (subTokens.length > 0) {
+                      finalTokens.push(...subTokens);
+                    } else {
+                      finalTokens.push(numberToken);
+                    }
                   }
-                }
-                
-                if (subTokens.length > 0) {
-                  finalTokens.push(...subTokens);
-                } else {
-                  finalTokens.push(numberToken);
                 }
               }
             }
@@ -314,6 +328,6 @@ export class MultilingualTokenizer {
  * @param options - 分词器配置选项
  * @returns MultilingualTokenizer实例
  */
-export function createTokenizer(options?: TokenizerOptions) {
+export function createTokenizer(options?: TokenizerOptions): MultilingualTokenizer {
   return new MultilingualTokenizer(options);
 }

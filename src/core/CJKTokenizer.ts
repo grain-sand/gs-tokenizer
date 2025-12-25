@@ -49,7 +49,7 @@ export class CJKTokenizer implements LanguageTokenizer {
 
 			if (segText.match(/^\s+$/)) {
 				tokens.push({txt: segText, type: 'space', lang: language, src: ''});
-			} else if (/^\p{Emoji}+$/u.test(segText) && !/[0-9]/.test(segText)) {
+			} else if (/^\p{Emoji}+$/u.test(segText) && !/[0-9#]/.test(segText)) {
 				tokens.push({txt: segText, type: 'emoji', lang: language, src: ''});
 			} else if (segText.match(/^[^\p{L}\p{N}]+$/u)) {
 				tokens.push({txt: segText, type: 'punctuation', lang: language, src: ''});

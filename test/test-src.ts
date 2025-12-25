@@ -131,6 +131,17 @@ describe('src 源码测试', () => {
       expect(tokens.length).toBeGreaterThan(0);
     });
 
+    it('应该能够正确识别内置词库中的中文特殊词汇', () => {
+      const text = '这个食物口感Q弹，很好吃。';
+      const tokens = tokenize(text);
+      const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
+      
+      console.log('Special Chinese vocabulary tokenization:', wordTokens);
+      
+      // "Q弹"应该作为整体分词
+      expect(wordTokens).toContain('Q弹');
+    });
+
     it('应该能够使用快速分词转文本函数', () => {
       const text = '这是一个测试文本';
       const resultText = tokenizeText(text);

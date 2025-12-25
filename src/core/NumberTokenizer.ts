@@ -248,8 +248,18 @@ export class NumberTokenizer implements LanguageTokenizer {
     for (const pattern of patterns) {
       const match = pattern.exec(text.substring(start));
       if (match) {
+        const matchEnd = start + match[0].length;
+        // 检查数字后面是否跟有字母，如果是，则不将其识别为数字（避免拆分5G、Q弹等组合）
+        if (matchEnd < text.length && /[a-zA-Z]/.test(text[matchEnd])) {
+          // 如果是科学计数法，则仍然识别为数字
+          if (pattern === patterns[0]) {
+            return { end: matchEnd };
+          }
+          // 否则跳过这个匹配
+          continue;
+        }
         // 确保不包含后面的非数字字符
-        return { end: start + match[0].length };
+        return { end: matchEnd };
       }
     }
 

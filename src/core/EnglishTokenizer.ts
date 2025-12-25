@@ -24,8 +24,8 @@ export class EnglishTokenizer implements LanguageTokenizer {
    * @returns 如果是英文返回'en'，否则返回空字符串
    */
   detectLanguage(text: string): string {
-    // 简单检测：如果文本包含英文字母且不包含中文字符，则认为是英文
-    if (/[a-zA-Z]/.test(text) && !/[一-鿿]/.test(text)) {
+    // 如果文本完全是英文（包含数字+字母组合）且不包含中文字符，返回'en'
+    if (/^[a-zA-Z0-9\s!"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]+$/.test(text) && !/[一-鿿]/.test(text)) {
       return 'en';
     }
     return '';

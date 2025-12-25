@@ -84,5 +84,19 @@ describe('Multilingual Tokenizer - Mixed Language Tests', () => {
     });
   });
 
+  it('should handle number-letter combinations as whole tokens', () => {
+    const text = '5G技术正在改变世界，4K视频更清晰。';
+    console.log('Testing number-letter combinations:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
+    
+    console.log('Number-letter combinations tokenization result:', wordTokens);
+    
+    // "5G"和"4K"应该作为整体分词
+    expect(wordTokens).toContain('5G');
+    expect(wordTokens).toContain('4K');
+  });
+
   // Emoji related tests have been moved to test-emoji.ts
 });

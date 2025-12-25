@@ -22,6 +22,7 @@ export {zh_CN_Appliances} from './zh-CN/appliances';
 export {zh_CN_Furniture} from './zh-CN/furniture';
 export {zh_CN_Pets} from './zh-CN/pets';
 export {zh_CN_OtherNames} from './zh-CN/otherNames';
+export {zh_CN_Ecommerce} from './zh-CN/ecommerce';
 
 // 繁体中文词库
 export {zh_TW_FirstName} from './zh-TW/firstNames';
@@ -46,6 +47,7 @@ export {zh_TW_Transportation} from './zh-TW/transportation';
 export {zh_TW_Appliances} from './zh-TW/appliances';
 export {zh_TW_Furniture} from './zh-TW/furniture';
 export {zh_TW_Pets} from './zh-TW/pets';
+export {zh_TW_Ecommerce} from './zh-TW/ecommerce';
 
 export {en_US_FirstName} from './en/firstNames';
 export {en_US_LastName} from './en/lastNames';
@@ -69,6 +71,7 @@ export {en_US_Transportation} from './en/transportation';
 export {en_US_Appliances} from './en/appliances';
 export {en_US_Furniture} from './en/furniture';
 export {en_US_Pets} from './en/pets';
+export {en_US_Ecommerce} from './en/ecommerce';
 
 export {ja_JP_FirstName} from './ja/firstNames';
 export {ja_JP_LastName} from './ja/lastNames';
@@ -92,12 +95,14 @@ export {ja_JP_Transportation} from './ja/transportation';
 export {ja_JP_Appliances} from './ja/appliances';
 export {ja_JP_Furniture} from './ja/furniture';
 export {ja_JP_Pets} from './ja/pets';
+export {ja_JP_Ecommerce} from './ja/ecommerce';
 
 export {ko_KR_FirstName} from './ko/firstNames';
 export {ko_KR_LastName} from './ko/lastNames';
 export {ko_KR_FamousName} from './ko/famousNames';
 export {ko_KR_FamousWorks} from './ko/famousWorks';
 export {ko_KR_Honorific} from './ko/honorifics';
+export {ko_KR_Ecommerce} from './ko/ecommerce';
 export {ko_KR_Nickname} from './ko/nicknames';
 export {ko_KR_Title} from './ko/titles';
 export {ko_KR_Kinship} from './ko/kinships';

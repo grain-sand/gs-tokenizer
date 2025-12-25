@@ -40,6 +40,7 @@ export class LexiconLoader {
       famousWorks: 100,
       country: 80,
       computerTerm: 75,
+      ecommerce: 75,
       city: 70,
       networkTerms: 70,
       medicines: 70,

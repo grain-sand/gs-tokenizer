@@ -12,7 +12,7 @@ export class QuickUseTokenizer {
 	/** 默认加载的语言 */
 	private static defaultLanguages: string[] = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR'];
 	/** 默认加载的词库类型 */
-	private static defaultTypes: string[] = ['lastName', 'firstName', 'famousName', 'famousWorks', 'honorific', 'nickname', 'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm', 'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation', 'appliances', 'furniture', 'pets', 'otherNames'];
+	private static defaultTypes: string[] = ['lastName', 'firstName', 'famousName', 'famousWorks', 'honorific', 'nickname', 'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm', 'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation', 'appliances', 'furniture', 'pets', 'otherNames', 'ecommerce'];
 
 	/**
 	 * 获取分词器实例（单例模式）

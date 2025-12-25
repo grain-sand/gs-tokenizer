@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>词库编辑工具</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .tool-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input[type="file"],
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            height: 200px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #229954;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        #wordList {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        #wordList li {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        #wordList li:last-child {
+            border-bottom: none;
+        }
+        
+        #wordList li:nth-child(odd) {
+            background-color: #fafafa;
+        }
+        
+        .word-text {
+            flex: 1;
+            font-family: monospace;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .status {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .stats {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .word-count {
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>词库编辑工具</h1>
+        
+        <!-- 文件选择与基础操作 -->
+        <div class="tool-section">
+            <h2 class="section-title">词库文件操作</h2>
+            <div class="form-group">
+                <label for="fileInput">选择词库文件：</label>
+                <input type="file" id="fileInput" accept=".ts">
+            </div>
+            <div class="stats" id="fileStats" style="display: none;">
+                当前词库：<span id="currentFileName"></span> | 
+                词汇数量：<span class="word-count" id="wordCount">0</span>
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" id="saveBtn">保存词库</button>
+                <button class="btn-secondary" id="previewBtn">预览词库</button>
+                <button class="btn-danger" id="clearBtn">清空词库</button>
+            </div>
+        </div>
+        
+        <!-- 词库内容编辑 -->
+        <div class="tool-section">
+            <h2 class="section-title">词库内容</h2>
+            <div class="form-group">
+                <label for="newWord">添加新词汇：</label>
+                <input type="text" id="newWord" placeholder="输入新词汇">
+            </div>
+            <div class="btn-group">
+                <button class="btn-success" id="addBtn">添加词汇</button>
+            </div>
+            <ul id="wordList"></ul>
+        </div>
+        
+        <!-- 导入文本文件 -->
+        <div class="tool-section">
+            <h2 class="section-title">导入文本</h2>
+            <div class="form-group">
+                <label for="importFile">选择文本文件：</label>
+                <input type="file" id="importFile" accept=".txt">
+            </div>
+            <div class="form-group">
+                <label for="splitRegex">分割正则表达式（默认：\s+）：</label>
+                <input type="text" id="splitRegex" value="\\s+" placeholder="输入正则表达式">
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" id="importBtn">导入并分割</button>
+                <button class="btn-secondary" id="importPreviewBtn">预览分割结果</button>
+            </div>
+        </div>
+        
+        <!-- 状态信息 -->
+        <div id="status" class="status" style="display: none;"></div>
+    </div>
+    
+    <script>
+        // 全局变量
+        let currentWords = new Set();
+        let currentFileName = '';
+        let currentVariableName = '';
+        const UNIT_SEPARATOR = '\u001F';
+        
+        // DOM 元素
+        const fileInput = document.getElementById('fileInput');
+        const saveBtn = document.getElementById('saveBtn');
+        const previewBtn = document.getElementById('previewBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const newWord = document.getElementById('newWord');
+        const addBtn = document.getElementById('addBtn');
+        const wordList = document.getElementById('wordList');
+        const importFile = document.getElementById('importFile');
+        const splitRegex = document.getElementById('splitRegex');
+        const importBtn = document.getElementById('importBtn');
+        const importPreviewBtn = document.getElementById('importPreviewBtn');
+        const status = document.getElementById('status');
+        const fileStats = document.getElementById('fileStats');
+        const currentFileNameEl = document.getElementById('currentFileName');
+        const wordCountEl = document.getElementById('wordCount');
+        
+        // 初始化事件监听
+        function initEventListeners() {
+            // 文件选择
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // 保存词库
+            saveBtn.addEventListener('click', saveLexicon);
+            
+            // 预览词库
+            previewBtn.addEventListener('click', previewLexicon);
+            
+            // 清空词库
+            clearBtn.addEventListener('click', clearWords);
+            
+            // 添加词汇
+            addBtn.addEventListener('click', addWord);
+            newWord.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addWord();
+                }
+            });
+            
+            // 导入并分割
+            importBtn.addEventListener('click', importAndSplit);
+            
+            // 预览分割结果
+            importPreviewBtn.addEventListener('click', previewImportSplit);
+        }
+        
+        // 验证词库文件格式
+        function validateLexiconFormat(content) {
+            // 检查是否包含 export const 和 = value;
+            const hasExportConst = /export\s+const\s+[a-zA-Z0-9_]+\s*:\s*string\s*=\s*value;/.test(content);
+            const hasValueAssignment = /const\s+value\s*=\s*`/.test(content);
+            
+            if (!hasExportConst || !hasValueAssignment) {
+                throw new Error('文件格式错误：不符合词库文件格式要求');
+            }
+            
+            // 提取变量名
+            const variableMatch = content.match(/export\s+const\s+([a-zA-Z0-9_]+)\s*:/);
+            if (!variableMatch) {
+                throw new Error('文件格式错误：无法提取变量名');
+            }
+            
+            // 提取词库内容
+            const contentMatch = content.match(/const\s+value\s*=\s*`([^`]*)`;/);
+            if (!contentMatch) {
+                throw new Error('文件格式错误：无法提取词库内容');
+            }
+            
+            return {
+                variableName: variableMatch[1],
+                lexiconContent: contentMatch[1]
+            };
+        }
+        
+        // 处理文件选择
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const { variableName, lexiconContent } = validateLexiconFormat(content);
+                    
+                    currentFileName = file.name;
+                    currentVariableName = variableName;
+                    
+                    // 解析词库内容（使用\u001F分割）
+                    const words = lexiconContent
+                        .split(UNIT_SEPARATOR)
+                        .map(word => word.trim())
+                        .filter(word => word.length > 0);
+                    
+                    currentWords = new Set(words);
+                    
+                    // 更新UI
+                    updateStats();
+                    renderWordList();
+                    showStatus(`成功加载词库文件：${currentFileName}，共 ${currentWords.size} 个词汇`, 'success');
+                } catch (error) {
+                    showStatus(`文件加载失败：${error.message}`, 'error');
+                    console.error('文件加载错误:', error);
+                }
+            };
+            
+            reader.readAsText(file, 'utf-8');
+        }
+        
+        // 更新统计信息
+        function updateStats() {
+            if (currentFileName) {
+                currentFileNameEl.textContent = currentFileName;
+                wordCountEl.textContent = currentWords.size;
+                fileStats.style.display = 'block';
+            }
+        }
+        
+        // 渲染词汇列表（分批渲染，优化性能）
+        function renderWordList() {
+            wordList.innerHTML = '';
+            
+            if (currentWords.size === 0) {
+                const emptyLi = document.createElement('li');
+                emptyLi.textContent = '词库为空';
+                wordList.appendChild(emptyLi);
+                return;
+            }
+            
+            const wordsArray = Array.from(currentWords);
+            const batchSize = 1000;
+            let currentIndex = 0;
+            
+            function renderBatch() {
+                const endIndex = Math.min(currentIndex + batchSize, wordsArray.length);
+                for (let i = currentIndex; i < endIndex; i++) {
+                    const word = wordsArray[i];
+                    const li = document.createElement('li');
+                    const wordText = document.createElement('span');
+                    wordText.className = 'word-text';
+                    wordText.textContent = word;
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-btn';
+                    deleteBtn.textContent = '删除';
+                    deleteBtn.addEventListener('click', () => deleteWord(word));
+                    
+                    li.appendChild(wordText);
+                    li.appendChild(deleteBtn);
+                    wordList.appendChild(li);
+                }
+                
+                currentIndex = endIndex;
+                if (currentIndex < wordsArray.length) {
+                    // 使用requestAnimationFrame避免阻塞
+                    requestAnimationFrame(renderBatch);
+                }
+            }
+            
+            renderBatch();
+        }
+        
+        // 添加词汇
+        function addWord() {
+            const word = newWord.value.trim();
+            if (!word) {
+                showStatus('请输入要添加的词汇', 'error');
+                return;
+            }
+            
+            currentWords.add(word);
+            newWord.value = '';
+            updateStats();
+            renderWordList();
+            showStatus(`成功添加词汇：${word}`, 'success');
+        }
+        
+        // 删除词汇
+        function deleteWord(word) {
+            currentWords.delete(word);
+            updateStats();
+            renderWordList();
+            showStatus(`成功删除词汇：${word}`, 'info');
+        }
+        
+        // 保存词库
+        function saveLexicon() {
+            if (currentWords.size === 0) {
+                showStatus('词库为空，无需保存', 'error');
+                return;
+            }
+            
+            if (!currentVariableName) {
+                currentVariableName = prompt('请输入词库变量名（如：zh_CN_Foods）：');
+                if (!currentVariableName) {
+                    showStatus('未输入变量名，保存失败', 'error');
+                    return;
+                }
+            }
+            
+            // 按词库格式保存（使用\u001F分割）
+            const wordsArray = Array.from(currentWords);
+            const lexiconContent = wordsArray.join(UNIT_SEPARATOR);
+            const fileContent = `const value = \`${lexiconContent}\`;
+
+export const ${currentVariableName}: string = value;`;
+            
+            // 创建Blob并下载
+            const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName || `${currentVariableName}.ts`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('词库保存成功', 'success');
+        }
+        
+        // 预览词库
+        function previewLexicon() {
+            if (currentWords.size === 0) {
+                showStatus('词库为空', 'error');
+                return;
+            }
+            
+            const wordsArray = Array.from(currentWords);
+            const previewContent = wordsArray.slice(0, 100).join(', ') + 
+                (wordsArray.length > 100 ? `... 共 ${wordsArray.length} 个词汇` : '');
+            
+            showStatus(`词库预览（前100个词汇）：${previewContent}`, 'info');
+        }
+        
+        // 清空词库
+        function clearWords() {
+            if (currentWords.size === 0) {
+                showStatus('词库已为空', 'info');
+                return;
+            }
+            
+            if (confirm(`确定要清空当前词库吗？（共 ${currentWords.size} 个词汇）`)) {
+                currentWords.clear();
+                updateStats();
+                renderWordList();
+                showStatus('词库已清空', 'info');
+            }
+        }
+        
+        // 导入并分割文本（仅针对导入文件）
+        function importAndSplit() {
+            const file = importFile.files[0];
+            if (!file) {
+                showStatus('请选择要导入的文本文件', 'error');
+                return;
+            }
+            
+            const regexStr = splitRegex.value.trim() || '\\s+';
+            let regex;
+            
+            try {
+                regex = new RegExp(regexStr);
+            } catch (error) {
+                showStatus('正则表达式格式错误', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                
+                // 分割文本（仅针对导入文件）
+                const words = text
+                    .split(regex)
+                    .map(word => word.trim())
+                    .filter(word => word.length > 0);
+                
+                if (words.length === 0) {
+                    showStatus('导入文本分割后无有效词汇', 'error');
+                    return;
+                }
+                
+                // 添加到当前词库
+                const initialCount = currentWords.size;
+                words.forEach(word => currentWords.add(word));
+                const addedCount = currentWords.size - initialCount;
+                
+                updateStats();
+                renderWordList();
+                showStatus(`成功导入 ${words.length} 个词汇，新增 ${addedCount} 个（已去重），当前词库共 ${currentWords.size} 个词汇`, 'success');
+            };
+            
+            reader.readAsText(file, 'utf-8');
+        }
+        
+        // 预览分割结果
+        function previewImportSplit() {
+            const file = importFile.files[0];
+            if (!file) {
+                showStatus('请选择要预览的文本文件', 'error');
+                return;
+            }
+            
+            const regexStr = splitRegex.value.trim() || '\\s+';
+            let regex;
+            
+            try {
+                regex = new RegExp(regexStr);
+            } catch (error) {
+                showStatus('正则表达式格式错误', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const words = text
+                    .split(regex)
+                    .map(word => word.trim())
+                    .filter(word => word.length > 0);
+                
+                const previewWords = words.slice(0, 20);
+                const previewText = previewWords.join(', ');
+                const moreText = words.length > 20 ? `... 等共 ${words.length} 个词汇` : '';
+                
+                showStatus(`预览分割结果：${previewText}${moreText}`, 'info');
+            };
+            
+            reader.readAsText(file, 'utf-8');
+        }
+        
+        // 显示状态信息
+        function showStatus(message, type = 'info') {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 初始化
+        window.addEventListener('DOMContentLoaded', initEventListeners);
+    </script>
+</body>
+</html>

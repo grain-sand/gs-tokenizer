@@ -232,12 +232,15 @@ export class NumberTokenizer implements LanguageTokenizer {
   }
 
   /**
-   * 查找数字部分（包括小数、科学计数法等）
+   * 查找数字部分（包括小数、科学计数法、百分比、千分比等）
    */
   private findNumber(text: string, start: number): { end: number } | null {
     const patterns = [
       // 科学计数法 (如 1.23e4, 1.23E-4, -2.34E+5)
       /^[+-]?\d+(\.\d+)?[eE][+-]?\d+/,
+      // 百分比和千分比 (如 50%, 50.5‰, -50%, +50‰)
+      /^[+-]?\d+(\.\d+)?%/,
+      /^[+-]?\d+(\.\d+)?‰/,
       // 小数 (如 1.23, .123, -123.45)
       /^[+-]?\d+\.\d+/,
       /^[+-]?\.\d+/,

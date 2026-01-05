@@ -16,6 +16,7 @@ A powerful and lightweight multilingual tokenizer library that provides natural 
   - English: Word boundary-based tokenization
   - CJK (Chinese, Japanese, Korean): Natural word segmentation using browser's Intl.Segmenter
   - Date: Special handling for date patterns
+  - Punctuation: Consecutive punctuation marks are merged into a single token
 - **Custom Dictionary**: Support for adding custom words with priority and name
 - **Auto Language Detection**: Automatically detects the language of input text
 - **Multiple Output Formats**: Get detailed token information or just word lists
@@ -35,26 +36,6 @@ npm install gs-tokenizer
 ```
 
 ## Usage
-
-### Basic Usage
-
-```javascript
-import { MultilingualTokenizer, createTokenizer } from 'gs-tokenizer';
-
-// Create tokenizer instance
-const tokenizer = new MultilingualTokenizer();
-// or using factory function
-// const tokenizer = createTokenizer();
-
-// Tokenize text
-const text = 'Hello world! 我爱北京天安门。';
-const tokens = tokenizer.tokenize(text);
-console.log(tokens);
-
-// Get only word tokens
-const words = tokenizer.tokenizeToText(text);
-console.log(words);
-```
 
 ### Quick Use (Recommended)
 

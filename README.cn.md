@@ -16,6 +16,7 @@
   - 英语：基于词边界的分词
   - CJK（中文、日语、韩语）：使用浏览器的Intl.Segmenter进行自然分词
   - 日期：对日期模式的特殊处理
+  - 符号处理：连续的符号会被合并为单个token
 - **自定义词典**：支持添加带优先级和名称的自定义词语
 - **自动语言检测**：自动检测输入文本的语言
 - **多种输出格式**：获取详细的分词信息或仅获取词语列表
@@ -35,26 +36,6 @@ npm install gs-tokenizer
 ```
 
 ## 使用
-
-### 基本用法
-
-```javascript
-import { MultilingualTokenizer, createTokenizer } from 'gs-tokenizer';
-
-// 创建分词器实例
-const tokenizer = new MultilingualTokenizer();
-// 或使用工厂函数
-// const tokenizer = createTokenizer();
-
-// 分词文本
-const text = 'Hello world! 我爱北京天安门。';
-const tokens = tokenizer.tokenize(text);
-console.log(tokens);
-
-// 仅获取词语
-const words = tokenizer.tokenizeToText(text);
-console.log(words);
-```
 
 ### 快速使用（推荐）
 

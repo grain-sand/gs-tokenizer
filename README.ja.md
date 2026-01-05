@@ -16,6 +16,7 @@
   - 英語: 単語境界に基づくトークン化
   - CJK（中国語、日本語、韓国語）: ブラウザのIntl.Segmenterを使用した自然な単語分割
   - 日付: 日付パターンの特殊処理
+  - 句読点: 連続した句読点は単一のトークンに結合
 - **カスタム辞書**: 優先度と名前を持つカスタム単語の追加をサポート
 - **自動言語検出**: 入力テキストの言語を自動的に検出
 - **複数の出力形式**: 詳細なトークン情報または単語リストのみを取得
@@ -35,26 +36,6 @@ npm install gs-tokenizer
 ```
 
 ## 使用方法
-
-### 基本的な使用方法
-
-```javascript
-import { MultilingualTokenizer, createTokenizer } from 'gs-tokenizer';
-
-// トークナイザーインスタンスを作成
-const tokenizer = new MultilingualTokenizer();
-// またはファクトリー関数を使用
-// const tokenizer = createTokenizer();
-
-// テキストをトークン化
-const text = 'Hello world! 私は北京の天安門が好きです。';
-const tokens = tokenizer.tokenize(text);
-console.log(tokens);
-
-// 単語トークンのみを取得
-const words = tokenizer.tokenizeToText(text);
-console.log(words);
-```
 
 ### クイック使用（推奨）
 

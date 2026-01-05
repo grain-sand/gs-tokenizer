@@ -233,7 +233,36 @@ export class MultilingualTokenizer {
       }
     }
 
-    return finalTokens;
+    // 合并连续的符号token
+    const mergedTokens: Token[] = [];
+    let currentPunctuation: Token | null = null;
+
+    for (const token of finalTokens) {
+      if (token.type === 'punctuation') {
+        if (currentPunctuation) {
+          // 合并连续的符号
+          currentPunctuation.txt += token.txt;
+        } else {
+          // 开始新的符号序列
+          currentPunctuation = {...token};
+        }
+      } else {
+        if (currentPunctuation) {
+          // 将之前合并的符号添加到结果中
+          mergedTokens.push(currentPunctuation);
+          currentPunctuation = null;
+        }
+        // 添加非符号token
+        mergedTokens.push(token);
+      }
+    }
+
+    // 添加最后可能的合并符号
+    if (currentPunctuation) {
+      mergedTokens.push(currentPunctuation);
+    }
+
+    return mergedTokens;
   }
 
   /**

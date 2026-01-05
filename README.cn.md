@@ -61,10 +61,10 @@ addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
 ```javascript
 import { tokenize, addCustomDictionary } from 'gs-tokenizer';
 
-// 为不同语言加载多个自定义词典
-addCustomDictionary(['人工智能', '机器学习'], 'zh', 10, 'tech');
-addCustomDictionary(['Web3', 'Blockchain'], 'en', 10, 'crypto');
-addCustomDictionary(['アーティフィシャル・インテリジェンス'], 'ja', 10, 'tech-ja');
+// 加载多个语言的自定义词库
+addCustomDictionary(['人工智能', '机器学习'], 'tech', 10, 'zh');
+addCustomDictionary(['Web3', 'Blockchain'], 'crypto', 10, 'en');
+addCustomDictionary(['アーティフィシャル・インテリジェンス'], 'tech-ja', 10, 'ja');
 
 // 应用自定义词典进行分词
 const text = '人工智能和Web3是未来的重要技术。アーティフィシャル・インテリジェンスも重要です。';
@@ -95,9 +95,9 @@ console.log(tokens);
 ```javascript
 const tokenizer = new MultilingualTokenizer();
 
-// 添加带语言、优先级和名称的自定义词语
-tokenizer.addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
-tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
+// 使用名称、优先级和语言添加自定义词
+tokenizer.addCustomDictionary(['人工智能', '技术'], 'tech', 10, 'zh');
+tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'programming', 5, 'en');
 
 const text = '我爱人工智能技术和Python编程';
 const tokens = tokenizer.tokenize(text);
@@ -150,10 +150,10 @@ const tokenizer = new MultilingualTokenizer(options)
 
 | 方法 | 描述 |
 |------|------|
-| `tokenize(text: string, language?: string): Token[]` | 对输入文本进行分词并返回详细的分词信息 |
-| `tokenizeText(text: string, language?: string): string[]` | 对输入文本进行分词并仅返回词语列表 |
-| `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | 向分词器添加自定义词语 |
-| `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 从分词器中删除自定义词语 |
+| `tokenize(text: string, language?: string): Token[]` | 对输入文本进行分词，返回详细的Token信息 |
+| `tokenizeText(text: string, language?: string): string[]` | 对输入文本进行分词，只返回单词Token |
+| `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | 向分词器添加自定义单词 |
+| `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 从分词器中移除自定义单词 |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
 
@@ -173,7 +173,7 @@ type QuickUseAPI = {
   // 仅分词为文本
   tokenizeText: (text: string, language?: string) => string[];
   // 添加自定义词典
-  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+    addCustomDictionary: (words: string[], name: string, priority?: number, language?: string) => void;
   // 删除自定义词语
   removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
   // 设置词典加载的默认语言

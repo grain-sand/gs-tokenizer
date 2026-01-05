@@ -51,7 +51,7 @@ const words = tokenizeText(text);
 console.log(words);
 
 // Add custom dictionary
-addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
+addCustomDictionary(['人工智能', '技术'], 'tech', 10, 'zh');
 ```
 
 ### Advanced Usage
@@ -62,9 +62,9 @@ addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
 import { tokenize, addCustomDictionary } from 'gs-tokenizer';
 
 // Load multiple custom dictionaries for different languages
-addCustomDictionary(['人工智能', '机器学习'], 'zh', 10, 'tech');
-addCustomDictionary(['Web3', 'Blockchain'], 'en', 10, 'crypto');
-addCustomDictionary(['アーティフィシャル・インテリジェンス'], 'ja', 10, 'tech-ja');
+addCustomDictionary(['人工智能', '机器学习'], 'tech', 10, 'zh');
+addCustomDictionary(['Web3', 'Blockchain'], 'crypto', 10, 'en');
+addCustomDictionary(['アーティフィシャル・インテリジェンス'], 'tech-ja', 10, 'ja');
 
 // Tokenize with custom dictionaries applied
 const text = '人工智能和Web3是未来的重要技术。アーティフィシャル・インテリジェンスも重要です。';
@@ -95,9 +95,9 @@ console.log(tokens);
 ```javascript
 const tokenizer = new MultilingualTokenizer();
 
-// Add custom words with language, priority, and name
-tokenizer.addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
-tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
+// Add custom words with name, priority, and language
+tokenizer.addCustomDictionary(['人工智能', '技术'], 'tech', 10, 'zh');
+tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'programming', 5, 'en');
 
 const text = '我爱人工智能技术和Python编程';
 const tokens = tokenizer.tokenize(text);
@@ -152,7 +152,7 @@ const tokenizer = new MultilingualTokenizer(options)
 |--------|-------------|
 | `tokenize(text: string, language?: string): Token[]` | Tokenizes the input text and returns detailed token information |
 | `tokenizeText(text: string, language?: string): string[]` | Tokenizes the input text and returns only word tokens |
-| `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | Adds custom words to the tokenizer |
+| `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | Adds custom words to the tokenizer |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | Removes a custom word from the tokenizer |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
@@ -173,7 +173,7 @@ type QuickUseAPI = {
   // Tokenize to text only
   tokenizeText: (text: string, language?: string) => string[];
   // Add custom dictionary
-  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+  addCustomDictionary: (words: string[], name: string, priority?: number, language?: string) => void;
   // Remove custom word
   removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
   // Set default languages for lexicon loading

@@ -40,19 +40,29 @@ export class MultilingualTokenizer {
   /**
    * 添加自定义词库
    * @param words - 要添加的单词数组
-   * @param language - 词库对应的语言代码
-   * @param priority - 词库优先级，值越高优先级越高
    * @param name - 词库名称，用于标识和管理词库
+   * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
+   * @param language - 词库对应的语言代码，未指定时自动根据words判断
    */
-  addCustomDictionary(words: string[], language: string, priority: number, name: string): void {
-    const lang = language || this.defaultLanguage;
+  addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void {
+    // priority 默认值设为 200（内置词库最高优先级是 100）
+    const actualPriority = priority !== undefined ? priority : 200;
+    
+    // language 未指定时，自动根据 words 判断语言
+    let actualLanguage = language;
+    if (!actualLanguage && words.length > 0) {
+      // 使用第一个非空单词进行语言检测
+      const sampleWord = words.find(word => word.trim() !== '') || '';
+      actualLanguage = LanguageDetector.detectLanguage(sampleWord);
+    }
+    const lang = actualLanguage || this.defaultLanguage;
 
     if (!this.customDictionaries[lang]) {
       this.customDictionaries[lang] = [];
     }
 
     const existingIndex = this.customDictionaries[lang].findIndex(entry =>
-      entry.name === name && entry.lang === lang && entry.priority === priority
+      entry.name === name && entry.lang === lang && entry.priority === actualPriority
     );
 
     if (existingIndex >= 0) {
@@ -60,7 +70,7 @@ export class MultilingualTokenizer {
       words.forEach(word => existingEntry.data.add(word));
     } else {
       this.customDictionaries[lang].push({
-        priority,
+        priority: actualPriority,
         data: new Set(words),
         name,
         lang

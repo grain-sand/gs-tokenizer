@@ -173,7 +173,7 @@ type QuickUseAPI = {
   // 텍스트만 토큰화
   tokenizeText: (text: string, language?: string) => string[];
   // 사용자 정의 사전 추가
-  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+    addCustomDictionary: (words: string[], name: string, priority?: number, language?: string) => void;
   // 사용자 정의 단어 제거
   removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
   // 사전 로딩의 기본 언어 설정

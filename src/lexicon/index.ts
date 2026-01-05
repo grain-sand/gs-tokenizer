@@ -64,8 +64,9 @@ export class LexiconLoader {
 
     // 添加到tokenizer
     for (const lang in lexiconsByLang) {
+      // 添加到tokenizer，使用预存储的数组版本避免重复转换
       lexiconsByLang[lang].forEach(lexicon => {
-        tokenizer.addCustomDictionary(Array.from(lexicon.data), lang, lexicon.priority, lexicon.name);
+        tokenizer.addCustomDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang);
       });
     }
   }
@@ -135,10 +136,11 @@ export class LexiconLoader {
         const lexiconContent = lexicons[lexiconName] || '';
 
         // 解析词库并添加到列表
-        const lexiconSet = this.parseLexiconString(lexiconContent);
+        const { set, array } = this.parseLexiconString(lexiconContent);
         this.lexicons.push({
           priority: priorityMap[type] || 50, // 默认优先级50
-          data: lexiconSet,
+          data: set,
+          words: array, // 直接存储数组版本
           name: `${langCode}_${type}`,
           lang: lang
         });
@@ -149,12 +151,12 @@ export class LexiconLoader {
   /**
    * 解析词库字符串为Set
    */
-  private parseLexiconString(lexiconString: string): Set<string> {
+  private parseLexiconString(lexiconString: string): { set: Set<string>, array: string[] } {
     const words = lexiconString
       .split('\u001F')
       .map(word => word.trim())
       .filter(word => word.length > 0);
-    return new Set(words);
+    return { set: new Set(words), array: words };
   }
 
   /**
@@ -173,6 +175,10 @@ export class LexiconLoader {
    * 添加自定义词库
    */
   public addCustomLexicon(lexicon: LexiconEntry): void {
+    // 确保 words 字段存在
+    if (!lexicon.words) {
+      lexicon.words = Array.from(lexicon.data);
+    }
     this.lexicons.push(lexicon);
     // 按优先级排序（降序）
     this.lexicons.sort((a, b) => b.priority - a.priority);

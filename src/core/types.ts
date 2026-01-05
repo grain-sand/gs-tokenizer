@@ -22,6 +22,8 @@ export interface LexiconEntry {
   priority: number;
   /** 词库中的单词集合 */
   data: Set<string>;
+  /** 词库中的单词数组（预存储，避免重复转换） */
+  words: string[];
   /** 词库名称 */
   name: string;
   /** 词库对应的语言代码 */

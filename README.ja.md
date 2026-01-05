@@ -173,7 +173,7 @@ type QuickUseAPI = {
   // テキストのみをトークン化
   tokenizeText: (text: string, language?: string) => string[];
   // カスタム辞書を追加
-  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+    addCustomDictionary: (words: string[], name: string, priority?: number, language?: string) => void;
   // カスタム単語を削除
   removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
   // 辞書ロードのデフォルト言語を設定

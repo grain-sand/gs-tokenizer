@@ -3,30 +3,23 @@
  * 验证各模块是否工作正常
  */
 
-import { describe, it, expect } from 'vitest';
+import {describe, expect, it} from 'vitest';
 
 // 测试核心模块
-import { 
-  MultilingualTokenizer, 
-  createTokenizer,
-  TokenizerOptions,
-  Token
-} from '../src';
-
 // 测试词库模块和 LexiconLoader
-import { 
-  LexiconLoader,
-  LexiconConfig
-} from '../src';
-
 // 测试主入口模块
 import {
-  tokenize,
-  tokenizeText,
   addCustomDictionary,
+  createTokenizer,
+  LexiconConfig,
+  LexiconLoader,
+  MultilingualTokenizer,
   removeCustomWord,
   setDefaultLanguages,
-  setDefaultTypes
+  setDefaultTypes,
+  tokenize,
+  TokenizerOptions,
+  tokenizeText
 } from '../src';
 
 describe('src 源码测试', () => {
@@ -50,7 +43,7 @@ describe('src 源码测试', () => {
       const tokens = tokenizer.tokenize('这是一个测试文本');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
-      
+
       // 检查每个 token 的结构
       tokens.forEach(token => {
         expect(token).toHaveProperty('txt');
@@ -64,7 +57,7 @@ describe('src 源码测试', () => {
       const tokens = tokenizer.tokenize('This is a test text');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
-      
+
       // 检查每个 token 的结构
       tokens.forEach(token => {
         expect(token).toHaveProperty('txt');
@@ -76,7 +69,6 @@ describe('src 源码测试', () => {
     it('应该能够将分词结果转换为文本', () => {
       const tokenizer = createTokenizer();
       const text = '这是一个测试文本';
-      const tokens = tokenizer.tokenize(text);
       const resultText = tokenizer.tokenizeText(text);
       // 注意：tokenizeText 返回的是字符串数组而不是单个字符串
       if (Array.isArray(resultText)) {
@@ -90,7 +82,7 @@ describe('src 源码测试', () => {
   describe('词库模块 (lexicon)', () => {
     it('应该能够创建 LexiconLoader 实例', () => {
       const config: LexiconConfig = {
-        languages: ['zh-CN', 'en-US'],
+        languages: ['zh-CN', 'en'],
         types: ['firstName', 'lastName']
       };
       const loader = LexiconLoader.getInstance(config);
@@ -108,7 +100,7 @@ describe('src 源码测试', () => {
 
     it('应该能够加载词库数据', async () => {
       const config: LexiconConfig = {
-        languages: ['zh-CN', 'en-US'],
+        languages: ['zh-CN', 'en'],
         types: ['firstName', 'lastName']
       };
       const loader = LexiconLoader.getInstance(config);
@@ -135,9 +127,9 @@ describe('src 源码测试', () => {
       const text = '这个食物口感Q弹，很好吃。';
       const tokens = tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
-      
+
       console.log('Special Chinese vocabulary tokenization:', wordTokens);
-      
+
       // "Q弹"应该作为整体分词
       expect(wordTokens).toContain('Q弹');
     });
@@ -155,7 +147,7 @@ describe('src 源码测试', () => {
 
     it('应该能够添加自定义词典', () => {
       expect(() => {
-        addCustomDictionary('custom', ['自定义词汇'], 'zh');
+        addCustomDictionary(['自定义词汇'], 'custom', undefined, 'zh');
       }).not.toThrow();
     });
 
@@ -171,9 +163,9 @@ describe('src 源码测试', () => {
       }).not.toThrow();
     });
 
-    it('应该能够设置默认分词类型', () => {
+    it('应该能够设置默认词库类型', () => {
       expect(() => {
-        setDefaultTypes(['word', 'punctuation']);
+        setDefaultTypes(['firstName', 'lastName']);
       }).not.toThrow();
     });
   });
@@ -184,17 +176,17 @@ describe('src 源码测试', () => {
       const tokens = tokenize(text);
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
-      
+
       // 打印 token 信息以便调试
       console.log('Tokens:', tokens.map(t => ({ txt: t.txt, lang: t.lang, type: t.type })));
-      
+
       // 检查是否正确识别了不同语言的 token
       const hasChineseTokens = tokens.some(token => token.lang === 'zh');
       const hasEnglishTokens = tokens.some(token => token.lang === 'en');
-      
+
       // 如果没有正确识别语言，至少检查是否有英文单词
       const hasEnglishWords = tokens.some(token => /^[a-zA-Z]+$/.test(token.txt));
-      
+
       expect(hasChineseTokens).toBe(true);
       // 如果没有正确识别语言，至少检查是否有英文单词
       if (!hasEnglishTokens) {
@@ -208,7 +200,7 @@ describe('src 源码测试', () => {
       const text = '这是测试，包含标点符号！';
       const tokens = tokenize(text);
       expect(tokens).toBeInstanceOf(Array);
-      
+
       // 检查是否正确识别了标点符号
       const hasPunctuation = tokens.some(token => token.type === 'punctuation');
       expect(hasPunctuation).toBe(true);
@@ -218,7 +210,7 @@ describe('src 源码测试', () => {
       const text = '这是一个测试😊';
       const tokens = tokenize(text);
       expect(tokens).toBeInstanceOf(Array);
-      
+
       // 检查是否正确识别了表情符号
       const hasEmoji = tokens.some(token => token.type === 'emoji');
       expect(hasEmoji).toBe(true);
@@ -228,7 +220,7 @@ describe('src 源码测试', () => {
       const text = '今天是2023年12月25日';
       const tokens = tokenize(text);
       expect(tokens).toBeInstanceOf(Array);
-      
+
       // 检查是否正确识别了日期
       const hasDate = tokens.some(token => token.type === 'date');
       expect(hasDate).toBe(true);

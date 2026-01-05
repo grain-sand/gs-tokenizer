@@ -1,6 +1,5 @@
 import {MultilingualTokenizer, createTokenizer, TokenizerOptions} from '../core';
-import {LexiconLoader} from './LexiconLoader';
-import type {LexiconConfig} from './LexiconLoader';
+import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from '../lexicon';
 
 /**
  * 快速使用多语言分词器类，提供静态实例和便捷方法
@@ -10,9 +9,9 @@ export class QuickUseTokenizer {
 	/** 静态分词器实例 */
 	private static instance: MultilingualTokenizer | null = null;
 	/** 默认加载的语言 */
-	private static defaultLanguages: string[] = ['zh-CN', 'zh-TW', 'en-US', 'ja-JP', 'ko-KR'];
+	private static defaultLanguages: SupportedLanguage[] = Array.from(SUPPORTED_LANGUAGES);
 	/** 默认加载的词库类型 */
-	private static defaultTypes: string[] = ['lastName', 'firstName', 'famousName', 'famousWorks', 'honorific', 'nickname', 'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm', 'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation', 'appliances', 'furniture', 'pets', 'otherNames', 'ecommerce'];
+	private static defaultTypes: SupportedType[] = Array.from(SUPPORTED_TYPES);
 
 	/**
 	 * 获取分词器实例（单例模式）
@@ -25,19 +24,10 @@ export class QuickUseTokenizer {
 			};
 			QuickUseTokenizer.instance = createTokenizer(options);
 
-			// 加载默认词库并应用到分词器
-			const lexiconLoader = QuickUseTokenizer.getLexiconLoader();
-			const lexicons = lexiconLoader.getLexicons();
-
-			// 将加载的词库添加到自定义词库中
-			lexicons.forEach(lexicon => {
-				const lang = lexicon.lang.replace('-', '').toLowerCase().slice(0, 2); // 转换为 'zh', 'en', 'ja', 'ko'
-				QuickUseTokenizer.instance?.addCustomDictionary(
-					Array.from(lexicon.data),
-					lang,
-					lexicon.priority,
-					lexicon.name
-				);
+			// 使用LexiconLoader.loadTo方法加载默认词库
+			LexiconLoader.loadTo(QuickUseTokenizer.instance, {
+				types: QuickUseTokenizer.defaultTypes,
+				languages: QuickUseTokenizer.defaultLanguages
 			});
 		}
 		return QuickUseTokenizer.instance;
@@ -47,7 +37,7 @@ export class QuickUseTokenizer {
 	 * 设置默认加载的语言
 	 * @param languages - 要加载的语言代码数组
 	 */
-	public static setDefaultLanguages(languages: string[]): void {
+	public static setDefaultLanguages(languages: SupportedLanguage[]): void {
 		QuickUseTokenizer.defaultLanguages = languages;
 		// 重置实例，以便下次获取时使用新配置
 		QuickUseTokenizer.instance = null;
@@ -57,7 +47,7 @@ export class QuickUseTokenizer {
 	 * 设置默认加载的词库类型
 	 * @param types - 要加载的词库类型数组
 	 */
-	public static setDefaultTypes(types: string[]): void {
+	public static setDefaultTypes(types: SupportedType[]): void {
 		QuickUseTokenizer.defaultTypes = types;
 		// 重置实例，以便下次获取时使用新配置
 		QuickUseTokenizer.instance = null;
@@ -104,17 +94,7 @@ export class QuickUseTokenizer {
 		QuickUseTokenizer.getInstance().removeCustomWord(word, language, lexiconName);
 	}
 
-	/**
-	 * 获取词库加载器实例
-	 * @returns LexiconLoader实例
-	 */
-	public static getLexiconLoader(): LexiconLoader {
-		const config: LexiconConfig = {
-			languages: QuickUseTokenizer.defaultLanguages,
-			types: QuickUseTokenizer.defaultTypes
-		};
-		return LexiconLoader.getInstance(config);
-	}
+
 }
 
 // 导出便捷函数
@@ -125,8 +105,5 @@ export const addCustomDictionary = (words: string[], language: string, priority:
 	QuickUseTokenizer.addCustomDictionary(words, language, priority, name);
 export const removeCustomWord = (word: string, language?: string, lexiconName?: string) =>
 	QuickUseTokenizer.removeCustomWord(word, language, lexiconName);
-export const setDefaultLanguages = (languages: string[]) => QuickUseTokenizer.setDefaultLanguages(languages);
-export const setDefaultTypes = (types: string[]) => QuickUseTokenizer.setDefaultTypes(types);
-
-// 导出 LexiconLoader 和相关类型
-export {LexiconLoader, LexiconConfig};
+export const setDefaultLanguages = (languages: SupportedLanguage[]) => QuickUseTokenizer.setDefaultLanguages(languages);
+export const setDefaultTypes = (types: SupportedType[]) => QuickUseTokenizer.setDefaultTypes(types);

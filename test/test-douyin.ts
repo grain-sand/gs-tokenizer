@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {QuickUseTokenizer, zh_CN_OtherNames} from '../src';
+import {QuickUseTokenizer} from '../src';
 
 describe('Douyin Tokenization Test', () => {
 
@@ -17,8 +17,5 @@ describe('Douyin Tokenization Test', () => {
     expect(wordTokens).toContain('抖音');
   });
 
-  it('should verify "抖音" exists in lexicon', () => {
-    console.log('Checking if "抖音" exists in zh_CN_OtherNames:', zh_CN_OtherNames.includes('抖音'));
-    expect(zh_CN_OtherNames).toContain('抖音');
-  });
+
 });

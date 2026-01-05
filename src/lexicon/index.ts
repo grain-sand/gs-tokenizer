@@ -1,122 +1,194 @@
-// 简体中文词库
-export {zh_CN_FirstName} from './zh-CN/firstNames';
-export {zh_CN_LastName} from './zh-CN/lastNames';
-export {zh_CN_FamousName} from './zh-CN/famousNames';
-export {zh_CN_FamousWorks} from './zh-CN/famousWorks';
-export {zh_CN_Honorific} from './zh-CN/honorifics';
-export {zh_CN_Nickname} from './zh-CN/nicknames';
-export {zh_CN_Title} from './zh-CN/titles';
-export {zh_CN_Kinship} from './zh-CN/kinships';
-export {zh_CN_Organization} from './zh-CN/organizations';
-export {zh_CN_Country} from './zh-CN/countries';
-export {zh_CN_City} from './zh-CN/cities';
-export {zh_CN_Address} from './zh-CN/address';
-export {zh_CN_ComputerTerm} from './zh-CN/computerTerms';
-export {zh_CN_NetworkTerms} from './zh-CN/networkTerms';
-export {zh_CN_Pronouns} from './zh-CN/pronouns';
-export {zh_CN_Foods} from './zh-CN/foods';
-export {zh_CN_Medicines} from './zh-CN/medicines';
-export {zh_CN_Luxury} from './zh-CN/luxury';
-export {zh_CN_Transportation} from './zh-CN/transportation';
-export {zh_CN_Appliances} from './zh-CN/appliances';
-export {zh_CN_Furniture} from './zh-CN/furniture';
-export {zh_CN_Pets} from './zh-CN/pets';
-export {zh_CN_OtherNames} from './zh-CN/otherNames';
-export {zh_CN_Ecommerce} from './zh-CN/ecommerce';
+import { LexiconEntry, MultilingualTokenizer } from '../core';
+import * as lexicons from './data';
 
-// 繁体中文词库
-export {zh_TW_FirstName} from './zh-TW/firstNames';
-export {zh_TW_LastName} from './zh-TW/lastNames';
-export {zh_TW_FamousName} from './zh-TW/famousNames';
-export {zh_TW_FamousWorks} from './zh-TW/famousWorks';
-export {zh_TW_Honorific} from './zh-TW/honorifics';
-export {zh_TW_Nickname} from './zh-TW/nicknames';
-export {zh_TW_Title} from './zh-TW/titles';
-export {zh_TW_Kinship} from './zh-TW/kinships';
-export {zh_TW_Organization} from './zh-TW/organizations';
-export {zh_TW_Country} from './zh-TW/countries';
-export {zh_TW_City} from './zh-TW/cities';
-export {zh_TW_Address} from './zh-TW/address';
-export {zh_TW_ComputerTerm} from './zh-TW/computerTerms';
-export {zh_TW_NetworkTerms} from './zh-TW/networkTerms';
-export {zh_TW_Pronouns} from './zh-TW/pronouns';
-export {zh_TW_Foods} from './zh-TW/foods';
-export {zh_TW_Medicines} from './zh-TW/medicines';
-export {zh_TW_Luxury} from './zh-TW/luxury';
-export {zh_TW_Transportation} from './zh-TW/transportation';
-export {zh_TW_Appliances} from './zh-TW/appliances';
-export {zh_TW_Furniture} from './zh-TW/furniture';
-export {zh_TW_Pets} from './zh-TW/pets';
-export {zh_TW_Ecommerce} from './zh-TW/ecommerce';
+// 公开的语言数组
+// 支持的语言包括'zh'作为'zh-CN'的别名
+export const SUPPORTED_LANGUAGES = ['zh', 'zh-CN', 'zh-TW', 'en', 'ja', 'ko'] as const;
+// 公开的词库类型数组
+export const SUPPORTED_TYPES = [
+  'firstName', 'lastName', 'famousName', 'famousWorks', 'honorific', 'nickname',
+  'title', 'kinship', 'organization', 'country', 'city', 'address', 'computerTerm',
+  'networkTerms', 'pronouns', 'foods', 'medicines', 'luxury', 'transportation',
+  'appliances', 'furniture', 'pets', 'ecommerce', 'otherNames'
+] as const;
 
-export {en_US_FirstName} from './en/firstNames';
-export {en_US_LastName} from './en/lastNames';
-export {en_US_FamousName} from './en/famousNames';
-export {en_US_FamousWorks} from './en/famousWorks';
-export {en_US_Honorific} from './en/honorifics';
-export {en_US_Nickname} from './en/nicknames';
-export {en_US_Title} from './en/titles';
-export {en_US_Kinship} from './en/kinships';
-export {en_US_Organization} from './en/organizations';
-export {en_US_Country} from './en/countries';
-export {en_US_City} from './en/cities';
-export {en_US_Address} from './en/address';
-export {en_US_ComputerTerm} from './en/computerTerms';
-export {en_US_NetworkTerms} from './en/networkTerms';
-export {en_US_Pronouns} from './en/pronouns';
-export {en_US_Foods} from './en/foods';
-export {en_US_Medicines} from './en/medicines';
-export {en_US_Luxury} from './en/luxury';
-export {en_US_Transportation} from './en/transportation';
-export {en_US_Appliances} from './en/appliances';
-export {en_US_Furniture} from './en/furniture';
-export {en_US_Pets} from './en/pets';
-export {en_US_Ecommerce} from './en/ecommerce';
+// 基于数组的联合类型
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+export type SupportedType = typeof SUPPORTED_TYPES[number];
 
-export {ja_JP_FirstName} from './ja/firstNames';
-export {ja_JP_LastName} from './ja/lastNames';
-export {ja_JP_FamousName} from './ja/famousNames';
-export {ja_JP_FamousWorks} from './ja/famousWorks';
-export {ja_JP_Honorific} from './ja/honorifics';
-export {ja_JP_Nickname} from './ja/nicknames';
-export {ja_JP_Title} from './ja/titles';
-export {ja_JP_Kinship} from './ja/kinships';
-export {ja_JP_Organization} from './ja/organizations';
-export {ja_JP_Country} from './ja/countries';
-export {ja_JP_City} from './ja/cities';
-export {ja_JP_Address} from './ja/address';
-export {ja_JP_ComputerTerm} from './ja/computerTerms';
-export {ja_JP_NetworkTerms} from './ja/networkTerms';
-export {ja_JP_Pronouns} from './ja/pronouns';
-export {ja_JP_Foods} from './ja/foods';
-export {ja_JP_Medicines} from './ja/medicines';
-export {ja_JP_Luxury} from './ja/luxury';
-export {ja_JP_Transportation} from './ja/transportation';
-export {ja_JP_Appliances} from './ja/appliances';
-export {ja_JP_Furniture} from './ja/furniture';
-export {ja_JP_Pets} from './ja/pets';
-export {ja_JP_Ecommerce} from './ja/ecommerce';
+export interface LexiconConfig {
+  types: SupportedType[];
+  languages: SupportedLanguage[];
+}
 
-export {ko_KR_FirstName} from './ko/firstNames';
-export {ko_KR_LastName} from './ko/lastNames';
-export {ko_KR_FamousName} from './ko/famousNames';
-export {ko_KR_FamousWorks} from './ko/famousWorks';
-export {ko_KR_Honorific} from './ko/honorifics';
-export {ko_KR_Ecommerce} from './ko/ecommerce';
-export {ko_KR_Nickname} from './ko/nicknames';
-export {ko_KR_Title} from './ko/titles';
-export {ko_KR_Kinship} from './ko/kinships';
-export {ko_KR_Organization} from './ko/organizations';
-export {ko_KR_Country} from './ko/countries';
-export {ko_KR_City} from './ko/cities';
-export {ko_KR_Address} from './ko/address';
-export {ko_KR_ComputerTerm} from './ko/computerTerms';
-export {ko_KR_NetworkTerms} from './ko/networkTerms';
-export {ko_KR_Pronouns} from './ko/pronouns';
-export {ko_KR_Foods} from './ko/foods';
-export {ko_KR_Medicines} from './ko/medicines';
-export {ko_KR_Luxury} from './ko/luxury';
-export {ko_KR_Transportation} from './ko/transportation';
-export {ko_KR_Appliances} from './ko/appliances';
-export {ko_KR_Furniture} from './ko/furniture';
-export {ko_KR_Pets} from './ko/pets';
+export class LexiconLoader {
+  private static instances: Map<string, LexiconLoader> = new Map();
+  private lexicons: LexiconEntry[] = [];
+
+  private constructor(config: LexiconConfig) {
+    this.loadLexicons(config);
+  }
+
+  /**
+   * 获取词库加载器实例
+   */
+  public static getInstance(config: LexiconConfig): LexiconLoader {
+    const key = `${JSON.stringify(config.types)}-${JSON.stringify(config.languages)}`;
+    if (!LexiconLoader.instances.has(key)) {
+      LexiconLoader.instances.set(key, new LexiconLoader(config));
+    }
+    return LexiconLoader.instances.get(key)!;
+  }
+
+  /**
+   * 加载指定语言和类型的词库到MultilingualTokenizer实例
+   */
+  public static loadTo(tokenizer: MultilingualTokenizer, config?: LexiconConfig): void {
+    // 如果未提供配置，默认加载所有词库
+    const actualConfig: LexiconConfig = config || {
+      types: Array.from(SUPPORTED_TYPES),
+      languages: Array.from(SUPPORTED_LANGUAGES)
+    };
+
+    const loader = LexiconLoader.getInstance(actualConfig);
+    const lexicons = loader.getLexicons();
+
+    // 按语言分组添加到tokenizer
+    const lexiconsByLang: Record<string, LexiconEntry[]> = {};
+    lexicons.forEach(lexicon => {
+      if (!lexiconsByLang[lexicon.lang]) {
+        lexiconsByLang[lexicon.lang] = [];
+      }
+      lexiconsByLang[lexicon.lang].push(lexicon);
+    });
+
+    // 添加到tokenizer
+    for (const lang in lexiconsByLang) {
+      lexiconsByLang[lang].forEach(lexicon => {
+        tokenizer.addCustomDictionary(Array.from(lexicon.data), lang, lexicon.priority, lexicon.name);
+      });
+    }
+  }
+
+  /**
+   * 加载指定语言和类型的词库
+   */
+  private loadLexicons(config: LexiconConfig): void {
+    const { languages, types } = config;
+    this.lexicons = [];
+
+    // 优先级映射对象
+    const priorityMap: Record<string, number> = {
+      lastName: 100,
+      firstName: 100,
+      famousName: 100,
+      famousWorks: 100,
+      country: 80,
+      computerTerm: 75,
+      ecommerce: 75,
+      city: 70,
+      networkTerms: 70,
+      medicines: 70,
+      transportation: 70,
+      luxury: 65,
+      pronouns: 65,
+      address: 60,
+      foods: 60,
+      appliances: 60,
+      honorific: 50,
+      nickname: 50,
+      title: 50,
+      kinship: 50,
+      organization: 50,
+      furniture: 55,
+      pets: 55
+    };
+
+    // 遍历所有语言和类型，自动推测并加载词库
+    languages.forEach(lang => {
+      // 将语言代码转换为词库名称格式，如'zh-CN' -> 'zh_CN', 'en' -> 'en_US'
+      let langCode: string;
+      
+      // 处理中文别名
+      if (lang === 'zh') {
+        langCode = 'zh_CN';
+      } else if (lang === 'zh-CN') {
+        langCode = 'zh_CN';
+      } else if (lang === 'zh-TW') {
+        langCode = 'zh_TW';
+      } else if (lang === 'en') {
+        langCode = 'en_US';
+      } else if (lang === 'ja') {
+        langCode = 'ja_JP';
+      } else if (lang === 'ko') {
+        langCode = 'ko_KR';
+      } else {
+        // 默认为语言代码本身
+        langCode = lang;
+      }
+
+      types.forEach(type => {
+        // 构建词库名称，如'zh_CN_LastName'
+        const lexiconName = `${langCode}_${type.charAt(0).toUpperCase() + type.slice(1)}` as keyof typeof lexicons;
+
+        // 从lexicons对象中获取词库内容
+        const lexiconContent = lexicons[lexiconName] || '';
+
+        // 解析词库并添加到列表
+        const lexiconSet = this.parseLexiconString(lexiconContent);
+        this.lexicons.push({
+          priority: priorityMap[type] || 50, // 默认优先级50
+          data: lexiconSet,
+          name: `${langCode}_${type}`,
+          lang: lang
+        });
+      });
+    });
+  }
+
+  /**
+   * 解析词库字符串为Set
+   */
+  private parseLexiconString(lexiconString: string): Set<string> {
+    const words = lexiconString
+      .split('\u001F')
+      .map(word => word.trim())
+      .filter(word => word.length > 0);
+    return new Set(words);
+  }
+
+  /**
+   * 检查单词是否在词库中，并返回词库来源
+   */
+  public checkWord(word: string): { found: boolean; lexiconName: string } {
+    for (const lexicon of this.lexicons) {
+      if (lexicon.data.has(word)) {
+        return { found: true, lexiconName: lexicon.name };
+      }
+    }
+    return { found: false, lexiconName: '' };
+  }
+
+  /**
+   * 添加自定义词库
+   */
+  public addCustomLexicon(lexicon: LexiconEntry): void {
+    this.lexicons.push(lexicon);
+    // 按优先级排序（降序）
+    this.lexicons.sort((a, b) => b.priority - a.priority);
+  }
+
+  /**
+   * 获取所有词库条目
+   */
+  public getLexicons(): LexiconEntry[] {
+    return this.lexicons;
+  }
+
+  /**
+   * 清除所有实例
+   */
+  public static clearAllInstances(): void {
+    LexiconLoader.instances.clear();
+  }
+}

@@ -42,12 +42,12 @@ npm install gs-tokenizer
 quick 모듈은 쉽게 통합할 수 있는 편리한 정적 메서드를 제공합니다:
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
+import { tokenize, tokenizeText, addCustomDictionary } from 'gs-tokenizer';
 
 // 인스턴스 생성 없이 직접 토큰화
 const text = 'Hello world! 나는 북경 천안문을 좋아합니다.';
 const tokens = tokenize(text);
-const words = tokenizeToText(text);
+const words = tokenizeText(text);
 console.log(words);
 
 // 사용자 정의 사전 추가
@@ -96,12 +96,12 @@ console.log(tokens);
 const tokenizer = new MultilingualTokenizer();
 
 // 언어, 우선순위, 이름을 지정하여 사용자 정의 단어 추가
-okenizer.addCustomDictionary(['인공지능', '기술'], 'zh', 10, 'tech');
-okenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
+tokenizer.addCustomDictionary(['인공지능', '기술'], 'zh', 10, 'tech');
+tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
 
 const text = '나는 인공지능 기술과 Python 프로그래밍을 좋아합니다';
 const tokens = tokenizer.tokenize(text);
-const words = tokenizer.tokenizeToText(text);
+const words = tokenizer.tokenizeText(text);
 console.log(words); // '인공지능', 'Python'이 포함되어야 함
 
 // 사용자 정의 단어 삭제
@@ -139,7 +139,7 @@ const tokens = tokenizer.tokenize(text, 'zh');
 ```typescript
 import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
-new MultilingualTokenizer(options?: TokenizerOptions)
+const tokenizer = new MultilingualTokenizer(options)
 ```
 
 **옵션**:
@@ -151,7 +151,7 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 | 메서드 | 설명 |
 |------|------|
 | `tokenize(text: string, language?: string): Token[]` | 입력 텍스트를 토큰화하고 상세한 토큰 정보를 반환합니다 |
-| `tokenizeToText(text: string, language?: string): string[]` | 입력 텍스트를 토큰화하고 단어 목록만 반환합니다 |
+| `tokenizeText(text: string, language?: string): string[]` | 입력 텍스트를 토큰화하고 단어 목록만 반환합니다 |
 | `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | 토크나이저에 사용자 정의 단어를 추가합니다 |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 토크나이저에서 사용자 정의 단어를 제거합니다 |
 
@@ -166,23 +166,24 @@ quick 모듈은 편리한 정적 메서드를 제공합니다:
 ```typescript
 import { Token } from 'gs-tokenizer';
 
-// 텍스트 토큰화
-function tokenize(text: string, language?: string): Token[];
+// 빠른 사용 API 타입 정의
+type QuickUseAPI = {
+  // 텍스트 토큰화
+  tokenize: (text: string, language?: string) => Token[];
+  // 텍스트만 토큰화
+  tokenizeText: (text: string, language?: string) => string[];
+  // 사용자 정의 사전 추가
+  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+  // 사용자 정의 단어 제거
+  removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
+  // 사전 로딩의 기본 언어 설정
+  setDefaultLanguages: (languages: string[]) => void;
+  // 사전 로딩의 기본 타입 설정
+  setDefaultTypes: (types: string[]) => void;
+};
 
-// 텍스트만 토큰화
-function tokenizeToText(text: string, language?: string): string[];
-
-// 사용자 정의 사전 추가
-function addCustomDictionary(words: string[], language: string, priority: number, name: string): void;
-
-// 사용자 정의 단어 제거
-function removeCustomWord(word: string, language?: string, lexiconName?: string): void;
-
-// 사전 로딩의 기본 언어 설정
-function setDefaultLanguages(languages: string[]): void;
-
-// 사전 로딩의 기본 타입 설정
-function setDefaultTypes(types: string[]): void;
+// 빠른 사용 API 가져오기
+import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefaultLanguages, setDefaultTypes } from 'gs-tokenizer';
 ```
 
 ### 타입

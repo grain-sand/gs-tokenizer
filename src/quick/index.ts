@@ -99,7 +99,6 @@ export class QuickUseTokenizer {
 
 // 导出便捷函数
 export const tokenize = (text: string, language?: string) => QuickUseTokenizer.tokenize(text, language);
-export const tokenizeToText = (text: string, language?: string) => QuickUseTokenizer.tokenizeText(text, language);
 export const tokenizeText = (text: string, language?: string) => QuickUseTokenizer.getInstance().tokenizeText(text, {language});
 export const addCustomDictionary = (words: string[], language: string, priority: number, name: string) =>
 	QuickUseTokenizer.addCustomDictionary(words, language, priority, name);

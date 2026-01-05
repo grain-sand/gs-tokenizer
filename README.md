@@ -42,12 +42,12 @@ npm install gs-tokenizer
 The quick module provides convenient static methods for easy integration:
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
+import { tokenize, tokenizeText, addCustomDictionary } from 'gs-tokenizer';
 
 // Direct tokenization without creating an instance
 const text = 'Hello world! 我爱北京天安门。';
 const tokens = tokenize(text);
-const words = tokenizeToText(text);
+const words = tokenizeText(text);
 console.log(words);
 
 // Add custom dictionary
@@ -59,7 +59,7 @@ addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
 #### Load Custom Dictionary with Quick Module
 
 ```javascript
-import { tokenize, addCustomDictionary } from 'gs-multilingual-tokenizer';
+import { tokenize, addCustomDictionary } from 'gs-tokenizer';
 
 // Load multiple custom dictionaries for different languages
 addCustomDictionary(['人工智能', '机器学习'], 'zh', 10, 'tech');
@@ -101,7 +101,7 @@ tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
 
 const text = '我爱人工智能技术和Python编程';
 const tokens = tokenizer.tokenize(text);
-const words = tokenizer.tokenizeToText(text);
+const words = tokenizer.tokenizeText(text);
 console.log(words); // Should include '人工智能', 'Python'
 
 // Remove custom word
@@ -139,7 +139,7 @@ Main tokenizer class that handles multilingual text processing.
 ```typescript
 import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
-new MultilingualTokenizer(options?: TokenizerOptions)
+const tokenizer = new MultilingualTokenizer(options)
 ```
 
 **Options**:
@@ -151,7 +151,7 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 | Method | Description |
 |--------|-------------|
 | `tokenize(text: string, language?: string): Token[]` | Tokenizes the input text and returns detailed token information |
-| `tokenizeToText(text: string, language?: string): string[]` | Tokenizes the input text and returns only word tokens |
+| `tokenizeText(text: string, language?: string): string[]` | Tokenizes the input text and returns only word tokens |
 | `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | Adds custom words to the tokenizer |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | Removes a custom word from the tokenizer |
 
@@ -166,23 +166,24 @@ The quick module provides convenient static methods:
 ```typescript
 import { Token } from 'gs-tokenizer';
 
-// Tokenize text
-function tokenize(text: string, language?: string): Token[];
+// Quick Use API type definition
+type QuickUseAPI = {
+  // Tokenize text
+  tokenize: (text: string, language?: string) => Token[];
+  // Tokenize to text only
+  tokenizeText: (text: string, language?: string) => string[];
+  // Add custom dictionary
+  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+  // Remove custom word
+  removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
+  // Set default languages for lexicon loading
+  setDefaultLanguages: (languages: string[]) => void;
+  // Set default types for lexicon loading
+  setDefaultTypes: (types: string[]) => void;
+};
 
-// Tokenize to text only
-function tokenizeToText(text: string, language?: string): string[];
-
-// Add custom dictionary
-function addCustomDictionary(words: string[], language: string, priority: number, name: string): void;
-
-// Remove custom word
-function removeCustomWord(word: string, language?: string, lexiconName?: string): void;
-
-// Set default languages for lexicon loading
-function setDefaultLanguages(languages: string[]): void;
-
-// Set default types for lexicon loading
-function setDefaultTypes(types: string[]): void;
+// Import quick use API
+import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefaultLanguages, setDefaultTypes } from 'gs-tokenizer';
 ```
 
 ### Types

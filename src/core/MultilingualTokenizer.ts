@@ -277,8 +277,8 @@ export class MultilingualTokenizer {
   tokenizeText(text: string, options?: TokenizeTextOptions): string[] {
     const tokens = this.tokenize(text, options?.language);
 
-    // 默认排除标点符号、空格和其他类型
-    const defaultExcludeTypes: Token['type'][] = ['punctuation', 'space'];
+    // 默认排除空格和其他类型
+    const defaultExcludeTypes: Token['type'][] = ['space'];
 
     // 合并默认排除类型和用户指定的排除类型
     const excludeTypes = [
@@ -295,8 +295,42 @@ export class MultilingualTokenizer {
       }
 
       // 检查是否在排除类型列表中
-      return !excludeTypes.includes(token.type);
+      if (excludeTypes.includes(token.type)) {
+        return false;
+      }
+
+      // 排除单个的符号，但保留多个连续符号
+      if (token.type === 'punctuation') {
+        // 移除所有空格
+        const trimmedPunctuation = token.txt.replace(/\s/g, '');
+        // 如果移除空格后只有一个符号，则排除
+        if (trimmedPunctuation.length <= 1) {
+          return false;
+        }
+      }
+
+      return true;
     }).map(token => token.txt);
+  }
+
+  /**
+   * 获取当前已加载的所有词库名称
+   * @returns 词库名称数组
+   */
+  get loadedLexiconNames(): string[] {
+    const lexiconNames = new Set<string>();
+
+    // 遍历所有语言的自定义词库
+    for (const lang in this.customDictionaries) {
+      if (Object.prototype.hasOwnProperty.call(this.customDictionaries, lang)) {
+        const lexicons = this.customDictionaries[lang];
+        lexicons.forEach(lexicon => {
+          lexiconNames.add(lexicon.name);
+        });
+      }
+    }
+
+    return Array.from(lexiconNames);
   }
 
 }

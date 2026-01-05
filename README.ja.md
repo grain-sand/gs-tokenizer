@@ -42,12 +42,12 @@ npm install gs-tokenizer
 クイックモジュールは、簡単に統合できる便利な静的メソッドを提供します：
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
+import { tokenize, tokenizeText, addCustomDictionary } from 'gs-tokenizer';
 
 // インスタンスを作成せずに直接トークン化
 const text = 'Hello world! 私は北京の天安門が好きです。';
 const tokens = tokenize(text);
-const words = tokenizeToText(text);
+const words = tokenizeText(text);
 console.log(words);
 
 // カスタム辞書を追加
@@ -96,12 +96,12 @@ console.log(tokens);
 const tokenizer = new MultilingualTokenizer();
 
 // 言語、優先度、名前を指定してカスタム単語を追加
-okenizer.addCustomDictionary(['人工知能', '技術'], 'zh', 10, 'tech');
-okenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
+tokenizer.addCustomDictionary(['人工知能', '技術'], 'zh', 10, 'tech');
+tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
 
 const text = '私は人工知能技術とPythonプログラミングが好きです';
 const tokens = tokenizer.tokenize(text);
-const words = tokenizer.tokenizeToText(text);
+const words = tokenizer.tokenizeText(text);
 console.log(words); // '人工知能', 'Python' が含まれるはず
 
 // カスタム単語を削除
@@ -139,7 +139,7 @@ const tokens = tokenizer.tokenize(text, 'zh');
 ```typescript
 import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
-new MultilingualTokenizer(options?: TokenizerOptions)
+const tokenizer = new MultilingualTokenizer(options)
 ```
 
 **オプション**:
@@ -151,7 +151,7 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 | メソッド | 説明 |
 |------|------|
 | `tokenize(text: string, language?: string): Token[]` | 入力テキストをトークン化し、詳細なトークン情報を返します |
-| `tokenizeToText(text: string, language?: string): string[]` | 入力テキストをトークン化し、単語リストのみを返します |
+| `tokenizeText(text: string, language?: string): string[]` | 入力テキストをトークン化し、単語リストのみを返します |
 | `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | トークナイザーにカスタム単語を追加します |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | トークナイザーからカスタム単語を削除します |
 
@@ -166,23 +166,24 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 ```typescript
 import { Token } from 'gs-tokenizer';
 
-// テキストをトークン化
-function tokenize(text: string, language?: string): Token[];
+// クイック使用APIタイプ定義
+type QuickUseAPI = {
+  // テキストをトークン化
+  tokenize: (text: string, language?: string) => Token[];
+  // テキストのみをトークン化
+  tokenizeText: (text: string, language?: string) => string[];
+  // カスタム辞書を追加
+  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+  // カスタム単語を削除
+  removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
+  // 辞書ロードのデフォルト言語を設定
+  setDefaultLanguages: (languages: string[]) => void;
+  // 辞書ロードのデフォルトタイプを設定
+  setDefaultTypes: (types: string[]) => void;
+};
 
-// テキストのみをトークン化
-function tokenizeToText(text: string, language?: string): string[];
-
-// カスタム辞書を追加
-function addCustomDictionary(words: string[], language: string, priority: number, name: string): void;
-
-// カスタム単語を削除
-function removeCustomWord(word: string, language?: string, lexiconName?: string): void;
-
-// 辞書ロードのデフォルト言語を設定
-function setDefaultLanguages(languages: string[]): void;
-
-// 辞書ロードのデフォルトタイプを設定
-function setDefaultTypes(types: string[]): void;
+// クイック使用APIをインポート
+import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefaultLanguages, setDefaultTypes } from 'gs-tokenizer';
 ```
 
 ### 型

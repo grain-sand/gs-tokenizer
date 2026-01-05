@@ -42,12 +42,12 @@ npm install gs-tokenizer
 quick模块提供了便捷的静态方法，方便快速集成：
 
 ```javascript
-import { tokenize, tokenizeToText, addCustomDictionary } from 'gs-tokenizer';
+import { tokenize, tokenizeText, addCustomDictionary } from 'gs-tokenizer';
 
 // 直接分词，无需创建实例
 const text = 'Hello world! 我爱北京天安门。';
 const tokens = tokenize(text);
-const words = tokenizeToText(text);
+const words = tokenizeText(text);
 console.log(words);
 
 // 添加自定义词典
@@ -59,7 +59,7 @@ addCustomDictionary(['人工智能', '技术'], 'zh', 10, 'tech');
 #### 使用快速模块加载自定义词典
 
 ```javascript
-import { tokenize, addCustomDictionary } from 'gs-multilingual-tokenizer';
+import { tokenize, addCustomDictionary } from 'gs-tokenizer';
 
 // 为不同语言加载多个自定义词典
 addCustomDictionary(['人工智能', '机器学习'], 'zh', 10, 'tech');
@@ -101,7 +101,7 @@ tokenizer.addCustomDictionary(['Python', 'JavaScript'], 'en', 5, 'programming');
 
 const text = '我爱人工智能技术和Python编程';
 const tokens = tokenizer.tokenize(text);
-const words = tokenizer.tokenizeToText(text);
+const words = tokenizer.tokenizeText(text);
 console.log(words); // 应该包含 '人工智能', 'Python'
 
 // 删除自定义词语
@@ -139,7 +139,7 @@ const tokens = tokenizer.tokenize(text, 'zh');
 ```typescript
 import { MultilingualTokenizer, TokenizerOptions } from 'gs-tokenizer';
 
-new MultilingualTokenizer(options?: TokenizerOptions)
+const tokenizer = new MultilingualTokenizer(options)
 ```
 
 **选项**：
@@ -151,7 +151,7 @@ new MultilingualTokenizer(options?: TokenizerOptions)
 | 方法 | 描述 |
 |------|------|
 | `tokenize(text: string, language?: string): Token[]` | 对输入文本进行分词并返回详细的分词信息 |
-| `tokenizeToText(text: string, language?: string): string[]` | 对输入文本进行分词并仅返回词语列表 |
+| `tokenizeText(text: string, language?: string): string[]` | 对输入文本进行分词并仅返回词语列表 |
 | `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | 向分词器添加自定义词语 |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 从分词器中删除自定义词语 |
 
@@ -166,23 +166,24 @@ quick模块提供了便捷的静态方法：
 ```typescript
 import { Token } from 'gs-tokenizer';
 
-// 分词文本
-function tokenize(text: string, language?: string): Token[];
+// 快速使用API类型定义
+type QuickUseAPI = {
+  // 分词文本
+  tokenize: (text: string, language?: string) => Token[];
+  // 仅分词为文本
+  tokenizeText: (text: string, language?: string) => string[];
+  // 添加自定义词典
+  addCustomDictionary: (words: string[], language: string, priority: number, name: string) => void;
+  // 删除自定义词语
+  removeCustomWord: (word: string, language?: string, lexiconName?: string) => void;
+  // 设置词典加载的默认语言
+  setDefaultLanguages: (languages: string[]) => void;
+  // 设置词典加载的默认类型
+  setDefaultTypes: (types: string[]) => void;
+};
 
-// 仅分词为文本
-function tokenizeToText(text: string, language?: string): string[];
-
-// 添加自定义词典
-function addCustomDictionary(words: string[], language: string, priority: number, name: string): void;
-
-// 删除自定义词语
-function removeCustomWord(word: string, language?: string, lexiconName?: string): void;
-
-// 设置词典加载的默认语言
-function setDefaultLanguages(languages: string[]): void;
-
-// 设置词典加载的默认类型
-function setDefaultTypes(types: string[]): void;
+// 导入快速使用API
+import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefaultLanguages, setDefaultTypes } from 'gs-tokenizer';
 ```
 
 ### 类型

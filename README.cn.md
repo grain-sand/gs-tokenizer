@@ -193,7 +193,7 @@ import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefau
 ```typescript
 interface Token {
   txt: string;              // 分词文本内容
-  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date';
+  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 语言代码
   src?: string;             // 来源（例如：自定义词典名称）
 }

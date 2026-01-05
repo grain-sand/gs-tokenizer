@@ -192,8 +192,8 @@ import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefau
 
 ```typescript
 interface Token {
-  txt: string;              // トークンテキスト内容
-  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date';
+  txt: string;              // Tokenテキストコンテンツ
+  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 言語コード
   src?: string;             // ソース（例：カスタム辞書名）
 }

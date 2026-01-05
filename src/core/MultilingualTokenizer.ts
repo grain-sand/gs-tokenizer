@@ -3,7 +3,7 @@ import { LanguageTokenizer } from './LanguageTokenizer';
 import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
 import { DateTokenizer } from './DateTokenizer';
-import { URLIPTokenizer } from './URLIPTokenizer';
+import { HostIPTokenizer } from './URLIPTokenizer';
 import { SocialTokenizer } from './SocialTokenizer';
 import { NumberTokenizer } from './NumberTokenizer';
 import { LanguageDetector } from './LanguageDetector';
@@ -30,8 +30,8 @@ export class MultilingualTokenizer {
     // 初始化tokenizers
     this.tokenizers = [
       new DateTokenizer(),
-      new URLIPTokenizer(),
-      new SocialTokenizer(),
+        new HostIPTokenizer(),
+        new SocialTokenizer(),
       new NumberTokenizer(),
       new EnglishTokenizer(),
       new CJKTokenizer(this.dictionaries)
@@ -132,7 +132,7 @@ export class MultilingualTokenizer {
     const finalTokens: Token[] = [];
 
     // 2. 对非日期部分使用URLIP分词器处理
-    const urlIpTokenizer = this.tokenizers.find(t => t instanceof URLIPTokenizer);
+    const urlIpTokenizer = this.tokenizers.find(t => t instanceof HostIPTokenizer);
     if (!urlIpTokenizer) return finalTokens;
 
     for (const token of dateTokens) {
@@ -146,8 +146,8 @@ export class MultilingualTokenizer {
         if (!socialTokenizer) return finalTokens;
 
         for (const urlIpToken of urlIpTokens) {
-          if (urlIpToken.type === 'url' || urlIpToken.type === 'ip') {
-            finalTokens.push(urlIpToken);
+              if (urlIpToken.type === 'host' || urlIpToken.type === 'ip') {
+                finalTokens.push(urlIpToken);
           } else {
             const socialTokens = socialTokenizer.tokenize(urlIpToken.txt, lang);
 

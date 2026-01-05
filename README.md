@@ -193,7 +193,7 @@ import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefau
 ```typescript
 interface Token {
   txt: string;              // Token text content
-  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date';
+  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // Language code
   src?: string;             // Source (e.g., custom dictionary name)
 }

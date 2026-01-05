@@ -193,7 +193,7 @@ import { tokenize, tokenizeText, addCustomDictionary, removeCustomWord, setDefau
 ```typescript
 interface Token {
   txt: string;              // 토큰 텍스트 내용
-  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date';
+  type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 언어 코드
   src?: string;             // 소스 (예: 사용자 정의 사전 이름)
 }

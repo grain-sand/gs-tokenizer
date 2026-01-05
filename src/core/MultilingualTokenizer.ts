@@ -15,7 +15,7 @@ export class MultilingualTokenizer {
   /** 语言分词器数组 */
   private tokenizers: LanguageTokenizer[];
   /** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-  private customDictionaries: Record<string, LexiconEntry[]>;
+  private dictionaries: Record<string, LexiconEntry[]>;
   /** 默认语言代码 */
   private defaultLanguage;
 
@@ -24,7 +24,7 @@ export class MultilingualTokenizer {
    * @param options - 分词器配置选项
    */
   constructor(options: TokenizerOptions = {}) {
-    this.customDictionaries = options.customDictionaries || {};
+    this.dictionaries = options.dictionaries || {};
     this.defaultLanguage = options.defaultLanguage || 'en';
 
     // 初始化tokenizers
@@ -34,7 +34,7 @@ export class MultilingualTokenizer {
       new SocialTokenizer(),
       new NumberTokenizer(),
       new EnglishTokenizer(),
-      new CJKTokenizer(this.customDictionaries)
+      new CJKTokenizer(this.dictionaries)
     ];
   }
   /**
@@ -44,10 +44,10 @@ export class MultilingualTokenizer {
    * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
    * @param language - 词库对应的语言代码，未指定时自动根据words判断
    */
-  addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void {
+  addDictionary(words: string[], name: string, priority?: number, language?: string): void {
     // priority 默认值设为 200（内置词库最高优先级是 100）
     const actualPriority = priority !== undefined ? priority : 200;
-    
+
     // language 未指定时，自动根据 words 判断语言
     let actualLanguage = language;
     if (!actualLanguage && words.length > 0) {
@@ -57,19 +57,19 @@ export class MultilingualTokenizer {
     }
     const lang = actualLanguage || this.defaultLanguage;
 
-    if (!this.customDictionaries[lang]) {
-      this.customDictionaries[lang] = [];
+    if (!this.dictionaries[lang]) {
+      this.dictionaries[lang] = [];
     }
 
-    const existingIndex = this.customDictionaries[lang].findIndex(entry =>
+    const existingIndex = this.dictionaries[lang].findIndex(entry =>
       entry.name === name && entry.lang === lang && entry.priority === actualPriority
     );
 
     if (existingIndex >= 0) {
-      const existingEntry = this.customDictionaries[lang][existingIndex];
+      const existingEntry = this.dictionaries[lang][existingIndex];
       words.forEach(word => existingEntry.data.add(word));
     } else {
-      this.customDictionaries[lang].push({
+      this.dictionaries[lang].push({
         priority: actualPriority,
         data: new Set(words),
         name,
@@ -77,10 +77,10 @@ export class MultilingualTokenizer {
       });
     }
 
-    // 更新CJKTokenizer实例中的customDictionaries
+    // 更新CJKTokenizer实例中的dictionaries
     const cjkTokenizer = this.tokenizers.find(t => t instanceof CJKTokenizer);
     if (cjkTokenizer) {
-      (cjkTokenizer as any).customDictionaries = this.customDictionaries;
+      (cjkTokenizer as any).dictionaries = this.dictionaries;
     }
   }
 
@@ -92,20 +92,20 @@ export class MultilingualTokenizer {
    */
   removeCustomWord(word: string, language?: string, lexiconName?: string): void {
     if (language) {
-      if (this.customDictionaries[language]) {
+      if (this.dictionaries[language]) {
         if (lexiconName) {
-          const lexicon = this.customDictionaries[language].find(entry => entry.name === lexiconName);
+          const lexicon = this.dictionaries[language].find(entry => entry.name === lexiconName);
           if (lexicon) {
             lexicon.data.delete(word);
           }
         } else {
-          this.customDictionaries[language].forEach(lexicon => {
+          this.dictionaries[language].forEach(lexicon => {
             lexicon.data.delete(word);
           });
         }
       }
     } else {
-      Object.values(this.customDictionaries).forEach(lexicons => {
+      Object.values(this.dictionaries).forEach(lexicons => {
         lexicons.forEach(lexicon => {
           if (lexicon.data.has(word)) {
             lexicon.data.delete(word);
@@ -331,9 +331,9 @@ export class MultilingualTokenizer {
     const lexiconNames = new Set<string>();
 
     // 遍历所有语言的自定义词库
-    for (const lang in this.customDictionaries) {
-      if (Object.prototype.hasOwnProperty.call(this.customDictionaries, lang)) {
-        const lexicons = this.customDictionaries[lang];
+    for (const lang in this.dictionaries) {
+      if (Object.prototype.hasOwnProperty.call(this.dictionaries, lang)) {
+        const lexicons = this.dictionaries[lang];
         lexicons.forEach(lexicon => {
           lexiconNames.add(lexicon.name);
         });

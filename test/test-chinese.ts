@@ -38,8 +38,8 @@ describe('Multilingual Tokenizer - Chinese Tests', () => {
     console.log('Testing custom dictionary for Chinese:', text);
 
     // 添加自定义词
-    tokenizer.addCustomDictionary(['人工智能', '技术'], 'custom', 100, 'zh');
-    tokenizer.addCustomDictionary(['技术'], 'custom2', 50, 'zh');
+    tokenizer.addDictionary(['人工智能', '技术'], 'custom', 100, 'zh');
+    tokenizer.addDictionary(['技术'], 'custom2', 50, 'zh');
 
     const tokens = tokenizer.tokenize(text);
     const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);

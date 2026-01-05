@@ -1,4 +1,4 @@
-import { LexiconEntry, MultilingualTokenizer } from '../core';
+import {LexiconEntry, MultilingualTokenizer} from '../core';
 import * as lexicons from './data';
 
 // 公开的语言数组
@@ -21,9 +21,13 @@ export interface LexiconConfig {
   languages: SupportedLanguage[];
 }
 
+interface LexiconEntryExt extends Omit<LexiconEntry, 'data'> {
+  words: string[];
+}
+
 export class LexiconLoader {
   private static instances: Map<string, LexiconLoader> = new Map();
-  private lexicons: LexiconEntry[] = [];
+  private lexicons: LexiconEntryExt[] = [];
 
   private constructor(config: LexiconConfig) {
     this.loadLexicons(config);
@@ -54,7 +58,7 @@ export class LexiconLoader {
     const lexicons = loader.getLexicons();
 
     // 按语言分组添加到tokenizer
-    const lexiconsByLang: Record<string, LexiconEntry[]> = {};
+    const lexiconsByLang: Record<string, LexiconEntryExt[]> = {};
     lexicons.forEach(lexicon => {
       if (!lexiconsByLang[lexicon.lang]) {
         lexiconsByLang[lexicon.lang] = [];
@@ -66,7 +70,7 @@ export class LexiconLoader {
     for (const lang in lexiconsByLang) {
       // 添加到tokenizer，使用预存储的数组版本避免重复转换
       lexiconsByLang[lang].forEach(lexicon => {
-        tokenizer.addCustomDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang);
+        tokenizer.addDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang);
       });
     }
   }
@@ -109,7 +113,7 @@ export class LexiconLoader {
     languages.forEach(lang => {
       // 将语言代码转换为词库名称格式，如'zh-CN' -> 'zh_CN', 'en' -> 'en_US'
       let langCode: string;
-      
+
       // 处理中文别名
       if (lang === 'zh') {
         langCode = 'zh_CN';
@@ -136,11 +140,9 @@ export class LexiconLoader {
         const lexiconContent = lexicons[lexiconName] || '';
 
         // 解析词库并添加到列表
-        const { set, array } = this.parseLexiconString(lexiconContent);
         this.lexicons.push({
           priority: priorityMap[type] || 50, // 默认优先级50
-          data: set,
-          words: array, // 直接存储数组版本
+          words: this.parseLexiconString(lexiconContent), // 直接存储数组版本
           name: `${langCode}_${type}`,
           lang: lang
         });
@@ -151,50 +153,24 @@ export class LexiconLoader {
   /**
    * 解析词库字符串为Set
    */
-  private parseLexiconString(lexiconString: string): { set: Set<string>, array: string[] } {
-    const words = lexiconString
+  private parseLexiconString(lexiconString: string):string[] {
+    return  lexiconString
       .split('\u001F')
       .map(word => word.trim())
       .filter(word => word.length > 0);
-    return { set: new Set(words), array: words };
-  }
-
-  /**
-   * 检查单词是否在词库中，并返回词库来源
-   */
-  public checkWord(word: string): { found: boolean; lexiconName: string } {
-    for (const lexicon of this.lexicons) {
-      if (lexicon.data.has(word)) {
-        return { found: true, lexiconName: lexicon.name };
-      }
-    }
-    return { found: false, lexiconName: '' };
-  }
-
-  /**
-   * 添加自定义词库
-   */
-  public addCustomLexicon(lexicon: LexiconEntry): void {
-    // 确保 words 字段存在
-    if (!lexicon.words) {
-      lexicon.words = Array.from(lexicon.data);
-    }
-    this.lexicons.push(lexicon);
-    // 按优先级排序（降序）
-    this.lexicons.sort((a, b) => b.priority - a.priority);
   }
 
   /**
    * 获取所有词库条目
    */
-  public getLexicons(): LexiconEntry[] {
+  public getLexicons(): LexiconEntryExt[] {
     return this.lexicons;
   }
-
   /**
    * 清除所有实例
    */
   public static clearAllInstances(): void {
     LexiconLoader.instances.clear();
   }
+
 }

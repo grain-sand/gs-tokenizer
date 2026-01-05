@@ -9,7 +9,7 @@ import {describe, expect, it} from 'vitest';
 // 测试词库模块和 LexiconLoader
 // 测试主入口模块
 import {
-  addCustomDictionary,
+  addDictionary,
   createTokenizer,
   LexiconConfig,
   LexiconLoader,
@@ -147,7 +147,7 @@ describe('src 源码测试', () => {
 
     it('应该能够添加自定义词典', () => {
       expect(() => {
-        addCustomDictionary(['自定义词汇'], 'custom', undefined, 'zh');
+        addDictionary(['自定义词汇'], 'custom', undefined, 'zh');
       }).not.toThrow();
     });
 

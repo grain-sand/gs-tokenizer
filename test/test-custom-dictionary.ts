@@ -14,7 +14,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('\n=== Testing basic custom dictionary for Chinese ===');
       console.log('Input text:', text);
       
-      tokenizer.addCustomDictionary(['人工智能', '技术'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['人工智能', '技术'], 'tech_dict', 100, 'zh');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -27,7 +27,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       
       // 验证词库结构
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
       console.log('\nCustom dictionary structure:');
       zhDictionaries.forEach((dict: any) => {
         console.log(`  Dictionary: ${dict.name}, Language: zh, Priority: ${dict.priority}`);
@@ -43,7 +43,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('\n=== Testing basic custom dictionary for English ===');
       console.log('Input text:', text);
       
-      tokenizer.addCustomDictionary(['machine learning', 'deep learning'], 'tech_dict', 100, 'en');
+      tokenizer.addDictionary(['machine learning', 'deep learning'], 'tech_dict', 100, 'en');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -56,7 +56,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       
       // 验证词库结构
       const tokenizerInstance = tokenizer as any;
-      const enDictionaries = tokenizerInstance.customDictionaries['en'];
+      const enDictionaries = tokenizerInstance.dictionaries['en'];
       console.log('\nCustom dictionary structure:');
       if (enDictionaries) {
         enDictionaries.forEach((dict: any) => {
@@ -78,9 +78,9 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加第一个词库
-      tokenizer.addCustomDictionary(['人工智能'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['人工智能'], 'tech_dict', 100, 'zh');
       // 添加同名同语言同优先级的词库- 应该合并
-      tokenizer.addCustomDictionary(['自然语言处理'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['自然语言处理'], 'tech_dict', 100, 'zh');
       
       // 执行分词
       const tokens = tokenizer.tokenize(text);
@@ -93,7 +93,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       });
       
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
       
       console.log('\nChinese custom dictionaries after merging:');
       zhDictionaries.forEach((dict: any) => {
@@ -115,9 +115,9 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加第一个词库（优先级100）
-      tokenizer.addCustomDictionary(['人工智能'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['人工智能'], 'tech_dict', 100, 'zh');
       // 添加同名同语言不同优先级的词库 - 不应该合并
-      tokenizer.addCustomDictionary(['深度学习'], 'tech_dict', 200, 'zh');
+      tokenizer.addDictionary(['深度学习'], 'tech_dict', 200, 'zh');
       
       // 执行分词
       const tokens = tokenizer.tokenize(text);
@@ -130,7 +130,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       });
       
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
       
       console.log('\nChinese custom dictionaries with different priorities:');
       zhDictionaries.forEach((dict: any) => {
@@ -156,9 +156,9 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加中文词库
-      tokenizer.addCustomDictionary(['人工智能'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['人工智能'], 'tech_dict', 100, 'zh');
       // 添加同名同优先级的英文词库- 不应该合并
-      tokenizer.addCustomDictionary(['artificial intelligence'], 'tech_dict', 100, 'en');
+      tokenizer.addDictionary(['artificial intelligence'], 'tech_dict', 100, 'en');
       
       // 执行分词
       const tokens = tokenizer.tokenize(text);
@@ -168,8 +168,8 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       });
       
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
-      const enDictionaries = tokenizerInstance.customDictionaries['en'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
+      const enDictionaries = tokenizerInstance.dictionaries['en'];
       
       console.log('\nChinese custom dictionaries:');
       zhDictionaries.forEach((dict: any) => {
@@ -196,9 +196,9 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加第一个词库
-      tokenizer.addCustomDictionary(['人工智能'], 'tech_dict1', 100, 'zh');
+      tokenizer.addDictionary(['人工智能'], 'tech_dict1', 100, 'zh');
       // 添加同语言同优先级不同名称的词库 - 不应该合并
-      tokenizer.addCustomDictionary(['机器学习'], 'tech_dict2', 100, 'zh');
+      tokenizer.addDictionary(['机器学习'], 'tech_dict2', 100, 'zh');
       
       // 执行分词
       const tokens = tokenizer.tokenize(text);
@@ -211,7 +211,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       });
       
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
       
       console.log('\nChinese custom dictionaries with different names:');
       zhDictionaries.forEach((dict: any) => {
@@ -239,9 +239,9 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加低优先级词库
-      tokenizer.addCustomDictionary(['自然语言', '处理技术'], 'low_prio_dict', 50, 'zh');
+      tokenizer.addDictionary(['自然语言', '处理技术'], 'low_prio_dict', 50, 'zh');
       // 添加高优先级词库
-      tokenizer.addCustomDictionary(['自然语言处理', '技术'], 'high_prio_dict', 150, 'zh');
+      tokenizer.addDictionary(['自然语言处理', '技术'], 'high_prio_dict', 150, 'zh');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -253,7 +253,7 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       });
       
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
       
       console.log('\nChinese custom dictionaries with priorities:');
       zhDictionaries.forEach((dict: any) => {
@@ -272,8 +272,8 @@ describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
       console.log('Input text:', text);
       
       // 添加不同优先级的词库，包含重叠词
-      tokenizer.addCustomDictionary(['人工智能', '技术发展'], 'dict1', 100, 'zh');
-      tokenizer.addCustomDictionary(['智能技术', '技术'], 'dict2', 200, 'zh');
+      tokenizer.addDictionary(['人工智能', '技术发展'], 'dict1', 100, 'zh');
+      tokenizer.addDictionary(['智能技术', '技术'], 'dict2', 200, 'zh');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);

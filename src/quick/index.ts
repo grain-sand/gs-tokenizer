@@ -80,9 +80,9 @@ export class QuickUseTokenizer {
    * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
    * @param language - 词库对应的语言代码，未指定时自动根据words判断
    */
-  public static addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void {
-    QuickUseTokenizer.getInstance().addCustomDictionary(words, name, priority, language);
-  }
+  public static addDictionary(words: string[], name: string, priority?: number, language?: string): void {
+		QuickUseTokenizer.getInstance().addDictionary(words, name, priority, language);
+	}
 
 	/**
 	 * 移除自定义词库中的指定单词
@@ -100,8 +100,8 @@ export class QuickUseTokenizer {
 // 导出便捷函数
 export const tokenize = (text: string, language?: string) => QuickUseTokenizer.tokenize(text, language);
 export const tokenizeText = (text: string, language?: string) => QuickUseTokenizer.getInstance().tokenizeText(text, {language});
-export const addCustomDictionary = (words: string[], name: string, priority?: number, language?: string) =>
-	QuickUseTokenizer.addCustomDictionary(words, name, priority, language);
+export const addDictionary = (words: string[], name: string, priority?: number, language?: string) =>
+	QuickUseTokenizer.addDictionary(words, name, priority, language);
 export const removeCustomWord = (word: string, language?: string, lexiconName?: string) =>
 	QuickUseTokenizer.removeCustomWord(word, language, lexiconName);
 export const setDefaultLanguages = (languages: SupportedLanguage[]) => QuickUseTokenizer.setDefaultLanguages(languages);

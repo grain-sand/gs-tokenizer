@@ -22,8 +22,6 @@ export interface LexiconEntry {
   priority: number;
   /** 词库中的单词集合 */
   data: Set<string>;
-  /** 词库中的单词数组（预存储，避免重复转换） */
-  words: string[];
   /** 词库名称 */
   name: string;
   /** 词库对应的语言代码 */
@@ -36,7 +34,7 @@ export interface LexiconEntry {
  */
 export interface TokenizerOptions {
   /** 自定义词库配置，键为语言代码，值为该语言的词库条目数组 */
-  customDictionaries?: Record<string, LexiconEntry[]>;
+  dictionaries?: Record<string, LexiconEntry[]>;
   /** 分词粒度：单词、字符、句子 */
   granularity?: 'word' | 'grapheme' | 'sentence';
   /** 默认语言代码，当无法检测语言时使用 */

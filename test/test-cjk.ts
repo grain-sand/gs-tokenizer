@@ -32,7 +32,7 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       console.log('Testing custom dictionary for Chinese:', text);
       
       // 添加自定义词
-      tokenizer.addCustomDictionary(['人工智能', '技术'], 'custom', 100, 'zh');
+      tokenizer.addDictionary(['人工智能', '技术'], 'custom', 100, 'zh');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -50,11 +50,11 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       
       // 添加多个自定义词库
       // 同名同语言不同优先级- 应该分别存在
-      tokenizer.addCustomDictionary(['人工智能', '机器学习'], 'tech_dict', 100, 'zh');
-      tokenizer.addCustomDictionary(['深度学习'], 'tech_dict', 200, 'zh'); // 同名同语言不同优先级
+      tokenizer.addDictionary(['人工智能', '机器学习'], 'tech_dict', 100, 'zh');
+      tokenizer.addDictionary(['深度学习'], 'tech_dict', 200, 'zh'); // 同名同语言不同优先级
       
       // 同名不同语言 - 应该分别存在
-      tokenizer.addCustomDictionary(['人工智能'], 'tech_dict', 100, 'en');
+      tokenizer.addDictionary(['人工智能'], 'tech_dict', 100, 'en');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -69,8 +69,8 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       
       // 验证词库结构
       const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.customDictionaries['zh'];
-      const enDictionaries = tokenizerInstance.customDictionaries['en'];
+      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
+      const enDictionaries = tokenizerInstance.dictionaries['en'];
       
       expect(zhDictionaries.length).toBe(2); // 两个不同优先级的中文词库
       expect(enDictionaries.length).toBe(1); // 一个英文词库
@@ -98,7 +98,7 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       console.log('\nTesting custom dictionary for Japanese:', text);
       
       // 添加自定义词
-      tokenizer.addCustomDictionary(['人工知能'], 'custom', 100, 'ja');
+      tokenizer.addDictionary(['人工知能'], 'custom', 100, 'ja');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);
@@ -132,7 +132,7 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       console.log('\nTesting custom dictionary for Korean:', text);
       
       // 添加自定义词
-      tokenizer.addCustomDictionary(['인공지능'], 'custom', 100, 'ko');
+      tokenizer.addDictionary(['인공지능'], 'custom', 100, 'ko');
       
       const tokens = tokenizer.tokenize(text);
       const wordTokens = tokens.filter(token => token.type === 'word').map(token => token.txt);

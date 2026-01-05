@@ -8,14 +8,14 @@ import { LanguageTokenizer } from './LanguageTokenizer';
  */
 export class EnglishTokenizer implements LanguageTokenizer {
   /** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-  private customDictionaries: Record<string, LexiconEntry[]>;
+  private dictionaries: Record<string, LexiconEntry[]>;
 
   /**
    * 构造函数
-   * @param customDictionaries - 自定义词库，默认为空对象
+   * @param dictionaries - 自定义词库，默认为空对象
    */
-  constructor(customDictionaries: Record<string, LexiconEntry[]> = {}) {
-    this.customDictionaries = customDictionaries;
+  constructor(dictionaries: Record<string, LexiconEntry[]> = {}) {
+    this.dictionaries = dictionaries;
   }
 
   /**
@@ -69,9 +69,9 @@ export class EnglishTokenizer implements LanguageTokenizer {
       // 检查自定义词库
       if (i < tokens.length && tokens[i].type === 'word') {
         const word = tokens[i].txt;
-        if (this.customDictionaries[language]) {
+        if (this.dictionaries[language]) {
           let matched = false;
-          for (const lexicon of this.customDictionaries[language].sort((a, b) => b.priority - a.priority)) {
+          for (const lexicon of this.dictionaries[language].sort((a, b) => b.priority - a.priority)) {
             if (lexicon.data.has(word)) {
               taggedTokens.push({
                 txt: word,

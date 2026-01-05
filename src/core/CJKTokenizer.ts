@@ -10,15 +10,15 @@ export class CJKTokenizer implements LanguageTokenizer {
 	/** 分词器实例映射，键为语言代码和粒度的组合 */
 	private segmenters: Map<string, Intl.Segmenter>;
 	/** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-	private customDictionaries: Record<string, LexiconEntry[]>;
+	private dictionaries: Record<string, LexiconEntry[]>;
 
 	/**
 	 * 构造函数
-	 * @param customDictionaries - 自定义词库，默认为空对象
+	 * @param dictionaries - 自定义词库，默认为空对象
 	 */
-	constructor(customDictionaries: Record<string, LexiconEntry[]> = {}) {
+	constructor(dictionaries: Record<string, LexiconEntry[]> = {}) {
 		this.segmenters = new Map();
-		this.customDictionaries = customDictionaries;
+		this.dictionaries = dictionaries;
 	}
 
 	/**
@@ -74,7 +74,7 @@ export class CJKTokenizer implements LanguageTokenizer {
 
 
 	private applyCustomDictionary(tokens: Token[], language: string): Token[] {
-		const customLexicons = this.customDictionaries[language] || [];
+		const customLexicons = this.dictionaries[language] || [];
 		let processedTokens = tokens;
 
 		// 如果有自定义词库，先合并

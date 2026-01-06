@@ -1,13 +1,14 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { MultilingualTokenizer } from "../src";
+import { IMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 // // const console = (top as any).console;
 
 describe('Multilingual Tokenizer - Base Tests', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: IMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   // Removed createTokenizer factory function test

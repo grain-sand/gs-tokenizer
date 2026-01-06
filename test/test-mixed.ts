@@ -1,11 +1,12 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { MultilingualTokenizer } from "../src";
+import { IMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 describe('Multilingual Tokenizer - Mixed Language Tests', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: IMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   it('should handle mixed language text', () => {

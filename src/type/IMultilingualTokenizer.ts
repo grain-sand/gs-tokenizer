@@ -1,3 +1,6 @@
+import { ITokenizeTextOptions } from './ITokenizeTextOptions';
+import { IToken } from './IToken';
+
 /**
  * 多语言分词器接口
  * @interface IMultilingualTokenizer
@@ -26,7 +29,7 @@ export interface IMultilingualTokenizer {
    * @param language - 可选，指定文本语言代码
    * @returns 分词结果的Token数组
    */
-  tokenize(text: string, language?: string): any[];
+  tokenize(text: string, language?: string): IToken[];
 
   /**
    * 获取纯文本分词结果，可自定义包含或排除的token类型
@@ -34,7 +37,7 @@ export interface IMultilingualTokenizer {
    * @param options - 可选，配置项
    * @returns 文本数组
    */
-  tokenizeText(text: string, options?: any): string[];
+  tokenizeText(text: string, options?: ITokenizeTextOptions): string[];
 
   /**
    * 获取当前已加载的所有词库名称

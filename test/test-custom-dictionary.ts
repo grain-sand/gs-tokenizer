@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { MultilingualTokenizer } from "../src";
+import { IMultilingualTokenizer } from "../src";
+import { createTokenizer } from "./utils/tokenizer-factory";
 
 describe('Multilingual Tokenizer - Custom Dictionary Tests', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: IMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    // 使用不带内置词库的方式初始化分词器，保持测试独立性
+    tokenizer = createTokenizer({ loadBuiltinLexicons: false });
   });
 
   describe('Basic Custom Dictionary Operations', () => {

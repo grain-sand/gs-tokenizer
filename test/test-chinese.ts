@@ -1,13 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { MultilingualTokenizer, LexiconLoader } from "../src";
+import { IMultilingualTokenizer } from "../src";
+import { LexiconLoader } from "../src";
+import { createTokenizer } from "./utils/tokenizer-factory";
 
 describe('Multilingual Tokenizer - Chinese Tests', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: IMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    tokenizer = createTokenizer();
     // 加载组织词库
-    LexiconLoader.loadTo(tokenizer, {
+    LexiconLoader.loadTo(tokenizer as any, {
       types: ['organization'],
       languages: ['zh']
     });

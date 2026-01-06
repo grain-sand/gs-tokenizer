@@ -93,4 +93,94 @@ describe('Multilingual Tokenizer - Emoji Tests', () => {
     const hasWords = tokens.some(token => token.type === 'word');
     expect(hasWords).toBe(true);
   });
+
+  it('should handle emojis with leading spaces', () => {
+    const text = ' 👋';
+    console.log('Testing emoji with leading spaces:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    
+    console.log('Emoji with leading spaces tokens:', tokens);
+    
+    // 验证包含emoji类型的token
+    const emojiTokens = tokens.filter(token => token.type === 'emoji');
+    expect(emojiTokens.length).toBe(1);
+    
+    // 验证包含space类型的token
+    const spaceTokens = tokens.filter(token => token.type === 'space');
+    expect(spaceTokens.length).toBe(1);
+  });
+
+  it('should handle emojis with trailing spaces', () => {
+    const text = '👋 ';
+    console.log('Testing emoji with trailing spaces:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    
+    console.log('Emoji with trailing spaces tokens:', tokens);
+    
+    // 验证包含emoji类型的token
+    const emojiTokens = tokens.filter(token => token.type === 'emoji');
+    expect(emojiTokens.length).toBe(1);
+    
+    // 验证包含space类型的token
+    const spaceTokens = tokens.filter(token => token.type === 'space');
+    expect(spaceTokens.length).toBe(1);
+  });
+
+  it('should handle emojis with leading and trailing spaces', () => {
+    const text = ' 👋 ';
+    console.log('Testing emoji with leading and trailing spaces:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    
+    console.log('Emoji with leading and trailing spaces tokens:', tokens);
+    
+    // 验证包含emoji类型的token
+    const emojiTokens = tokens.filter(token => token.type === 'emoji');
+    expect(emojiTokens.length).toBe(1);
+    
+    // 验证包含space类型的token
+    const spaceTokens = tokens.filter(token => token.type === 'space');
+    expect(spaceTokens.length).toBe(2);
+  });
+
+  it('should handle continuous emojis with spaces', () => {
+    const text = ' 👋👋 ';
+    console.log('Testing continuous emojis with spaces:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    
+    console.log('Continuous emojis with spaces tokens:', tokens);
+    
+    // 验证包含emoji类型的token
+    const emojiTokens = tokens.filter(token => token.type === 'emoji');
+    expect(emojiTokens.length).toBe(1);
+    expect(emojiTokens[0].txt).toBe('👋👋');
+    
+    // 验证包含space类型的token
+    const spaceTokens = tokens.filter(token => token.type === 'space');
+    expect(spaceTokens.length).toBe(2);
+  });
+
+  it('should handle text with spaced emojis in between', () => {
+    const text = 'Hello  👋  World';
+    console.log('Testing text with spaced emojis:', text);
+    
+    const tokens = tokenizer.tokenize(text);
+    
+    console.log('Text with spaced emojis tokens:', tokens);
+    
+    // 验证包含emoji类型的token
+    const emojiTokens = tokens.filter(token => token.type === 'emoji');
+    expect(emojiTokens.length).toBe(1);
+    
+    // 验证包含space类型的token
+    const spaceTokens = tokens.filter(token => token.type === 'space');
+    expect(spaceTokens.length).toBe(2);
+    
+    // 验证包含word类型的token
+    const wordTokens = tokens.filter(token => token.type === 'word');
+    expect(wordTokens.length).toBe(2);
+  });
 });

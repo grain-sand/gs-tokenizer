@@ -39,27 +39,97 @@ export class EnglishTokenizer implements LanguageTokenizer {
    */
   tokenize(text: string, language: string): Token[] {
     const tokens: Token[] = [];
-    const words = text.split(/\b/);
+    const chars = Array.from(text); // 正确处理Unicode代理对
+    let currentIndex = 0;
+    const length = chars.length;
     
-    for (const word of words) {
-      if (!word) continue;
+    while (currentIndex < length) {
+      const char = chars[currentIndex];
       
-      if (word.match(/^\s+$/)) {
-        tokens.push({ txt: word, type: 'space', lang: language, src: '' });
-      } else if (/^\p{Emoji}+$/u.test(word) && !/[0-9#]/.test(word)) {
-        tokens.push({ txt: word, type: 'emoji', lang: language, src: '' });
-      } else if (word.match(/^[^a-zA-Z0-9]+$/)) {
-        tokens.push({ txt: word, type: 'punctuation', lang: language, src: '' });
-      } else if (word.match(/^[a-zA-Z0-9]+$/)) {
-        tokens.push({ txt: word, type: 'word', lang: language, src: '' });
-      } else {
-        tokens.push({ txt: word, type: 'other', lang: language, src: '' });
+      // 处理空格
+      if (char.match(/\s/)) {
+        let spaceEnd = currentIndex;
+        while (spaceEnd < length && chars[spaceEnd].match(/\s/)) {
+          spaceEnd++;
+        }
+        const tokenText = chars.slice(currentIndex, spaceEnd).join('');
+        tokens.push({ 
+          txt: tokenText, 
+          type: 'space', 
+          lang: language, 
+          src: '' 
+        });
+        currentIndex = spaceEnd;
+        continue;
       }
+      
+      // 处理emoji
+      if (this.isEmoji(char)) {
+        let emojiEnd = currentIndex;
+        while (emojiEnd < length && this.isEmoji(chars[emojiEnd])) {
+          emojiEnd++;
+        }
+        const tokenText = chars.slice(currentIndex, emojiEnd).join('');
+        tokens.push({ 
+          txt: tokenText, 
+          type: 'emoji', 
+          lang: language, 
+          src: '' 
+        });
+        currentIndex = emojiEnd;
+        continue;
+      }
+      
+      // 处理单词（字母数字组合）
+      if (char.match(/[a-zA-Z0-9]/)) {
+        let wordEnd = currentIndex;
+        while (wordEnd < length && chars[wordEnd].match(/[a-zA-Z0-9]/)) {
+          wordEnd++;
+        }
+        const tokenText = chars.slice(currentIndex, wordEnd).join('');
+        tokens.push({ 
+          txt: tokenText, 
+          type: 'word', 
+          lang: language, 
+          src: '' 
+        });
+        currentIndex = wordEnd;
+        continue;
+      }
+      
+      // 处理标点符号
+      let punctuationEnd = currentIndex;
+      while (punctuationEnd < length) {
+        const c = chars[punctuationEnd];
+        if (!(/[^a-zA-Z0-9\s]/.test(c) && !this.isEmoji(c))) {
+          break;
+        }
+        punctuationEnd++;
+      }
+      const tokenText = chars.slice(currentIndex, punctuationEnd).join('');
+      tokens.push({ 
+        txt: tokenText, 
+        type: 'punctuation', 
+        lang: language, 
+        src: '' 
+      });
+      currentIndex = punctuationEnd;
     }
     
     // 标记英文姓名
     return this.tagNameTokens(tokens, language);
   }
+  
+  /**
+   * 判断字符是否为emoji
+   * @param char - 要判断的字符
+   * @returns 如果是emoji返回true，否则返回false
+   */
+  private isEmoji(char: string): boolean {
+    return /\p{Emoji}/u.test(char) && !/[0-9#]/.test(char);
+  }
+  
+
 
   private tagNameTokens(tokens: Token[], language: string): Token[] {
     const taggedTokens: Token[] = [];

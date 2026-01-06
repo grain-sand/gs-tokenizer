@@ -243,12 +243,14 @@ export class MultilingualTokenizer {
       }
     }
 
-    // 合并连续的符号token
+    // 合并连续的token（符号和emoji）
     const mergedTokens: Token[] = [];
     let currentPunctuation: Token | null = null;
+    let currentEmoji: Token | null = null;
 
     for (const token of finalTokens) {
       if (token.type === 'punctuation') {
+        // 处理当前符号token
         if (currentPunctuation) {
           // 合并连续的符号
           currentPunctuation.txt += token.txt;
@@ -256,20 +258,48 @@ export class MultilingualTokenizer {
           // 开始新的符号序列
           currentPunctuation = {...token};
         }
-      } else {
+        // 处理可能存在的前一个emoji序列
+        if (currentEmoji) {
+          mergedTokens.push(currentEmoji);
+          currentEmoji = null;
+        }
+      } else if (token.type === 'emoji') {
+        // 处理当前emoji token
+        if (currentEmoji) {
+          // 合并连续的emoji
+          currentEmoji.txt += token.txt;
+        } else {
+          // 开始新的emoji序列
+          currentEmoji = {...token};
+        }
+        // 处理可能存在的前一个符号序列
         if (currentPunctuation) {
-          // 将之前合并的符号添加到结果中
           mergedTokens.push(currentPunctuation);
           currentPunctuation = null;
         }
-        // 添加非符号token
+      } else {
+        // 处理非符号和非emoji token
+        // 处理可能存在的前一个符号序列
+        if (currentPunctuation) {
+          mergedTokens.push(currentPunctuation);
+          currentPunctuation = null;
+        }
+        // 处理可能存在的前一个emoji序列
+        if (currentEmoji) {
+          mergedTokens.push(currentEmoji);
+          currentEmoji = null;
+        }
+        // 添加当前非符号和非emoji token
         mergedTokens.push(token);
       }
     }
 
-    // 添加最后可能的合并符号
+    // 添加最后可能的合并符号或emoji
     if (currentPunctuation) {
       mergedTokens.push(currentPunctuation);
+    }
+    if (currentEmoji) {
+      mergedTokens.push(currentEmoji);
     }
 
     return mergedTokens;

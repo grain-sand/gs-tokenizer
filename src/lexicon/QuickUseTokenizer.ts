@@ -1,5 +1,5 @@
-import {MultilingualTokenizer, createTokenizer, TokenizerOptions} from '../core';
-import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from '../lexicon';
+import {MultilingualTokenizer, TokenizerOptions} from '../core';
+import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from './LexiconLoader';
 
 /**
  * 快速使用多语言分词器类，提供静态实例和便捷方法
@@ -22,7 +22,7 @@ export class QuickUseTokenizer {
 			const options: TokenizerOptions = {
 				defaultLanguage: 'zh'
 			};
-			QuickUseTokenizer.instance = createTokenizer(options);
+			QuickUseTokenizer.instance = new MultilingualTokenizer(options);
 
 			// 使用LexiconLoader.loadTo方法加载默认词库
 			LexiconLoader.loadTo(QuickUseTokenizer.instance, {
@@ -93,8 +93,6 @@ export class QuickUseTokenizer {
 	public static removeCustomWord(word: string, language?: string, lexiconName?: string): void {
 		QuickUseTokenizer.getInstance().removeCustomWord(word, language, lexiconName);
 	}
-
-
 }
 
 // 导出便捷函数

@@ -350,6 +350,3 @@ export class MultilingualTokenizer {
  * @param options - 分词器配置选项
  * @returns MultilingualTokenizer实例
  */
-export function createTokenizer(options?: TokenizerOptions): MultilingualTokenizer {
-  return new MultilingualTokenizer(options);
-}

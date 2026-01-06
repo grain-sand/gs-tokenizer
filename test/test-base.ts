@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { createTokenizer, MultilingualTokenizer } from "../src";
+import { MultilingualTokenizer } from "../src";
 
 // // const console = (top as any).console;
 
@@ -10,16 +10,7 @@ describe('Multilingual Tokenizer - Base Tests', () => {
     tokenizer = new MultilingualTokenizer();
   });
 
-  it('should create tokenizer using factory function', () => {
-    const factoryTokenizer = createTokenizer();
-    expect(factoryTokenizer).toBeInstanceOf(MultilingualTokenizer);
-    
-    // Test with options
-    const customTokenizer = createTokenizer({
-      defaultLanguage: 'en'
-    });
-    expect(customTokenizer).toBeInstanceOf(MultilingualTokenizer);
-  });
+  // Removed createTokenizer factory function test
 
   it('should return only words when using tokenizeText', () => {
     const text = 'Hello world! 我爱北京天安门。';

@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MultilingualTokenizer, createTokenizer } from '../src';
+import { MultilingualTokenizer } from '../src';
 
 describe('Host and IP Tokenization', () => {
   let tokenizer: MultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = createTokenizer();
+    tokenizer = new MultilingualTokenizer();
   });
 
   describe('Host Tokenization', () => {

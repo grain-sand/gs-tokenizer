@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createTokenizer } from '../src';
+import { MultilingualTokenizer } from '../src';
 
 describe('百分比和千分比分词测试', () => {
-  const tokenizer = createTokenizer();
+  const tokenizer = new MultilingualTokenizer();
 
   it('应该正确识别基本百分比格式', () => {
     const testCases = ['50%', '100%', '0%', '-50%', '+50%'];

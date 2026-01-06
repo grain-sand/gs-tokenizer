@@ -10,7 +10,6 @@ import {describe, expect, it} from 'vitest';
 // 测试主入口模块
 import {
   addDictionary,
-  createTokenizer,
   LexiconConfig,
   LexiconLoader,
   MultilingualTokenizer,
@@ -25,7 +24,7 @@ import {
 describe('dist 构建产物测试', () => {
   describe('核心模块 (core)', () => {
     it('应该能够创建 MultilingualTokenizer 实例', () => {
-      const tokenizer = createTokenizer();
+      const tokenizer = new MultilingualTokenizer();
       expect(tokenizer).toBeInstanceOf(MultilingualTokenizer);
     });
 
@@ -34,12 +33,12 @@ describe('dist 构建产物测试', () => {
         defaultLanguage: 'zh',
         granularity: 'word'
       };
-      const tokenizer = createTokenizer(options);
+      const tokenizer = new MultilingualTokenizer(options);
       expect(tokenizer).toBeInstanceOf(MultilingualTokenizer);
     });
 
     it('应该能够对中文文本进行分词', () => {
-      const tokenizer = createTokenizer();
+      const tokenizer = new MultilingualTokenizer();
       const tokens = tokenizer.tokenize('这是一个测试文本');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
@@ -53,7 +52,7 @@ describe('dist 构建产物测试', () => {
     });
 
     it('应该能够对英文文本进行分词', () => {
-      const tokenizer = createTokenizer();
+      const tokenizer = new MultilingualTokenizer();
       const tokens = tokenizer.tokenize('This is a test text');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
@@ -67,7 +66,7 @@ describe('dist 构建产物测试', () => {
     });
 
     it('应该能够将分词结果转换为文本', () => {
-      const tokenizer = createTokenizer();
+      const tokenizer = new MultilingualTokenizer();
       const text = '这是一个测试文本';
       const resultText = tokenizer.tokenizeText(text);
       // 注意：tokenizeText 返回的是字符串数组而不是单个字符串

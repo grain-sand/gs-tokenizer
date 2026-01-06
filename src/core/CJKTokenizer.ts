@@ -1,22 +1,22 @@
-import {LanguageTokenizer} from './LanguageTokenizer';
-import {Token, LexiconEntry} from './types';
+import {ILanguageTokenizer} from './ILanguageTokenizer';
+import {IToken, ILexiconEntry} from '../type';
 
 /**
- * CJK分词器类，实现LanguageTokenizer接口，用于处理中文、日文和韩文等CJK语言的文本分词
+ * CJK分词器类，实现ILanguageTokenizer接口，用于处理中文、日文和韩文等CJK语言的文本分词
  * @class CJKTokenizer
- * @implements {LanguageTokenizer}
+ * @implements {ILanguageTokenizer}
  */
-export class CJKTokenizer implements LanguageTokenizer {
+export class CJKTokenizer implements ILanguageTokenizer {
 	/** 分词器实例映射，键为语言代码和粒度的组合 */
 	private segmenters: Map<string, Intl.Segmenter>;
 	/** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-	private dictionaries: Record<string, LexiconEntry[]>;
+	private dictionaries: Record<string, ILexiconEntry[]>;
 
 	/**
 	 * 构造函数
 	 * @param dictionaries - 自定义词库，默认为空对象
 	 */
-	constructor(dictionaries: Record<string, LexiconEntry[]> = {}) {
+	constructor(dictionaries: Record<string, ILexiconEntry[]> = {}) {
 		this.segmenters = new Map();
 		this.dictionaries = dictionaries;
 	}
@@ -40,8 +40,8 @@ export class CJKTokenizer implements LanguageTokenizer {
 	 * @param language - 指定的语言代码（'zh'、'ja'或'ko'）
 	 * @returns 分词结果的Token数组
 	 */
-	tokenize(text: string, language: string): Token[] {
-		const tokens: Token[] = [];
+	tokenize(text: string, language: string): IToken[] {
+		const tokens: IToken[] = [];
 		const segmenter = this.getSegmenter(language);
 
 		for (const segment of segmenter.segment(text)) {
@@ -73,13 +73,13 @@ export class CJKTokenizer implements LanguageTokenizer {
 	}
 
 
-	private applyCustomDictionary(tokens: Token[], language: string): Token[] {
-		const customLexicons = this.dictionaries[language] || [];
+	private applyCustomDictionary(tokens: IToken[], language: string): IToken[] {
+		const customLexicons: ILexiconEntry[] = this.dictionaries[language] || [];
 		let processedTokens = tokens;
 
 		// 如果有自定义词库，先合并
 		if (customLexicons.length > 0) {
-			const mergedTokens: Token[] = [];
+			const mergedTokens: IToken[] = [];
 			let i = 0;
 
 			while (i < processedTokens.length) {

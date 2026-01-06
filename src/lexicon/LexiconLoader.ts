@@ -1,4 +1,5 @@
-import {LexiconEntry, MultilingualTokenizer} from '../core';
+import {ILexiconEntry} from '../core';
+import {IMultilingualTokenizer} from '../type';
 import * as lexicons from './data';
 
 // 公开的语言数组
@@ -21,7 +22,7 @@ export interface LexiconConfig {
   languages: SupportedLanguage[];
 }
 
-interface LexiconEntryExt extends Omit<LexiconEntry, 'data'> {
+interface LexiconEntryExt extends Omit<ILexiconEntry, 'data'> {
   words: string[];
 }
 
@@ -47,7 +48,7 @@ export class LexiconLoader {
   /**
    * 加载指定语言和类型的词库到MultilingualTokenizer实例
    */
-  public static loadTo(tokenizer: MultilingualTokenizer, config?: LexiconConfig): void {
+  public static loadTo(tokenizer: IMultilingualTokenizer, config?: LexiconConfig): void {
     // 如果未提供配置，默认加载所有词库
     const actualConfig: LexiconConfig = config || {
       types: Array.from(SUPPORTED_TYPES),

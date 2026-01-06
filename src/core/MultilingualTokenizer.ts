@@ -1,5 +1,5 @@
-import { Token, TokenizerOptions, LexiconEntry, TokenizeTextOptions } from './types';
-import { LanguageTokenizer } from './LanguageTokenizer';
+import { IToken, ITokenizerOptions, ILexiconEntry, ITokenizeTextOptions, IMultilingualTokenizer } from '../type';
+import { ILanguageTokenizer } from './ILanguageTokenizer';
 import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
 import { DateTokenizer } from './DateTokenizer';
@@ -11,11 +11,11 @@ import { LanguageDetector } from './LanguageDetector';
  * 多语言分词器类，支持中英文、日语、韩语等多种语言的文本分词
  * @class MultilingualTokenizer
  */
-export class MultilingualTokenizer {
+export class MultilingualTokenizer implements IMultilingualTokenizer {
   /** 语言分词器数组 */
-  private tokenizers: LanguageTokenizer[];
+  private tokenizers: ILanguageTokenizer[];
   /** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-  private dictionaries: Record<string, LexiconEntry[]>;
+  private dictionaries: Record<string, ILexiconEntry[]>;
   /** 默认语言代码 */
   private defaultLanguage;
 
@@ -23,7 +23,7 @@ export class MultilingualTokenizer {
    * 构造函数
    * @param options - 分词器配置选项
    */
-  constructor(options: TokenizerOptions = {}) {
+  constructor(options: ITokenizerOptions = {}) {
     this.dictionaries = options.dictionaries || {};
     this.defaultLanguage = options.defaultLanguage || 'en';
 
@@ -121,7 +121,7 @@ export class MultilingualTokenizer {
    * @param language - 可选，指定文本语言代码，不指定则自动检测
    * @returns 分词结果的Token数组
    */
-  tokenize(text: string, language?: string): Token[] {
+  tokenize(text: string, language?: string): IToken[] {
     const lang = language || LanguageDetector.detectLanguage(text);
 
     // 1. 首先使用日期分词器处理所有日期格式
@@ -129,7 +129,7 @@ export class MultilingualTokenizer {
     if (!dateTokenizer) return [];
 
     const dateTokens = dateTokenizer.tokenize(text, lang);
-    const finalTokens: Token[] = [];
+    const finalTokens: IToken[] = [];
 
     // 2. 对非日期部分使用URLIP分词器处理
     const urlIpTokenizer = this.tokenizers.find(t => t instanceof HostIPTokenizer);
@@ -166,7 +166,7 @@ export class MultilingualTokenizer {
                   if (numberToken.type === 'number') {
                     finalTokens.push(numberToken);
                   } else {
-                    let subTokens: Token[] = [];
+                    let subTokens: IToken[] = [];
 
                     if (lang === 'en') {
                       const englishTokenizer = this.tokenizers.find(t => t instanceof EnglishTokenizer);
@@ -186,7 +186,7 @@ export class MultilingualTokenizer {
                             subTokens = cjkTokens;
                           } else {
                             // 否则使用原有的混合语言处理逻辑
-                            const tokens: Token[] = [];
+                            const tokens: IToken[] = [];
                             let lastIndex = 0;
 
                             // 使用正则表达式匹配英文单词和数字+字母组合
@@ -244,9 +244,9 @@ export class MultilingualTokenizer {
     }
 
     // 合并连续的token（符号和emoji）
-    const mergedTokens: Token[] = [];
-    let currentPunctuation: Token | null = null;
-    let currentEmoji: Token | null = null;
+    const mergedTokens: IToken[] = [];
+    let currentPunctuation: IToken | null = null;
+    let currentEmoji: IToken | null = null;
 
     for (const token of finalTokens) {
       if (token.type === 'punctuation') {
@@ -314,11 +314,11 @@ export class MultilingualTokenizer {
    * @param options.excludeTypes - 可选，指定要排除的token类型数组
    * @returns 文本数组
    */
-  tokenizeText(text: string, options?: TokenizeTextOptions): string[] {
+  tokenizeText(text: string, options?: ITokenizeTextOptions): string[] {
     const tokens = this.tokenize(text, options?.language);
 
     // 默认排除空格和其他类型
-    const defaultExcludeTypes: Token['type'][] = ['space'];
+    const defaultExcludeTypes: IToken['type'][] = ['space'];
 
     // 合并默认排除类型和用户指定的排除类型
     const excludeTypes = [

@@ -1,20 +1,20 @@
-import { Token, LexiconEntry } from './types';
-import { LanguageTokenizer } from './LanguageTokenizer';
+import { IToken, ILexiconEntry } from '../type';
+import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
- * 英文分词器类，实现LanguageTokenizer接口，用于处理英文文本的分词
+ * 英文分词器类，实现ILanguageTokenizer接口，用于处理英文文本的分词
  * @class EnglishTokenizer
- * @implements {LanguageTokenizer}
+ * @implements {ILanguageTokenizer}
  */
-export class EnglishTokenizer implements LanguageTokenizer {
+export class EnglishTokenizer implements ILanguageTokenizer {
   /** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
-  private dictionaries: Record<string, LexiconEntry[]>;
+  private dictionaries: Record<string, ILexiconEntry[]>;
 
   /**
    * 构造函数
    * @param dictionaries - 自定义词库，默认为空对象
    */
-  constructor(dictionaries: Record<string, LexiconEntry[]> = {}) {
+  constructor(dictionaries: Record<string, ILexiconEntry[]> = {}) {
     this.dictionaries = dictionaries;
   }
 
@@ -37,8 +37,8 @@ export class EnglishTokenizer implements LanguageTokenizer {
    * @param language - 指定的语言代码（通常为'en'）
    * @returns 分词结果的Token数组
    */
-  tokenize(text: string, language: string): Token[] {
-    const tokens: Token[] = [];
+  tokenize(text: string, language: string): IToken[] {
+    const tokens: IToken[] = [];
     const chars = Array.from(text); // 正确处理Unicode代理对
     let currentIndex = 0;
     const length = chars.length;
@@ -131,8 +131,8 @@ export class EnglishTokenizer implements LanguageTokenizer {
   
 
 
-  private tagNameTokens(tokens: Token[], language: string): Token[] {
-    const taggedTokens: Token[] = [];
+  private tagNameTokens(tokens: IToken[], language: string): IToken[] {
+    const taggedTokens: IToken[] = [];
     let i = 0;
 
     while (i < tokens.length) {

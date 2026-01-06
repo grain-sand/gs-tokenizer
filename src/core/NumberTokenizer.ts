@@ -1,12 +1,12 @@
-import { Token } from './types';
-import { LanguageTokenizer } from './LanguageTokenizer';
+import { IToken } from '../type';
+import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
- * 数字分词器类，实现LanguageTokenizer接口，用于识别和分词文本中的数字和数字+单位组合
+ * 数字分词器类，实现ILanguageTokenizer接口，用于识别和分词文本中的数字和数字+单位组合
  * @class NumberTokenizer
- * @implements {LanguageTokenizer}
+ * @implements {ILanguageTokenizer}
  */
-export class NumberTokenizer implements LanguageTokenizer {
+export class NumberTokenizer implements ILanguageTokenizer {
   /**
    * 中文数字字符集
    */
@@ -31,7 +31,7 @@ export class NumberTokenizer implements LanguageTokenizer {
    * @param language - 指定的语言代码
    * @returns 分词结果的Token数组，数字token的type为'number'
    */
-  tokenize(text: string, language: string): Token[] {
+  tokenize(text: string, language: string): IToken[] {
     if (!text) return [];
 
     // 收集所有数字相关的token
@@ -47,7 +47,7 @@ export class NumberTokenizer implements LanguageTokenizer {
       if (ordinalPrefixMatch) {
         const { prefixEnd } = ordinalPrefixMatch;
         let start = prefixEnd;
-        
+
         // 跳过空格
         while (start < textLength && text[start].trim() === '') {
           start++;
@@ -57,7 +57,7 @@ export class NumberTokenizer implements LanguageTokenizer {
         const numberMatch = this.findNumber(text, start);
         if (numberMatch) {
           let end = numberMatch.end;
-          
+
           // 跳过空格
           while (end < textLength && text[end].trim() === '') {
             end++;
@@ -153,7 +153,7 @@ export class NumberTokenizer implements LanguageTokenizer {
     }
 
     // 生成最终的token数组，包括数字token和非数字token
-    const tokens: Token[] = [];
+    const tokens: IToken[] = [];
     let lastEnd = 0;
 
     // 处理重叠的数字token，保留最长的
@@ -272,44 +272,44 @@ export class NumberTokenizer implements LanguageTokenizer {
     while (i < text.length && this.CHINESE_NUMBERS.has(text[i])) {
       i++;
     }
-    
+
     const length = i - start;
-    
+
     // 识别长度大于1的中文数字
     if (length > 1) {
       return { end: i };
     }
-    
+
     // 对于单个数字字符，只有在特定条件下才识别为数字
     if (length === 1) {
       // 检查前面是否是数字相关字符（包括数字、小数点等）
       const prevChar = start > 0 ? text[start - 1] : '';
-      
+
       // 检查后面是否是单位或其他数字相关字符
       const nextChar = start + 1 < text.length ? text[start + 1] : '';
       const nextUnit = this.findUnit(text, start + 1);
-      
+
       // 如果前面是数字相关字符，或者后面是单位，则识别为数字
-      if ((prevChar && this.isNumberRelatedChar(prevChar)) || 
+      if ((prevChar && this.isNumberRelatedChar(prevChar)) ||
           nextUnit) {
         return { end: i };
       }
-      
+
       // 如果后面是数字字符，则识别为数字
       if (nextChar && this.CHINESE_NUMBERS.has(nextChar)) {
         return { end: i };
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * 判断字符是否是数字相关字符
    */
   private isNumberRelatedChar(char: string): boolean {
-    return this.CHINESE_NUMBERS.has(char) || 
-           this.UNITS.has(char) || 
+    return this.CHINESE_NUMBERS.has(char) ||
+           this.UNITS.has(char) ||
            (char >= '0' && char <= '9') ||
            char === '.' || char === 'e' || char === 'E' ||
            char === '+' || char === '-';
@@ -344,20 +344,20 @@ export class NumberTokenizer implements LanguageTokenizer {
     // 先查找数字部分
     const numberMatch = this.findNumber(text, start);
     if (!numberMatch) return null;
-    
+
     let end = numberMatch.end;
-    
+
     // 检查是否有单位（不跳过空格，避免包含多余空格）
     const unitMatch = this.findUnit(text, end);
     if (unitMatch) {
       end = unitMatch.end;
     }
-    
+
     // 检查是否是数字+单位组合
     if (end > numberMatch.end) {
       return { end };
     }
-    
+
     return null;
   }
 
@@ -368,20 +368,20 @@ export class NumberTokenizer implements LanguageTokenizer {
     // 先查找中文数字部分
     const chineseNumberMatch = this.findChineseNumber(text, start);
     if (!chineseNumberMatch) return null;
-    
+
     let end = chineseNumberMatch.end;
-    
+
     // 检查是否有单位（不跳过空格，避免包含多余空格）
     const unitMatch = this.findUnit(text, end);
     if (unitMatch) {
       end = unitMatch.end;
     }
-    
+
     // 检查是否是中文数字+单位组合
     if (end > chineseNumberMatch.end) {
       return { end };
     }
-    
+
     return null;
   }
 

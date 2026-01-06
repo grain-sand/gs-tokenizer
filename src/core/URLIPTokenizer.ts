@@ -1,12 +1,12 @@
-import { Token } from './types';
-import { LanguageTokenizer } from './LanguageTokenizer';
+import { IToken } from '../type';
+import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
  * 主机名和IP地址分词器类，专门处理文本中的主机名和IP地址
  * @class HostIPTokenizer
- * @implements {LanguageTokenizer}
+ * @implements {ILanguageTokenizer}
  */
-export class HostIPTokenizer implements LanguageTokenizer {
+export class HostIPTokenizer implements ILanguageTokenizer {
   /**
    * 检测文本的语言
    * @param text - 要检测语言的文本
@@ -22,8 +22,8 @@ export class HostIPTokenizer implements LanguageTokenizer {
    * @param language - 指定的语言代码（在本实现中未使用）
    * @returns 分词结果的Token数组，包含主机名和IP地址类型的Token
    */
-  tokenize(text: string, language: string): Token[] {
-    const tokens: Token[] = [];
+  tokenize(text: string, language: string): IToken[] {
+		const tokens: IToken[] = [];
     let currentIndex = 0;
 
     // IPv4正则表达式（带端口）

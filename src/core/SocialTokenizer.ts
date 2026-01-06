@@ -1,12 +1,12 @@
-import { Token } from './types';
-import { LanguageTokenizer } from './LanguageTokenizer';
+import { IToken } from '../type';
+import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
  * 社交媒体分词器类，专门处理文本中的#关键词和@名称
  * @class SocialTokenizer
- * @implements {LanguageTokenizer}
+ * @implements {ILanguageTokenizer}
  */
-export class SocialTokenizer implements LanguageTokenizer {
+export class SocialTokenizer implements ILanguageTokenizer {
   /**
    * 检测文本的语言
    * @param text - 要检测语言的文本
@@ -22,8 +22,8 @@ export class SocialTokenizer implements LanguageTokenizer {
    * @param language - 指定的语言代码（在本实现中未使用）
    * @returns 分词结果的Token数组，包含社交媒体特殊结构的Token
    */
-  tokenize(text: string, language: string): Token[] {
-    const tokens: Token[] = [];
+  tokenize(text: string, language: string): IToken[] {
+		const tokens: IToken[] = [];
     let currentIndex = 0;
 
     // 正则表达式：匹配#关键词和@名称

@@ -1,4 +1,5 @@
-import {MultilingualTokenizer, TokenizerOptions} from '../core';
+import {MultilingualTokenizer, ITokenizerOptions} from '../core';
+import {IMultilingualTokenizer} from '../type';
 import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from './LexiconLoader';
 
 /**
@@ -7,7 +8,7 @@ import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, Supp
  */
 export class QuickUseTokenizer {
 	/** 静态分词器实例 */
-	private static instance: MultilingualTokenizer | null = null;
+	private static instance: IMultilingualTokenizer | null = null;
 	/** 默认加载的语言 */
 	private static defaultLanguages: SupportedLanguage[] = Array.from(SUPPORTED_LANGUAGES);
 	/** 默认加载的词库类型 */
@@ -15,11 +16,11 @@ export class QuickUseTokenizer {
 
 	/**
 	 * 获取分词器实例（单例模式）
-	 * @returns MultilingualTokenizer实例
+	 * @returns IMultilingualTokenizer实例
 	 */
-	public static getInstance(): MultilingualTokenizer {
+	public static getInstance(): IMultilingualTokenizer {
 		if (!QuickUseTokenizer.instance) {
-			const options: TokenizerOptions = {
+			const options: ITokenizerOptions = {
 				defaultLanguage: 'zh'
 			};
 			QuickUseTokenizer.instance = new MultilingualTokenizer(options);

@@ -3,8 +3,8 @@
 		"version": "1.0.0",
 		"description": "一个纯前端的极小体积的简单分词器，受限于体积有各种不完善，好处是能够以极少体积在浏览器运行",
 		"scripts": {
-				"build": "rollup -c --compact",
-				"build-watch": "rollup -c --watch",
+				"build": "rollup -c",
+				"build-copy": "rollup -c --environment COPY:true",
 				"optimize-lexicon": "tsx tool/optimizeLexicon.ts",
 				"test": "vitest run",
 				"test:base": "vitest run test/test-base.ts",

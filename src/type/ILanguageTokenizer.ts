@@ -1,10 +1,8 @@
-import { Token } from './types';
-
 /**
  * 语言分词器接口
- * @interface LanguageTokenizer
+ * @interface ILanguageTokenizer
  */
-export interface LanguageTokenizer {
+export interface ILanguageTokenizer {
   /**
    * 检测文本的语言
    * @param text - 要检测语言的文本
@@ -18,5 +16,5 @@ export interface LanguageTokenizer {
    * @param language - 指定的语言代码
    * @returns 分词结果的Token数组
    */
-  tokenize(text: string, language: string): Token[];
+  tokenize(text: string, language: string): any[];
 }

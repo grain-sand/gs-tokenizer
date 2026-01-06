@@ -137,6 +137,16 @@ const mainConfig = {
 	})],
 };
 
+const mainConfigJsPlugins = [plugins];
+
+if(process.env.COPY) {
+	mainConfigJsPlugins.push(copy({
+		targets: [
+			{src: '*.md', dest: 'dist'},
+		]
+	}))
+}
+
 const mainConfigJs = {
 	input: 'src/index.ts',
 	external: externalFunction,
@@ -152,13 +162,7 @@ const mainConfigJs = {
 			sourcemap: false
 		},
 	],
-	plugins: [...plugins,
-		copy({
-			targets: [
-				{src: '*.md', dest: 'dist'},
-			]
-		})
-	]
+	plugins: mainConfigJsPlugins
 };
 
 export default [

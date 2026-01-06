@@ -1,18 +1,41 @@
 import dts from 'rollup-plugin-dts'
-import alias from '@rollup/plugin-alias'
 import esbuild from 'rollup-plugin-esbuild'
 import typescript from 'rollup-plugin-typescript2'
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import copy from 'rollup-plugin-copy'
 
+const regexReplace = (patterns) => ({
+	name: 'regex-replace',
+	generateBundle(_, bundle) {
+		for (const file of Object.keys(bundle)) {
+			const chunk = bundle[file];
+			if (chunk.type === 'asset' || chunk.type === 'chunk') {
+				let code = chunk.code || chunk.source;
+				for (const {find, replacement} of patterns) {
+					code = code.replace(find, replacement);
+				}
+				if (chunk.code) {
+					chunk.code = code;
+				} else {
+					chunk.source = code;
+				}
+			}
+		}
+	},
+});
+
 const tsConfig = {
 	respectExternal: false,
 	exclude: ["test/**/*.ts"],
 }
 
+// const aliasIns = alias({entries: {find: '../core', replacement: './core'}});
+const replace = regexReplace([
+	{find: /(['"])([.]+\/)+core\1/g, replacement: `'./core'`},
+]);
+
 const plugins = [
-	alias(),
 	resolve(),
 	typescript(tsConfig),
 	esbuild({
@@ -55,7 +78,7 @@ const coreConfigJs = {
 // 共享的 external 函数
 const externalFunction = (id) => {
 	// 将词库模块和核心模块标记为外部依赖
-	return id.includes('/lexicon')|| id.includes('/core');
+	return id.includes('/lexicon') || id.includes('/core');
 };
 
 // 词库模块配置 - 与其他模块保持一致的打包方式
@@ -66,10 +89,14 @@ const lexiconConfig = {
 		{
 			file: 'dist/lib/lexicon.d.ts',
 			format: 'esm',
-			sourcemap: false
+			sourcemap: false,
 		},
 	],
-	plugins: [dts(tsConfig)],
+	plugins: [
+		dts(tsConfig),
+		replace
+	],
+
 };
 
 const lexiconConfigJs = {
@@ -79,15 +106,15 @@ const lexiconConfigJs = {
 		{
 			file: 'dist/lib/lexicon.js',
 			format: 'esm',
-			sourcemap: false
+			sourcemap: false,
 		},
 		{
 			file: 'dist/lib/lexicon.cjs',
 			format: 'cjs',
-			sourcemap: false
+			sourcemap: false,
 		},
 	],
-	plugins: [...plugins]
+	plugins: [...plugins, replace]
 };
 
 // 主入口配置（快速使用模块）
@@ -98,10 +125,16 @@ const mainConfig = {
 		{
 			file: 'dist/lib/index.d.ts',
 			format: 'esm',
-			sourcemap: false,
+			sourcemap: false
 		},
 	],
-	plugins: [dts(tsConfig)],
+	plugins: [dts({
+		...tsConfig,
+		compilerOptions: {
+			...tsConfig.compilerOptions,
+			baseUrl: '.'
+		}
+	})],
 };
 
 const mainConfigJs = {
@@ -111,12 +144,12 @@ const mainConfigJs = {
 		{
 			file: 'dist/lib/index.js',
 			format: 'esm',
-			sourcemap: false,
+			sourcemap: false
 		},
 		{
 			file: 'dist/lib/index.cjs',
 			format: 'cjs',
-			sourcemap: false,
+			sourcemap: false
 		},
 	],
 	plugins: [...plugins,

@@ -1,5 +1,5 @@
-import {MultilingualTokenizer, ITokenizerOptions} from '../core';
-import {IMultilingualTokenizer} from '../type';
+import {MultilingualTokenizer} from '../core';
+import {IMultilingualTokenizer,ITokenizerOptions} from '../type';
 import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from './LexiconLoader';
 
 /**

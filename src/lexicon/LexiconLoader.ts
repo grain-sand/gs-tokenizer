@@ -1,5 +1,4 @@
-import {ILexiconEntry} from '../core';
-import {IMultilingualTokenizer} from '../type';
+import {IMultilingualTokenizer,ILexiconEntry} from '../type';
 import * as lexicons from './data';
 
 // 公开的语言数组

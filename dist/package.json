@@ -15,6 +15,11 @@
       "require": "./lib/core.cjs",
       "types": "./lib/core.d.ts"
     },
+    "./next": {
+      "import": "./lib/next.js",
+      "require": "./lib/next.cjs",
+      "types": "./lib/next.d.ts"
+    },
     "./lexicon": {
 		"import": "./lib/lexicon.js",
 		"require": "./lib/lexicon.cjs",

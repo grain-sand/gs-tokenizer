@@ -4,3 +4,4 @@ export * from './ITokenizerOptions';
 export * from './ITokenizeTextOptions';
 export * from './ILanguageTokenizer';
 export * from './IMultilingualTokenizer';
+export * from './INextToken';

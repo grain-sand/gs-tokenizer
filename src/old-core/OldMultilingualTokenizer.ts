@@ -62,7 +62,7 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
     if (!actualLanguage && words.length > 0) {
       // 使用第一个非空单词进行语言检测
       const sampleWord = words.find(word => word.trim() !== '') || '';
-      actualLanguage = LanguageDetector.detectLanguage(sampleWord);
+      actualLanguage = LanguageDetector.detectLanguage(sampleWord) as any;
     }
     const lang = actualLanguage || this.defaultLanguage;
 

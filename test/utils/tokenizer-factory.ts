@@ -1,4 +1,21 @@
-import { IMultilingualTokenizer, MultilingualTokenizer, OldMultilingualTokenizer, LexiconLoader } from '../../src';
+import {IMultilingualTokenizer, LexiconLoader, MultilingualTokenizer, OldMultilingualTokenizer} from '../../src';
+
+// 解析命令行参数
+const argv = process.argv;
+const args: Record<string, string> = {};
+
+// 查找 -- 分隔符
+const doubleDashIndex = argv.indexOf('--');
+if (doubleDashIndex !== -1) {
+  const customArgs = argv.slice(doubleDashIndex + 1);
+  for (let i = 0; i < customArgs.length; i++) {
+    const arg = customArgs[i];
+    if (arg.startsWith('--')) {
+      const key = arg.slice(2);
+      args[key] = customArgs[i + 1] && !customArgs[i + 1].startsWith('--') ? customArgs[i + 1] : 'true';
+    }
+  }
+}
 
 // 缓存分词器实例
 const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
@@ -12,8 +29,8 @@ export function createTokenizer(options?: {
   type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从环境变量获取配置，默认使用'old-core'
-  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'old-core';
+  // 从命令行参数、环境变量或选项获取配置，默认使用'old-core'
+  const tokenizerType = options?.type || args.target || process.env.TOKENIZER_TYPE || 'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
@@ -43,9 +60,11 @@ export function getCachedTokenizer(options?: {
   type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从环境变量获取配置，默认使用'old-core'
-  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'old-core';
+  // 从命令行参数、环境变量或选项获取配置，默认使用'old-core'
+  const tokenizerType = options?.type || args.target || process.env.TOKENIZER_TYPE || 'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
+
+  console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
 
   // 生成缓存键
   const cacheKey = `${tokenizerType}_${loadBuiltinLexicons}`;

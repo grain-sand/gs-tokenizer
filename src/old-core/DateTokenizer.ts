@@ -1,4 +1,4 @@
-import { IToken } from '../old-type';
+import { IToken, SupportedLanguage } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -75,15 +75,15 @@ export class DateTokenizer implements ILanguageTokenizer {
     for (const match of mergedMatches) {
       // 添加匹配前的文本
       if (match.index > lastIndex) {
-        const nonDateText = text.slice(lastIndex, match.index);
-        tokens.push({ txt: nonDateText, type: 'other', lang: language, src: '' });
-      }
+      const nonDateText = text.slice(lastIndex, match.index);
+      tokens.push({ txt: nonDateText, type: 'other', lang: language as SupportedLanguage, src: '' });
+    }
 
       // 添加日期token
       if (this.isValidDate(match.text)) {
-        tokens.push({ txt: match.text, type: 'date', lang: language, src: '' });
+        tokens.push({ txt: match.text, type: 'date', lang: language as SupportedLanguage, src: 'DateTokenizer' });
       } else {
-        tokens.push({ txt: match.text, type: 'other', lang: language, src: '' });
+        tokens.push({ txt: match.text, type: 'other', lang: language as SupportedLanguage, src: '' });
       }
 
       lastIndex = match.index + match.text.length;
@@ -91,9 +91,9 @@ export class DateTokenizer implements ILanguageTokenizer {
 
     // 添加剩余的文本
     if (lastIndex < text.length) {
-      const remainingText = text.slice(lastIndex);
-      tokens.push({ txt: remainingText, type: 'other', lang: language, src: '' });
-    }
+        const remainingText = text.slice(lastIndex);
+        tokens.push({ txt: remainingText, type: 'other', lang: language as SupportedLanguage, src: 'DateTokenizer' });
+      }
 
     return tokens;
   }

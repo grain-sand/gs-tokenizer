@@ -1,4 +1,4 @@
-import { IToken } from '../old-type';
+import { IToken } from '../type';
 
 /**
  * 语言分词器接口

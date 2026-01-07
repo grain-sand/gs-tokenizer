@@ -1,5 +1,13 @@
 import {ILanguageTokenizer} from './ILanguageTokenizer';
-import {IToken, ILexiconEntry} from '../old-type';
+import {IToken, SupportedLanguage} from '../type';
+
+// 定义ILexiconEntry接口，因为type目录中没有这个类型
+export interface ILexiconEntry {
+  priority: number;
+  data: Set<string>;
+  name: string;
+  lang: string;
+}
 
 /**
  * CJK分词器类，实现ILanguageTokenizer接口，用于处理中文、日文和韩文等CJK语言的文本分词
@@ -26,12 +34,12 @@ export class CJKTokenizer implements ILanguageTokenizer {
 	 * @param text - 要检测语言的文本
 	 * @returns 如果是中文返回'zh'，日文返回'ja'，韩文返回'ko'，否则返回空字符串
 	 */
-	detectLanguage(text: string): string {
+	detectLanguage(text: string): SupportedLanguage {
 		// 检查是否包含中文、日文或韩文
-		if (/[\u4e00-\u9fff]/.test(text)) return 'zh';
-		if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return 'ja';
-		if (/[\uac00-\ud7af]/.test(text)) return 'ko';
-		return '';
+		if (/[\u4e00-\u9fff]/.test(text)) return 'zh' as SupportedLanguage;
+		if (/[\u3040-\u309f\u30a0-\u30ff]/.test(text)) return 'ja' as SupportedLanguage;
+		if (/[\uac00-\ud7af]/.test(text)) return 'ko' as SupportedLanguage;
+		return '' as SupportedLanguage;
 	}
 
 	/**
@@ -48,16 +56,16 @@ export class CJKTokenizer implements ILanguageTokenizer {
 			const {segment: segText, isWordLike} = segment;
 
 			if (segText.match(/^\s+$/)) {
-				tokens.push({txt: segText, type: 'space', lang: language, src: ''});
-			} else if (/^\p{Emoji}+$/u.test(segText) && !/[0-9#]/.test(segText)) {
-				tokens.push({txt: segText, type: 'emoji', lang: language, src: ''});
-			} else if (segText.match(/^[^\p{L}\p{N}]+$/u)) {
-				tokens.push({txt: segText, type: 'punctuation', lang: language, src: ''});
-			} else if (isWordLike) {
-				tokens.push({txt: segText, type: 'word', lang: language, src: ''});
-			} else {
-				tokens.push({txt: segText, type: 'other', lang: language, src: ''});
-			}
+			tokens.push({txt: segText, type: 'space', lang: language as SupportedLanguage, src: ''});
+		} else if (/^\p{Emoji}+$/u.test(segText) && !/[0-9#]/.test(segText)) {
+			tokens.push({txt: segText, type: 'emoji', lang: language as SupportedLanguage, src: ''});
+		} else if (segText.match(/^[^\p{L}\p{N}]+$/u)) {
+			tokens.push({txt: segText, type: 'punctuation', lang: language as SupportedLanguage, src: ''});
+		} else if (isWordLike) {
+			tokens.push({txt: segText, type: 'word', lang: language as SupportedLanguage, src: ''});
+		} else {
+			tokens.push({txt: segText, type: 'other', lang: language as SupportedLanguage, src: ''});
+		}
 		}
 
 		// 应用自定义词库合并分词结果
@@ -116,11 +124,11 @@ export class CJKTokenizer implements ILanguageTokenizer {
 				if (bestMatch) {
 					// 有最佳匹配词
 					mergedTokens.push({
-						txt: bestMatch.text,
-						type: 'word',
-						lang: language,
-						src: ''
-					});
+					txt: bestMatch.text,
+					type: 'word',
+					lang: language as SupportedLanguage,
+					src: ''
+				});
 					i += bestMatch.length;
 					matched = true;
 				} else {

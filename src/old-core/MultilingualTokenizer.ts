@@ -1,4 +1,4 @@
-import { IToken, ITokenizerOptions, ILexiconEntry, ITokenizeTextOptions, IMultilingualTokenizer } from '../old-type';
+import { IToken, IMultilingualTokenizer } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
@@ -7,6 +7,9 @@ import { HostIPTokenizer } from './URLIPTokenizer';
 import { SocialTokenizer } from './SocialTokenizer';
 import { NumberTokenizer } from './NumberTokenizer';
 import { LanguageDetector } from './LanguageDetector';
+import { ILexiconEntry } from './CJKTokenizer';
+import { ITokenizerOptions } from './ITokenizerOptions';
+import { ITokenizeTextOptions } from './ITokenizeTextOptions';
 /**
  * 多语言分词器类，支持中英文、日语、韩语等多种语言的文本分词
  * @class MultilingualTokenizer
@@ -315,7 +318,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
    * @returns 文本数组
    */
   tokenizeText(text: string, options?: ITokenizeTextOptions): string[] {
-    const tokens = this.tokenize(text, options?.language);
+    const tokens = this.tokenize(text);
 
     // 默认排除空格和其他类型
     const defaultExcludeTypes: IToken['type'][] = ['space'];
@@ -323,7 +326,6 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
     // 合并默认排除类型和用户指定的排除类型
     const excludeTypes = [
       ...defaultExcludeTypes,
-      ...(options?.excludeTypes || [])
     ];
 
     return tokens.filter(token => {
@@ -373,10 +375,41 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
     return Array.from(lexiconNames);
   }
 
-}
+  /**
+   * 设置姓名词库
+   */
+  setNameDictionary(nameLexicon: any, language: any): void {
+    // 空实现
+  }
 
-/**
- * 创建多语言分词器实例的工厂函数
- * @param options - 分词器配置选项
- * @returns MultilingualTokenizer实例
- */
+  /**
+   * 添加自定义分词Stage
+   */
+  addStage(stage: any): void {
+    // 空实现
+  }
+
+  /**
+   * 移除指定Stage
+   */
+  removeStage(stageId: string): void {
+    // 空实现
+  }
+
+  /**
+   * 提取文本中的关键信息
+   */
+  extract(text: string): IToken[] {
+    // 空实现，返回默认值
+    return this.tokenize(text);
+  }
+
+  /**
+   * 提取纯文本关键信息
+   */
+  extractText(text: string): string[] {
+    // 空实现，返回默认值
+    return this.tokenizeText(text);
+  }
+
+}

@@ -1,4 +1,4 @@
-import {IMultilingualTokenizer,ILexiconEntry} from '../old-type';
+import {IMultilingualTokenizer} from '../type';
 import * as lexicons from './data';
 import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../type";
 // 公开的词库类型数组
@@ -17,7 +17,10 @@ export interface LexiconConfig {
   languages: SupportedLanguage[];
 }
 
-interface LexiconEntryExt extends Omit<ILexiconEntry, 'data'> {
+interface LexiconEntryExt {
+  priority: number;
+  name: string;
+  lang: string;
   words: string[];
 }
 
@@ -66,7 +69,7 @@ export class LexiconLoader {
     for (const lang in lexiconsByLang) {
       // 添加到tokenizer，使用预存储的数组版本避免重复转换
       lexiconsByLang[lang].forEach(lexicon => {
-        tokenizer.addDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang);
+        tokenizer.addDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang as any);
       });
     }
   }
@@ -151,7 +154,7 @@ export class LexiconLoader {
    */
   private parseLexiconString(lexiconString: string):string[] {
     return  lexiconString
-      .split('\u001F')
+      .split('')
       .map(word => word.trim())
       .filter(word => word.length > 0);
   }

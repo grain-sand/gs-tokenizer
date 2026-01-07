@@ -1,4 +1,4 @@
-import { IToken } from '../old-type';
+import { IToken } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -100,7 +100,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: text.substring(currentIndex, match.index),
           type: 'other',
-          lang: language
+          lang: language as any
         });
       }
 
@@ -119,7 +119,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: text.substring(currentIndex),
         type: 'other',
-        lang: language
+        lang: language as any
       });
     }
 

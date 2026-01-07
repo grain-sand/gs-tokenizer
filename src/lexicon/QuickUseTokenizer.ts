@@ -1,6 +1,6 @@
-import {MultilingualTokenizer} from '../old-core';
-import {IMultilingualTokenizer,ITokenizerOptions} from '../old-type';
-import {LexiconLoader, SUPPORTED_TYPES, SUPPORTED_LANGUAGES, SupportedType, SupportedLanguage} from './LexiconLoader';
+import {MultilingualTokenizer as OldMultilingualTokenizer} from '../old-core';
+import {IMultilingualTokenizer, SUPPORTED_LANGUAGES, SupportedLanguage, TokenType} from '../type';
+import {LexiconLoader, SUPPORTED_TYPES, SupportedType} from './LexiconLoader';
 
 /**
  * 快速使用多语言分词器类，提供静态实例和便捷方法
@@ -20,10 +20,7 @@ export class QuickUseTokenizer {
 	 */
 	public static getInstance(): IMultilingualTokenizer {
 		if (!QuickUseTokenizer.instance) {
-			const options: ITokenizerOptions = {
-				defaultLanguage: 'zh'
-			};
-			QuickUseTokenizer.instance = new MultilingualTokenizer(options);
+			QuickUseTokenizer.instance = new OldMultilingualTokenizer();
 
 			// 使用LexiconLoader.loadTo方法加载默认词库
 			LexiconLoader.loadTo(QuickUseTokenizer.instance, {
@@ -61,7 +58,7 @@ export class QuickUseTokenizer {
 	 * @returns 分词结果的Token数组
 	 */
 	public static tokenize(text: string, language?: string) {
-		return QuickUseTokenizer.getInstance().tokenize(text, language);
+		return QuickUseTokenizer.getInstance().tokenize(text);
 	}
 
 	/**
@@ -71,7 +68,7 @@ export class QuickUseTokenizer {
 	 * @returns 单词数组
 	 */
 	public static tokenizeText(text: string, language?: string): string[] {
-		return QuickUseTokenizer.getInstance().tokenizeText(text, {language});
+		return QuickUseTokenizer.getInstance().tokenizeText(text);
 	}
 
 	/**
@@ -82,26 +79,17 @@ export class QuickUseTokenizer {
    * @param language - 词库对应的语言代码，未指定时自动根据words判断
    */
   public static addDictionary(words: string[], name: string, priority?: number, language?: string): void {
-		QuickUseTokenizer.getInstance().addDictionary(words, name, priority, language);
+		QuickUseTokenizer.getInstance().addDictionary(words, name, priority, language as any);
 	}
 
-	/**
-	 * 移除自定义词库中的指定单词
-	 * @param word - 要移除的单词
-	 * @param language - 可选，指定要操作的语言词库
-	 * @param lexiconName - 可选，指定要操作的词库名称
-	 */
-	public static removeCustomWord(word: string, language?: string, lexiconName?: string): void {
-		QuickUseTokenizer.getInstance().removeCustomWord(word, language, lexiconName);
-	}
+	// removeCustomWord方法已删除，因为IMultilingualTokenizer接口中不存在该方法
 }
 
 // 导出便捷函数
 export const tokenize = (text: string, language?: string) => QuickUseTokenizer.tokenize(text, language);
-export const tokenizeText = (text: string, language?: string) => QuickUseTokenizer.getInstance().tokenizeText(text, {language});
+export const tokenizeText = (text: string, language?: string) => QuickUseTokenizer.getInstance().tokenizeText(text);
 export const addDictionary = (words: string[], name: string, priority?: number, language?: string) =>
 	QuickUseTokenizer.addDictionary(words, name, priority, language);
-export const removeCustomWord = (word: string, language?: string, lexiconName?: string) =>
-	QuickUseTokenizer.removeCustomWord(word, language, lexiconName);
+// removeCustomWord函数已删除，因为IMultilingualTokenizer接口中不存在该方法
 export const setDefaultLanguages = (languages: SupportedLanguage[]) => QuickUseTokenizer.setDefaultLanguages(languages);
 export const setDefaultTypes = (types: SupportedType[]) => QuickUseTokenizer.setDefaultTypes(types);

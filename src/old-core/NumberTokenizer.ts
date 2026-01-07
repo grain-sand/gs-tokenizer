@@ -1,4 +1,4 @@
-import { IToken } from '../old-type';
+import { IToken } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -147,7 +147,7 @@ export class NumberTokenizer implements ILanguageTokenizer {
       return [{
         txt: text,
         type: 'other',
-        lang: language,
+        lang: language as any,
         src: ''
       }];
     }
@@ -185,7 +185,7 @@ export class NumberTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: text.substring(lastEnd, numberToken.start),
           type: 'other',
-          lang: language,
+          lang: language as any,
           src: ''
         });
       }
@@ -194,7 +194,7 @@ export class NumberTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: numberToken.txt,
         type: 'number',
-        lang: language,
+        lang: language as any,
         src: ''
       });
 
@@ -206,7 +206,7 @@ export class NumberTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: text.substring(lastEnd),
         type: 'other',
-        lang: language,
+        lang: language as any,
         src: ''
       });
     }

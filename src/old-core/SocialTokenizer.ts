@@ -1,4 +1,4 @@
-import { IToken } from '../old-type';
+import { IToken } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -38,7 +38,7 @@ export class SocialTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: text.substring(currentIndex, match.index),
           type: 'other',
-          lang: language,
+          lang: language as any,
           src: ''
         });
       }
@@ -49,7 +49,7 @@ export class SocialTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: socialText,
         type,
-        lang: language,
+        lang: language as any,
         src: 'social'
       });
 
@@ -61,7 +61,7 @@ export class SocialTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: text.substring(currentIndex),
         type: 'other',
-        lang: language,
+        lang: language as any,
         src: ''
       });
     }

@@ -1,4 +1,5 @@
-import { IToken, ILexiconEntry } from '../old-type';
+import { IToken, SupportedLanguage } from '../type';
+import { ILexiconEntry } from './CJKTokenizer';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -56,7 +57,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'space',
-          lang: language,
+          lang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = spaceEnd;
@@ -73,7 +74,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'emoji',
-          lang: language,
+          lang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = emojiEnd;
@@ -90,7 +91,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'word',
-          lang: language,
+          lang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = wordEnd;
@@ -108,11 +109,11 @@ export class EnglishTokenizer implements ILanguageTokenizer {
       }
       const tokenText = chars.slice(currentIndex, punctuationEnd).join('');
       tokens.push({
-        txt: tokenText,
-        type: 'punctuation',
-        lang: language,
-        src: ''
-      });
+          txt: tokenText,
+          type: 'punctuation',
+          lang: language as SupportedLanguage,
+          src: ''
+        });
       currentIndex = punctuationEnd;
     }
 
@@ -146,7 +147,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
               taggedTokens.push({
                 txt: word,
                 type: 'word',
-                lang: language,
+                lang: language as SupportedLanguage,
                 src: lexicon.name
               });
               i++;
@@ -162,7 +163,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
       taggedTokens.push({
         txt: tokens[i].txt,
         type: tokens[i].type,
-        lang: language,
+        lang: language as SupportedLanguage,
         src: tokens[i].src || ''
       });
       i++;

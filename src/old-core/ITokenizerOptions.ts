@@ -1,6 +1,5 @@
 /**
  * 分词器配置选项接口
- * @interface ITokenizerOptions
  */
 export interface ITokenizerOptions {
   /** 自定义词库配置，键为语言代码，值为该语言的词库条目数组 */

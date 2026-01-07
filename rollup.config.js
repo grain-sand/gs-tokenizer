@@ -103,7 +103,7 @@ if (process.env.COPY) {
 export default [
 	...createConfig('type'),
 	...createConfig('core'),
-	...createConfig('next'),
+	...createConfig('old-core'),
 	...createConfig('lexicon'),
 	...createConfig('index',mainConfigJsPlugins,'src/index.ts'),
 ];

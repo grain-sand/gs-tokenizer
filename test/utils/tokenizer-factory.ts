@@ -1,4 +1,4 @@
-import { IMultilingualTokenizer, OldMultilingualTokenizer, LexiconLoader } from '../../src';
+import { IMultilingualTokenizer, MultilingualTokenizer, OldMultilingualTokenizer, LexiconLoader } from '../../src';
 
 // 缓存分词器实例
 const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
@@ -9,17 +9,22 @@ const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
  * @param options - 工厂配置选项
  */
 export function createTokenizer(options?: {
-  type?: 'core'; // 仅支持'core'类型
+  type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从环境变量获取配置
-  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'core'; // 仅支持'core'
+  // 从环境变量获取配置，默认使用'old-core'
+  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
 
-  // 仅创建core类型的分词器
-  const tokenizer: IMultilingualTokenizer = new OldMultilingualTokenizer();
+  // 创建相应类型的分词器
+  let tokenizer: IMultilingualTokenizer;
+  if (tokenizerType === 'core') {
+    tokenizer = new MultilingualTokenizer();
+  } else {
+    tokenizer = new OldMultilingualTokenizer();
+  }
 
   // 如果需要加载内置词库，使用LexiconLoader.loadTo()方法
   if (loadBuiltinLexicons) {
@@ -35,11 +40,11 @@ export function createTokenizer(options?: {
  * @param options - 工厂配置选项
  */
 export function getCachedTokenizer(options?: {
-  type?: 'core'; // 仅支持'core'类型
+  type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从环境变量获取配置
-  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'core'; // 仅支持'core'
+  // 从环境变量获取配置，默认使用'old-core'
+  const tokenizerType = options?.type || process.env.TOKENIZER_TYPE || 'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   // 生成缓存键

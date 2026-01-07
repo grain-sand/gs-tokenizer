@@ -13,11 +13,9 @@ import {
   LexiconConfig,
   LexiconLoader,
   OldMultilingualTokenizer,
-  removeCustomWord,
   setDefaultLanguages,
   setDefaultTypes,
   tokenize,
-  TokenizerOptions,
   tokenizeText
 } from '../src';
 
@@ -29,11 +27,7 @@ describe('src 源码测试', () => {
     });
 
     it('应该能够使用自定义选项创建分词器', () => {
-      const options: TokenizerOptions = {
-        defaultLanguage: 'zh',
-        granularity: 'word'
-      };
-      const tokenizer = new OldMultilingualTokenizer(options);
+      const tokenizer = new OldMultilingualTokenizer();
       expect(tokenizer).toBeInstanceOf(OldMultilingualTokenizer);
     });
 
@@ -150,11 +144,7 @@ describe('src 源码测试', () => {
       }).not.toThrow();
     });
 
-    it('应该能够移除自定义词汇', () => {
-      expect(() => {
-        removeCustomWord('自定义词汇');
-      }).not.toThrow();
-    });
+
 
     it('应该能够设置默认语言', () => {
       expect(() => {

@@ -1,4 +1,4 @@
-import { IToken, IMultilingualTokenizer } from '../type';
+import { IToken, IMultilingualTokenizer, INameLexiconGroup, SupportedLanguage } from '../type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 import { EnglishTokenizer } from './EnglishTokenizer';
 import { CJKTokenizer } from './CJKTokenizer';
@@ -9,7 +9,6 @@ import { NumberTokenizer } from './NumberTokenizer';
 import { LanguageDetector } from './LanguageDetector';
 import { ILexiconEntry } from './CJKTokenizer';
 import { ITokenizerOptions } from './ITokenizerOptions';
-import { ITokenizeTextOptions } from './ITokenizeTextOptions';
 /**
  * 多语言分词器类，支持中英文、日语、韩语等多种语言的文本分词
  * @class OldMultilingualTokenizer
@@ -40,8 +39,8 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
     // 初始化tokenizers
     this.tokenizers = [
       new DateTokenizer(),
-        new HostIPTokenizer(),
-        new SocialTokenizer(),
+      new HostIPTokenizer(),
+      new SocialTokenizer(),
       new NumberTokenizer(),
       new EnglishTokenizer(),
       new CJKTokenizer(this.dictionaries)
@@ -54,7 +53,7 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
    * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
    * @param language - 词库对应的语言代码，未指定时自动根据words判断
    */
-  addDictionary(words: string[], name: string, priority?: number, language?: string): void {
+  addDictionary(words: string[], name: string, priority?: number, language?: SupportedLanguage): void {
     // priority 默认值设为 200（内置词库最高优先级是 100）
     const actualPriority = priority !== undefined ? priority : 200;
 
@@ -94,36 +93,7 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
     }
   }
 
-  /**
-   * 移除自定义词库中的指定单词
-   * @param word - 要移除的单词
-   * @param language - 可选，指定要操作的语言词库
-   * @param lexiconName - 可选，指定要操作的词库名称
-   */
-  removeCustomWord(word: string, language?: string, lexiconName?: string): void {
-    if (language) {
-      if (this.dictionaries[language]) {
-        if (lexiconName) {
-          const lexicon = this.dictionaries[language].find(entry => entry.name === lexiconName);
-          if (lexicon) {
-            lexicon.data.delete(word);
-          }
-        } else {
-          this.dictionaries[language].forEach(lexicon => {
-            lexicon.data.delete(word);
-          });
-        }
-      }
-    } else {
-      Object.values(this.dictionaries).forEach(lexicons => {
-        lexicons.forEach(lexicon => {
-          if (lexicon.data.has(word)) {
-            lexicon.data.delete(word);
-          }
-        });
-      });
-    }
-  }
+
 
   /**
    * 主分词方法，对输入文本进行多语言分词
@@ -317,13 +287,9 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
   /**
    * 获取纯文本分词结果，可自定义包含或排除的token类型
    * @param text - 要分词的文本
-   * @param options - 可选，配置项
-   * @param options.language - 可选，指定文本语言代码
-   * @param options.includeTypes - 可选，指定要包含的token类型数组
-   * @param options.excludeTypes - 可选，指定要排除的token类型数组
    * @returns 文本数组
    */
-  tokenizeText(text: string, options?: ITokenizeTextOptions): string[] {
+  tokenizeText(text: string): string[] {
     const tokens = this.tokenize(text);
 
     // 默认排除空格和其他类型
@@ -335,13 +301,6 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
     ];
 
     return tokens.filter(token => {
-      // 如果提供了includeTypes，首先检查是否包含指定类型
-      if (options?.includeTypes && options.includeTypes.length > 0) {
-        if (!options.includeTypes.includes(token.type)) {
-          return false;
-        }
-      }
-
       // 检查是否在排除类型列表中
       if (excludeTypes.includes(token.type)) {
         return false;
@@ -391,7 +350,7 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
    * - 一旦设置即启用姓名分词 stage
    * - 未设置则不加载姓名处理流程
    */
-  setNameDictionary(nameLexicon: any, language: string): void {
+  setNameDictionary(nameLexicon: INameLexiconGroup, language: SupportedLanguage): void {
     this.nameDictionaries[language] = nameLexicon;
 
     // 将姓名词库适配到 addDictionary

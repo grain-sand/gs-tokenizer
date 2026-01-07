@@ -2,7 +2,7 @@ import {ISpanToken, IToken, IWordIndex, IWordMatch, LexiconMeta} from "../type";
 
 export class FirstCharWordIndex implements IWordIndex {
 
-	readonly #wordMap = new Map<string, LexiconMeta[]>();
+	readonly #wordMap = new Map<string, LexiconMeta>();
 	readonly #firstCharIndex = new Map<string, Map<number, string[]>>();
 	readonly #sortedCache = new Map<string, [number, string[]][]>();
 
@@ -10,10 +10,8 @@ export class FirstCharWordIndex implements IWordIndex {
 	add(word: string, meta: LexiconMeta) {
 		let metas = this.#wordMap.get(word);
 		if (!metas) {
-			metas = [];
-			this.#wordMap.set(word, metas);
+			this.#wordMap.set(word, meta);
 		}
-		metas.push(meta);
 
 		const ch = word[0];
 		const len = word.length;
@@ -59,9 +57,7 @@ export class FirstCharWordIndex implements IWordIndex {
 			const slice = text.slice(pos, end);
 			for (const w of words) {
 				if (w === slice) {
-					for (const m of this.#wordMap.get(w)!) {
-						result.push({word: w, meta: m});
-					}
+					result.push({word: w, meta: this.#wordMap.get(w)!});
 				}
 			}
 		}
@@ -75,18 +71,16 @@ export class FirstCharWordIndex implements IWordIndex {
 		if (!lenArr) return [];
 		for (const [len, words] of lenArr) {
 			for (const w of words) {
-				// console.log(w)
 				if (text.startsWith(w)) {
 					const meta = this.#wordMap.get(w)!;
-					// result.push({
-					// 	txt: w,
-					// 	type: 'word',
-					// 	lang: meta.lang,
-					// 	src: meta.name,
-					// 	start: mainPos,
-					// 	end: mainPos + len,
-					// });
-					// console.log(w, meta.length, meta)
+					result.push({
+						txt: w,
+						type: 'word',
+						lang: meta.lang,
+						src: meta.name,
+						start: mainPos,
+						end: mainPos + len,
+					});
 				}
 			}
 		}

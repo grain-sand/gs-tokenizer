@@ -67,12 +67,6 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		stage.initialize?.(this);
 	}
 
-	removeStage(stageId: string) {
-		this.#stages = this.#stages.filter(s => s.id !== stageId);
-	}
-
-	/* ---------------- gap 修复 ---------------- */
-
 	tokenize(text: string): ISpanToken[] {
 		const tokens: ISpanToken[] = [];
 		const len = text.length;
@@ -120,7 +114,6 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			}
 			pos++;
 		}
-		console.log(out)
 		return this.fillGapsWithNative(text, out);
 	}
 

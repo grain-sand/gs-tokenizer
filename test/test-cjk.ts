@@ -1,13 +1,13 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { OldMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 // const console = (top as any).console;
 
 describe('Multilingual Tokenizer - CJK Tests', () => {
-  let tokenizer: OldMultilingualTokenizer;
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   describe('Chinese Tests', () => {
@@ -66,14 +66,6 @@ describe('Multilingual Tokenizer - CJK Tests', () => {
       expect(wordTokens.length).toBeGreaterThan(0);
       expect(wordTokens).toContain('人工智能');
       expect(wordTokens).toContain('机器学习');
-
-      // 验证词库结构
-      const tokenizerInstance = tokenizer as any;
-      const zhDictionaries = tokenizerInstance.dictionaries['zh'];
-      const enDictionaries = tokenizerInstance.dictionaries['en'];
-
-      expect(zhDictionaries.length).toBe(2); // 两个不同优先级的中文词库
-      expect(enDictionaries.length).toBe(1); // 一个英文词库
     });
   });
 

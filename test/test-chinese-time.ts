@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { OldMultilingualTokenizer } from '../src';
+import { getCachedTokenizer } from './utils/tokenizer-factory';
 
-describe('Chinese Number Time Tokenizer', () => {
-  let tokenizer: OldMultilingualTokenizer;
+describe('Multilingual Tokenizer - Chinese Time Recognition', () => {
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   it('should tokenize single Chinese number + time unit as date type', () => {

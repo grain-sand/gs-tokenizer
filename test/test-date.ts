@@ -1,13 +1,13 @@
 import {beforeEach, describe, expect, it} from 'vitest';
-import { OldMultilingualTokenizer } from '../src';
+import { getCachedTokenizer } from './utils/tokenizer-factory';
 
 // const console = (top as any).console;
 
-describe('Multilingual Tokenizer - Date Tests', () => {
-  let tokenizer: OldMultilingualTokenizer;
+describe('Multilingual Tokenizer - Date Recognition', () => {
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   describe('Chinese Date Tests', () => {

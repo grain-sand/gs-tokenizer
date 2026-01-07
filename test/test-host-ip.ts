@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { OldMultilingualTokenizer } from '../src';
+import { getCachedTokenizer } from './utils/tokenizer-factory';
 
-describe('Host and IP Tokenization', () => {
-  let tokenizer: OldMultilingualTokenizer;
+describe('Multilingual Tokenizer - Host and IP Recognition', () => {
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   describe('Host Tokenization', () => {

@@ -1,11 +1,11 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { OldMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 describe('Multilingual Tokenizer - Name Recognition Tests', () => {
-  let tokenizer: OldMultilingualTokenizer;
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   describe('中文姓名识别', () => {

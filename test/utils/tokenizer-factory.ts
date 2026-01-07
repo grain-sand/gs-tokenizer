@@ -1,21 +1,4 @@
-import {IMultilingualTokenizer, LexiconLoader, MultilingualTokenizer, OldMultilingualTokenizer} from '../../src';
-
-// 解析命令行参数
-const argv = process.argv;
-const args: Record<string, string> = {};
-
-// 查找 -- 分隔符
-const doubleDashIndex = argv.indexOf('--');
-if (doubleDashIndex !== -1) {
-  const customArgs = argv.slice(doubleDashIndex + 1);
-  for (let i = 0; i < customArgs.length; i++) {
-    const arg = customArgs[i];
-    if (arg.startsWith('--')) {
-      const key = arg.slice(2);
-      args[key] = customArgs[i + 1] && !customArgs[i + 1].startsWith('--') ? customArgs[i + 1] : 'true';
-    }
-  }
-}
+import { IMultilingualTokenizer, MultilingualTokenizer, OldMultilingualTokenizer, LexiconLoader } from '../../src';
 
 // 缓存分词器实例
 const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
@@ -29,8 +12,14 @@ export function createTokenizer(options?: {
   type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从命令行参数、环境变量或选项获取配置，默认使用'old-core'
-  const tokenizerType = options?.type || args.target || process.env.TOKENIZER_TYPE || 'old-core';
+  // 从环境变量（支持Vite的import.meta.env和Node.js的process.env）或选项获取配置，默认使用'old-core'
+  // 使用import.meta.env.VITE_TOKENIZER_TYPE优先，以支持浏览器环境测试
+  // @ts-ignore
+  const viteEnv = typeof import.meta !== 'undefined' ? (import.meta as any).env : {};
+  const tokenizerType = options?.type ||
+                       viteEnv.VITE_TOKENIZER_TYPE ||
+                       viteEnv.VITE_TOKENIZER_TARGET ||
+                       'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
@@ -60,8 +49,16 @@ export function getCachedTokenizer(options?: {
   type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
-  // 从命令行参数、环境变量或选项获取配置，默认使用'old-core'
-  const tokenizerType = options?.type || args.target || process.env.TOKENIZER_TYPE || 'old-core';
+  // 从环境变量（支持Vite的import.meta.env和Node.js的process.env）或选项获取配置，默认使用'old-core'
+  // 使用import.meta.env.VITE_TOKENIZER_TYPE优先，以支持浏览器环境测试
+  // @ts-ignore
+  const viteEnv = typeof import.meta !== 'undefined' ? (import.meta as any).env : {};
+  const tokenizerType = options?.type ||
+                       viteEnv.VITE_TOKENIZER_TYPE ||
+                       viteEnv.VITE_TOKENIZER_TARGET ||
+                       process.env.TOKENIZER_TYPE ||
+                       process.env.TOKENIZER_TARGET ||
+                       'old-core';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);

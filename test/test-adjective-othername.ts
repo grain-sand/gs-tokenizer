@@ -1,8 +1,8 @@
 ﻿import { describe, expect, it } from "vitest";
-import { OldMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 describe("Adjective and OtherName Recognition", () => {
-  const tokenizer = new OldMultilingualTokenizer();
+  const tokenizer = getCachedTokenizer();
 
   describe("Adjective Recognition", () => {
     it("should recognize Chinese adjectives", () => {

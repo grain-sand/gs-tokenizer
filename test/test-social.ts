@@ -1,11 +1,11 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import { OldMultilingualTokenizer } from "../src";
+import { getCachedTokenizer } from "./utils/tokenizer-factory";
 
 describe('Multilingual Tokenizer - Social Media Tests', () => {
-  let tokenizer: OldMultilingualTokenizer;
+  let tokenizer;
 
   beforeEach(() => {
-    tokenizer = new OldMultilingualTokenizer();
+    tokenizer = getCachedTokenizer();
   });
 
   it('should correctly identify #hashtags', () => {

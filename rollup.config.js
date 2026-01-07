@@ -26,7 +26,7 @@ const regexReplace = (patterns) => ({
 });
 
 const external = (id) => {
-	return id.includes('/lexicon') || id.includes('/core') || id.includes('/type');
+	return id.includes('/lexicon') || id.includes('/core') || id.includes('/type')|| id.includes('/old-core');
 };
 
 const tsConfig = {
@@ -36,7 +36,7 @@ const tsConfig = {
 
 // const aliasIns = alias({entries: {find: '../core', replacement: './core'}});
 const replace = regexReplace([
-	{find: /(['"])(?:[.]+\/)+(core|type|lexicon)\1/g, replacement: `'./$2'`},
+	{find: /(['"])(?:[.]+\/)+(core|type|lexicon|old-core)\1/g, replacement: `'./$2'`},
 ]);
 
 const defaultPlugins = [

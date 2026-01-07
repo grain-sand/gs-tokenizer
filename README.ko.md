@@ -93,7 +93,7 @@ console.log(tokens);
 ### 사용자 정의 사전
 
 ```javascript
-const tokenizer = new MultilingualTokenizer();
+const tokenizer = new OldMultilingualTokenizer();
 
 // 언어, 우선순위, 이름을 지정하여 사용자 정의 단어 추가
 tokenizer.addCustomDictionary(['인공지능', '기술'], 'zh', 10, 'tech');

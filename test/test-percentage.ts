@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { MultilingualTokenizer } from '../src';
+import { OldMultilingualTokenizer } from '../src';
 
 describe('百分比和千分比分词测试', () => {
-  const tokenizer = new MultilingualTokenizer();
+  const tokenizer = new OldMultilingualTokenizer();
 
   it('应该正确识别基本百分比格式', () => {
     const testCases = ['50%', '100%', '0%', '-50%', '+50%'];
-    
+
     testCases.forEach(text => {
       const tokens = tokenizer.tokenize(text);
       expect(tokens.length).toBe(1);
@@ -17,7 +17,7 @@ describe('百分比和千分比分词测试', () => {
 
   it('应该正确识别带小数的百分比格式', () => {
     const testCases = ['50.5%', '100.12%', '0.5%', '-50.5%', '+50.5%'];
-    
+
     testCases.forEach(text => {
       const tokens = tokenizer.tokenize(text);
       expect(tokens.length).toBe(1);
@@ -28,7 +28,7 @@ describe('百分比和千分比分词测试', () => {
 
   it('应该正确识别基本千分比格式', () => {
     const testCases = ['50‰', '100‰', '0‰', '-50‰', '+50‰'];
-    
+
     testCases.forEach(text => {
       const tokens = tokenizer.tokenize(text);
       expect(tokens.length).toBe(1);
@@ -39,7 +39,7 @@ describe('百分比和千分比分词测试', () => {
 
   it('应该正确识别带小数的千分比格式', () => {
     const testCases = ['50.5‰', '100.12‰', '0.5‰', '-50.5‰', '+50.5‰'];
-    
+
     testCases.forEach(text => {
       const tokens = tokenizer.tokenize(text);
       expect(tokens.length).toBe(1);
@@ -51,7 +51,7 @@ describe('百分比和千分比分词测试', () => {
   it('应该在中文文本中正确识别百分比', () => {
     const text = '商品优惠50%';
     const tokens = tokenizer.tokenize(text);
-    
+
     expect(tokens.length).toBe(3);
     expect(tokens[0].type).toBe('word');
     expect(tokens[0].txt).toBe('商品');
@@ -64,7 +64,7 @@ describe('百分比和千分比分词测试', () => {
   it('应该在中文文本中正确识别千分比', () => {
     const text = '返现50‰';
     const tokens = tokenizer.tokenize(text);
-    
+
     expect(tokens.length).toBe(3);
     expect(tokens[0].type).toBe('word');
     expect(tokens[0].txt).toBe('返');
@@ -77,7 +77,7 @@ describe('百分比和千分比分词测试', () => {
   it('应该在英文文本中正确识别百分比', () => {
     const text = 'discount 50%';
     const tokens = tokenizer.tokenize(text);
-    
+
     expect(tokens.length).toBe(3);
     expect(tokens[0].type).toBe('word');
     expect(tokens[0].txt).toBe('discount');
@@ -90,7 +90,7 @@ describe('百分比和千分比分词测试', () => {
   it('应该在混合文本中正确识别百分比和千分比', () => {
     const text = '价格上涨了50%，而成本下降了0.5‰';
     const tokens = tokenizer.tokenize(text);
-    
+
     // 检查是否包含正确的数字token
     const numberTokens = tokens.filter(token => token.type === 'number');
     expect(numberTokens.length).toBe(2);

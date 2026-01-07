@@ -12,7 +12,7 @@ import {
   addDictionary,
   LexiconConfig,
   LexiconLoader,
-  MultilingualTokenizer,
+  OldMultilingualTokenizer,
   removeCustomWord,
   setDefaultLanguages,
   setDefaultTypes,
@@ -24,8 +24,8 @@ import {
 describe('src 源码测试', () => {
   describe('核心模块 (core)', () => {
     it('应该能够创建 MultilingualTokenizer 实例', () => {
-      const tokenizer = new MultilingualTokenizer();
-      expect(tokenizer).toBeInstanceOf(MultilingualTokenizer);
+      const tokenizer = new OldMultilingualTokenizer();
+      expect(tokenizer).toBeInstanceOf(OldMultilingualTokenizer);
     });
 
     it('应该能够使用自定义选项创建分词器', () => {
@@ -33,12 +33,12 @@ describe('src 源码测试', () => {
         defaultLanguage: 'zh',
         granularity: 'word'
       };
-      const tokenizer = new MultilingualTokenizer(options);
-      expect(tokenizer).toBeInstanceOf(MultilingualTokenizer);
+      const tokenizer = new OldMultilingualTokenizer(options);
+      expect(tokenizer).toBeInstanceOf(OldMultilingualTokenizer);
     });
 
     it('应该能够对中文文本进行分词', () => {
-      const tokenizer = new MultilingualTokenizer();
+      const tokenizer = new OldMultilingualTokenizer();
       const tokens = tokenizer.tokenize('这是一个测试文本');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
@@ -52,7 +52,7 @@ describe('src 源码测试', () => {
     });
 
     it('应该能够对英文文本进行分词', () => {
-      const tokenizer = new MultilingualTokenizer();
+      const tokenizer = new OldMultilingualTokenizer();
       const tokens = tokenizer.tokenize('This is a test text');
       expect(tokens).toBeInstanceOf(Array);
       expect(tokens.length).toBeGreaterThan(0);
@@ -66,7 +66,7 @@ describe('src 源码测试', () => {
     });
 
     it('应该能够将分词结果转换为文本', () => {
-      const tokenizer = new MultilingualTokenizer();
+      const tokenizer = new OldMultilingualTokenizer();
       const text = '这是一个测试文本';
       const resultText = tokenizer.tokenizeText(text);
       // 注意：tokenizeText 返回的是字符串数组而不是单个字符串

@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MultilingualTokenizer } from '../src';
+import { OldMultilingualTokenizer } from '../src';
 
 describe('Chinese Number Time Tokenizer', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: OldMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    tokenizer = new OldMultilingualTokenizer();
   });
 
   it('should tokenize single Chinese number + time unit as date type', () => {
@@ -33,7 +33,7 @@ describe('Chinese Number Time Tokenizer', () => {
   it('should tokenize mixed Chinese number + time unit in sentence', () => {
     const text = '我需要工作五小时，休息三天，然后学习百小时。';
     const tokens = tokenizer.tokenize(text);
-    
+
     // 检查是否有正确的日期类型token
     const dateTokens = tokens.filter(token => token.type === 'date');
     expect(dateTokens).toHaveLength(3);
@@ -61,7 +61,7 @@ describe('Chinese Number Time Tokenizer', () => {
   it('should still handle Arabic numbers + time unit correctly', () => {
     const testCase = '5小时和30分钟';
     const tokens = tokenizer.tokenize(testCase);
-    
+
     const dateTokens = tokens.filter(token => token.type === 'date');
     expect(dateTokens).toHaveLength(2);
     expect(dateTokens.map(t => t.txt)).toEqual(['5小时', '30分钟']);
@@ -70,7 +70,7 @@ describe('Chinese Number Time Tokenizer', () => {
   it('should handle both Chinese and Arabic numbers in same text', () => {
     const testCase = '五小时后休息30分钟';
     const tokens = tokenizer.tokenize(testCase);
-    
+
     const dateTokens = tokens.filter(token => token.type === 'date');
     expect(dateTokens).toHaveLength(2);
     expect(dateTokens.map(t => t.txt)).toEqual(['五小时', '30分钟']);

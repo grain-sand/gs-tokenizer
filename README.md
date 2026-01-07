@@ -93,7 +93,7 @@ console.log(tokens);
 ### Custom Dictionary
 
 ```javascript
-const tokenizer = new MultilingualTokenizer();
+const tokenizer = new OldMultilingualTokenizer();
 
 // Add custom words with name, priority, and language
 tokenizer.addCustomDictionary(['人工智能', '技术'], 'tech', 10, 'zh');

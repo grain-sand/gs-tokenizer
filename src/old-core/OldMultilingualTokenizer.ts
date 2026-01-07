@@ -12,15 +12,21 @@ import { ITokenizerOptions } from './ITokenizerOptions';
 import { ITokenizeTextOptions } from './ITokenizeTextOptions';
 /**
  * 多语言分词器类，支持中英文、日语、韩语等多种语言的文本分词
- * @class MultilingualTokenizer
+ * @class OldMultilingualTokenizer
  */
-export class MultilingualTokenizer implements IMultilingualTokenizer {
+export class OldMultilingualTokenizer implements IMultilingualTokenizer {
   /** 语言分词器数组 */
   private tokenizers: ILanguageTokenizer[];
-  /** 自定义词库，键为语言代码，值为该语言的词库条目数组 */
+  /**
+   * 自定义词库，键为语言代码，值为该语言的词库条目数组
+   */
   private dictionaries: Record<string, ILexiconEntry[]>;
   /** 默认语言代码 */
   private defaultLanguage;
+  /**
+   * 姓名词库，键为语言代码，值为该语言的姓名词库组
+   */
+  private nameDictionaries: Record<string, any>;
 
   /**
    * 构造函数
@@ -29,6 +35,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
   constructor(options: ITokenizerOptions = {}) {
     this.dictionaries = options.dictionaries || {};
     this.defaultLanguage = options.defaultLanguage || 'en';
+    this.nameDictionaries = {};
 
     // 初始化tokenizers
     this.tokenizers = [
@@ -121,11 +128,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
   /**
    * 主分词方法，对输入文本进行多语言分词
    * @param text - 要分词的文本
-   * @param language - 可选，指定文本语言代码，不指定则自动检测
    * @returns 分词结果的Token数组
    */
-  tokenize(text: string, language?: string): IToken[] {
-    const lang = language || LanguageDetector.detectLanguage(text);
+  tokenize(text: string): IToken[] {
+    const lang = LanguageDetector.detectLanguage(text);
 
     // 1. 首先使用日期分词器处理所有日期格式
     const dateTokenizer = this.tokenizers.find(t => t instanceof DateTokenizer);
@@ -372,14 +378,32 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
       }
     }
 
+    // 收集所有姓名词库名称
+    Object.keys(this.nameDictionaries).forEach(language => {
+      lexiconNames.add(`name-dictionary-${language}`);
+    });
+
     return Array.from(lexiconNames);
   }
 
   /**
    * 设置姓名词库
+   * - 一旦设置即启用姓名分词 stage
+   * - 未设置则不加载姓名处理流程
    */
-  setNameDictionary(nameLexicon: any, language: any): void {
-    // 空实现
+  setNameDictionary(nameLexicon: any, language: string): void {
+    this.nameDictionaries[language] = nameLexicon;
+
+    // 将姓名词库适配到 addDictionary
+    if (nameLexicon?.lastName) {
+      this.addDictionary(nameLexicon.lastName, `name-lastname-${language}`, 300, language);
+    }
+    if (nameLexicon?.firstName) {
+      this.addDictionary(nameLexicon.firstName, `name-firstname-${language}`, 300, language);
+    }
+    if (nameLexicon?.title) {
+      this.addDictionary(nameLexicon.title, `name-title-${language}`, 250, language);
+    }
   }
 
   /**

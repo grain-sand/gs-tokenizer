@@ -93,7 +93,7 @@ console.log(tokens);
 ### カスタム辞書
 
 ```javascript
-const tokenizer = new MultilingualTokenizer();
+const tokenizer = new OldMultilingualTokenizer();
 
 // 言語、優先度、名前を指定してカスタム単語を追加
 tokenizer.addCustomDictionary(['人工知能', '技術'], 'zh', 10, 'tech');

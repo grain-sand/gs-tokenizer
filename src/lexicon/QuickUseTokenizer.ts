@@ -1,5 +1,5 @@
-import {MultilingualTokenizer as OldMultilingualTokenizer} from '../old-core';
-import {IMultilingualTokenizer, SUPPORTED_LANGUAGES, SupportedLanguage, TokenType} from '../type';
+import {OldMultilingualTokenizer} from '../old-core';
+import {IMultilingualTokenizer, SUPPORTED_LANGUAGES, SupportedLanguage} from '../type';
 import {LexiconLoader, SUPPORTED_TYPES, SupportedType} from './LexiconLoader';
 
 /**
@@ -54,42 +54,48 @@ export class QuickUseTokenizer {
 	/**
 	 * 分词方法
 	 * @param text - 要分词的文本
-	 * @param language - 可选，指定文本语言代码
 	 * @returns 分词结果的Token数组
 	 */
-	public static tokenize(text: string, language?: string) {
+	public static tokenize(text: string) {
 		return QuickUseTokenizer.getInstance().tokenize(text);
 	}
 
 	/**
 	 * 获取纯文本分词结果
 	 * @param text - 要分词的文本
-	 * @param language - 可选，指定文本语言代码
 	 * @returns 单词数组
 	 */
-	public static tokenizeText(text: string, language?: string): string[] {
+	public static tokenizeText(text: string): string[] {
 		return QuickUseTokenizer.getInstance().tokenizeText(text);
 	}
 
 	/**
-   * 添加自定义词库
-   * @param words - 要添加的单词数组
-   * @param name - 词库名称
-   * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
-   * @param language - 词库对应的语言代码，未指定时自动根据words判断
-   */
-  public static addDictionary(words: string[], name: string, priority?: number, language?: string): void {
+	 * 添加自定义词库
+	 * @param words - 要添加的单词数组
+	 * @param name - 词库名称
+	 * @param priority - 词库优先级，值越高优先级越高，默认比内置词库最高优先级大100
+	 * @param language - 词库对应的语言代码，未指定时自动根据words判断
+	 */
+	public static addDictionary(words: string[], name: string, priority?: number, language?: string): void {
 		QuickUseTokenizer.getInstance().addDictionary(words, name, priority, language as any);
 	}
 
-	// removeCustomWord方法已删除，因为IMultilingualTokenizer接口中不存在该方法
+	/**
+	 * 设置姓名词库
+	 * @param nameLexicon - 姓名词库对象
+	 * @param language - 语言代码
+	 */
+	public static setNameDictionary(nameLexicon: any, language: SupportedLanguage): void {
+		QuickUseTokenizer.getInstance().setNameDictionary(nameLexicon, language);
+	}
 }
 
 // 导出便捷函数
-export const tokenize = (text: string, language?: string) => QuickUseTokenizer.tokenize(text, language);
-export const tokenizeText = (text: string, language?: string) => QuickUseTokenizer.getInstance().tokenizeText(text);
+export const tokenize = (text: string) => QuickUseTokenizer.tokenize(text);
+export const tokenizeText = (text: string) => QuickUseTokenizer.getInstance().tokenizeText(text);
 export const addDictionary = (words: string[], name: string, priority?: number, language?: string) =>
-	QuickUseTokenizer.addDictionary(words, name, priority, language);
-// removeCustomWord函数已删除，因为IMultilingualTokenizer接口中不存在该方法
+	QuickUseTokenizer.addDictionary(words, name, priority, language as SupportedLanguage);
+export const setNameDictionary = (nameLexicon: any, language: SupportedLanguage) =>
+	QuickUseTokenizer.setNameDictionary(nameLexicon, language);
 export const setDefaultLanguages = (languages: SupportedLanguage[]) => QuickUseTokenizer.setDefaultLanguages(languages);
 export const setDefaultTypes = (types: SupportedType[]) => QuickUseTokenizer.setDefaultTypes(types);

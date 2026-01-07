@@ -1,13 +1,13 @@
 import {beforeEach, describe, expect, it} from 'vitest';
-import { MultilingualTokenizer } from '../src';
+import { OldMultilingualTokenizer } from '../src';
 
 // const console = (top as any).console;
 
 describe('Multilingual Tokenizer - Date Tests', () => {
-  let tokenizer: MultilingualTokenizer;
+  let tokenizer: OldMultilingualTokenizer;
 
   beforeEach(() => {
-    tokenizer = new MultilingualTokenizer();
+    tokenizer = new OldMultilingualTokenizer();
   });
 
   describe('Chinese Date Tests', () => {
@@ -15,7 +15,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '今天是2023年10月1日，天气很好。';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Chinese date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '2023年10月1日')).toBe(true);
@@ -25,7 +25,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '会议日期定在2023-10-01，地点是北京。';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Chinese date with dash tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '2023-10-01')).toBe(true);
@@ -35,7 +35,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '我的生日是2023/10/01。';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Chinese date with slash tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '2023/10/01')).toBe(true);
@@ -45,7 +45,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '项目截止日期是2023.10.01。';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Chinese date with dot tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '2023.10.01')).toBe(true);
@@ -57,7 +57,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = 'The meeting is scheduled for October 1, 2023.';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('English full month date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt.includes('October'))).toBe(true);
@@ -67,7 +67,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = 'Please submit your report by 10/01/2023.';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('English date with slash tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '10/01/2023')).toBe(true);
@@ -77,7 +77,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = 'The event will take place on 2023-10-01.';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('English ISO date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '2023-10-01')).toBe(true);
@@ -87,7 +87,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = 'The deadline is Oct 1, 2023.';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('English short month date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt.includes('Oct'))).toBe(true);
@@ -99,7 +99,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '订单日期是20231001';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('8-digit date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '20231001')).toBe(true);
@@ -109,7 +109,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '20231001';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Standalone 8-digit date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(0);
       expect(dateTokens.some(token => token.txt === '20231001')).toBe(true);
@@ -119,7 +119,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '无效日期:2023-13-32';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date' && token.txt === '2023-13-32');
-      
+
       console.log('Invalid date tokens:', dateTokens);
       expect(dateTokens.length).toBe(0);
     });
@@ -128,7 +128,7 @@ describe('Multilingual Tokenizer - Date Tests', () => {
       const text = '会议时间:2023年10月1日至2023年10月5日，英文日期:October 1, 2023。';
       const tokens = tokenizer.tokenize(text);
       const dateTokens = tokens.filter(token => token.type === 'date');
-      
+
       console.log('Multiple date tokens:', dateTokens);
       expect(dateTokens.length).toBeGreaterThan(1);
     });

@@ -1,4 +1,4 @@
-import { IMultilingualTokenizer, MultilingualTokenizer, LexiconLoader } from '../../src';
+import { IMultilingualTokenizer, OldMultilingualTokenizer, LexiconLoader } from '../../src';
 
 // 缓存分词器实例
 const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
@@ -19,7 +19,7 @@ export function createTokenizer(options?: {
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
 
   // 仅创建core类型的分词器
-  const tokenizer: IMultilingualTokenizer = new MultilingualTokenizer();
+  const tokenizer: IMultilingualTokenizer = new OldMultilingualTokenizer();
 
   // 如果需要加载内置词库，使用LexiconLoader.loadTo()方法
   if (loadBuiltinLexicons) {

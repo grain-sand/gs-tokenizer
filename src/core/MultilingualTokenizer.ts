@@ -1,6 +1,6 @@
 import {
 	IMultilingualTokenizer,
-	INameLexiconGroup,
+	INameLexiconGroup, ISpanToken,
 	IToken,
 	ITokenizerStage,
 	SupportedLanguage,
@@ -24,6 +24,11 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	private lexiconNames = new Set<string>();
 	private options: TokenizerOptions;
 
+	private nativeSegmenter =
+		typeof Intl !== 'undefined' && 'Segmenter' in Intl
+			? new Intl.Segmenter('und', { granularity: 'word' })
+			: null;
+
 	constructor(options: TokenizerOptions = {}) {
 		this.options = options;
 
@@ -34,6 +39,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.addStage(new DateStage());
 		this.addStage(new NumberStage());
 		this.addStage(new SymbolSpaceStage());
+		// this.addStage(new FallbackWordStage());
 	}
 
 	get loadedLexiconNames(): string[] {
@@ -67,39 +73,188 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.stages = this.stages.filter(s => s.id !== stageId);
 	}
 
-	tokenize(text: string): IToken[] {
-		const out: IToken[] = [];
+	tokenize(text: string): ISpanToken[] {
+		const tokens: ISpanToken[] = [];
+		const len = text.length;
+
 		let pos = 0;
 
-		while (pos < text.length) {
-			let consumed = false;
+		while (pos < len) {
+			let advanced = false;
 
 			for (const stage of this.stages) {
-				let r = stage.run(text, pos, TokenizeMode.Tokenize);
-				if (r.consumed) {
-					out.push(...r.tokens);
-					pos = r.unprocessedStart;
-					consumed = true;
-					break;
+				const r = stage.run(text, pos, TokenizeMode.Tokenize);
+				if (!r.tokens.length) continue;
+
+				for (const t of r.tokens) {
+					tokens.push({
+						...t,
+						start: pos,
+						end: r.unprocessedStart
+					});
 				}
+
+				pos = r.unprocessedStart;
+				advanced = true;
+				break;
 			}
 
-			if (!consumed) pos++;
+			// ⚠️ 任何 stage 都没推进，强制前进 1
+			if (!advanced) {
+				pos++;
+			}
 		}
 
-		// 原生兜底
-		if (this.options.useNativeSegmenterForRest && pos < text.length) {
-			out.push({
-				txt: text.slice(pos),
-				type: 'word',
-				src: 'native'
-			});
+		// 🔧 用 span 补齐所有被跳过的区间
+		return this.fillGapsWithNative(text, tokens);
+	}
+
+	extractWithSpan(text: string): ISpanToken[] {
+		const out: ISpanToken[] = [];
+		let pos = 0;
+		let consumedUntil = -1;
+
+		while (pos < text.length) {
+			if (pos < consumedUntil) {
+				pos++;
+				continue;
+			}
+
+			let matched = false;
+
+			for (const stage of this.stages) {
+				const r = stage.run(text, pos, TokenizeMode.Extract);
+				if (!r.tokens.length) continue;
+
+				for (const t of r.tokens) {
+					// 主 token
+					out.push({
+						...t,
+						start: pos,
+						end: r.unprocessedStart
+					});
+
+					/* ---------- 英文 / host / email 的 sub ---------- */
+					if (t.type === 'host' || t.type === 'email' || t.type === 'word') {
+						const parts = t.txt.match(/[A-Za-z]+|\d+/g);
+						if (parts) {
+							let offset = 0;
+							for (const p of parts) {
+								const idx = t.txt.indexOf(p, offset);
+								if (idx !== -1) {
+									out.push({
+										txt: p,
+										type: 'word',
+										src: 'sub',
+										start: pos + idx,
+										end: pos + idx + p.length
+									});
+									offset = idx + p.length;
+								}
+							}
+						}
+					}
+
+					/* ---------- number 的 sub ---------- */
+					if (t.type === 'number') {
+						const nums = t.txt.match(/\d+/g);
+						if (nums) {
+							let offset = 0;
+							for (const n of nums) {
+								const idx = t.txt.indexOf(n, offset);
+								if (idx !== -1) {
+									out.push({
+										txt: n,
+										type: 'number',
+										src: 'sub',
+										start: pos + idx,
+										end: pos + idx + n.length
+									});
+									offset = idx + n.length;
+								}
+							}
+						}
+					}
+				}
+
+				// extract 的推进模型（关键）
+				if (r.unprocessedStart > consumedUntil) {
+					consumedUntil = r.unprocessedStart;
+				}
+
+				matched = true;
+				break;
+			}
+
+			if (!matched) {
+				pos++;
+			} else {
+				pos = consumedUntil > pos ? consumedUntil : pos + 1;
+			}
 		}
 
 		return out;
 	}
 
-	extract(text: string): IToken[] {
+
+
+	/* ---------------- gap 修复 ---------------- */
+
+	private fillGapsWithNative(
+		text: string,
+		tokens: ISpanToken[]
+	): ISpanToken[] {
+		if (!this.nativeSegmenter || !tokens.length) return tokens;
+
+		const out: ISpanToken[] = [];
+		let cursor = 0;
+
+		for (const t of tokens) {
+			if (cursor < t.start) {
+				out.push(
+					...this.nativeSegment(text, cursor, t.start)
+				);
+			}
+			out.push(t);
+			cursor = t.end;
+		}
+
+		if (cursor < text.length) {
+			out.push(
+				...this.nativeSegment(text, cursor, text.length)
+			);
+		}
+
+		return out;
+	}
+
+	private nativeSegment(
+		text: string,
+		start: number,
+		end: number
+	): ISpanToken[] {
+		const slice = text.slice(start, end);
+		const res: ISpanToken[] = [];
+
+		let offset = start;
+
+		for (const seg of this.nativeSegmenter!.segment(slice)) {
+			const s = offset + seg.index;
+			const e = s + seg.segment.length;
+
+			res.push({
+				txt: seg.segment,
+				type: 'word',
+				src: 'native',
+				start: s,
+				end: e
+			});
+		}
+
+		return res;
+	}
+
+	extractAll(text: string): IToken[] {
 		const out: IToken[] = [];
 		const seen = new Set<string>();
 
@@ -181,6 +336,12 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	extractText(text: string): string[] {
-		return this.extract(text).map(t => t.txt);
+		return this.extractAll(text).map(t => t.txt);
+	}
+
+	get loadedNameLexiconNames(): string[] {
+		return this.stages
+			.filter(s => s instanceof NameStage)
+			.map(s => (s as NameStage).lang);
 	}
 }

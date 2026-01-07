@@ -382,7 +382,7 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
   /**
    * 提取文本中的关键信息
    */
-  extract(text: string): IToken[] {
+  extractAll(text: string): IToken[] {
     // 空实现，返回默认值
     return this.tokenize(text);
   }

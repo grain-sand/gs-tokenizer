@@ -15,7 +15,8 @@ export class NameStage implements ITokenizerStage {
 	private first = new Set<string>();
 	private title = new Set<string>();
 
-	constructor(group: INameLexiconGroup, private lang: SupportedLanguage) {
+
+	constructor(group: INameLexiconGroup, public lang: SupportedLanguage) {
 		group.lastName.forEach(v => this.last.add(v));
 		group.firstName.forEach(v => this.first.add(v));
 		group.title.forEach(v => this.title.add(v));

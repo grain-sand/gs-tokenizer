@@ -5,6 +5,7 @@ export type TokenType =
 	| 'word'
 	| 'name'
 	| 'title'
+	| 'email'
 	| 'hashtag'
 	| 'mention'
 	| 'host'

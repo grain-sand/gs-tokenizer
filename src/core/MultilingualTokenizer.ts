@@ -15,6 +15,7 @@ import {DateStage} from "./DateStage";
 import {NumberStage} from "./NumberStage";
 import {SymbolSpaceStage} from "./SymbolSpaceStage";
 import {HostIPStage} from "./HostIPStage";
+import {EmailStage} from "./EmailStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -27,8 +28,8 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.options = options;
 
 		this.addStage(new DictionaryStage(this.index));
-
 		this.addStage(new SocialStage());
+		this.addStage(new EmailStage());
 		this.addStage(new HostIPStage());
 		this.addStage(new DateStage());
 		this.addStage(new NumberStage());
@@ -74,7 +75,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			let consumed = false;
 
 			for (const stage of this.stages) {
-				const r = stage.run(text, pos, TokenizeMode.Tokenize);
+				let r = stage.run(text, pos, TokenizeMode.Tokenize);
 				if (r.consumed) {
 					out.push(...r.tokens);
 					pos = r.unprocessedStart;
@@ -100,24 +101,76 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	extract(text: string): IToken[] {
 		const out: IToken[] = [];
+		const seen = new Set<string>();
+
 		let pos = 0;
+		let consumedUntil = -1;
 
 		while (pos < text.length) {
-			for (const stage of this.stages) {
-				const r = stage.run(text, pos, TokenizeMode.Extract);
-				out.push(...r.tokens);
+			if (pos < consumedUntil) {
+				pos++;
+				continue;
 			}
-			pos++;
-		}
 
-		if (this.options.deduplicate) {
-			const seen = new Set<string>();
-			return out.filter(t => {
-				const k = `${t.type}:${t.txt}:${t.src ?? ''}`;
-				if (seen.has(k)) return false;
-				seen.add(k);
-				return true;
-			});
+			let matched = false;
+
+			for (const stage of this.stages) {
+				let r = stage.run(text, pos, TokenizeMode.Extract);
+
+				if (!r.tokens.length) continue;
+
+				for (const t of r.tokens) {
+					const key = `${t.type}:${t.txt}:${t.src ?? ''}`;
+					if (seen.has(key)) continue;
+
+					seen.add(key);
+					out.push(t);
+
+					// ⭐ 关键修复：只使用 unprocessedStart 推进
+					if (r.unprocessedStart > consumedUntil) {
+						consumedUntil = r.unprocessedStart;
+					}
+
+					/* ---------- 英文最小粒度 ---------- */
+					if (t.type === 'host' || t.type === 'email' || t.type === 'word') {
+						const parts = t.txt.match(/[A-Za-z]+|\d+/g);
+						if (parts) {
+							for (const p of parts) {
+								const k = `word:${p}:sub`;
+								if (!seen.has(k)) {
+									seen.add(k);
+									out.push({ txt: p, type: 'word', src: 'sub' });
+								}
+							}
+						}
+					}
+
+					/* ---------- 数字最小粒度 ---------- */
+					if (t.type === 'number') {
+						const nums = t.txt.match(/\d+/g);
+						if (nums) {
+							for (const n of nums) {
+								const k = `number:${n}:sub`;
+								if (!seen.has(k)) {
+									seen.add(k);
+									out.push({ txt: n, type: 'number', src: 'sub' });
+								}
+							}
+						}
+					}
+				}
+
+				matched = true;
+				break; // 命中最高优先级 stage 即停止
+			}
+
+			if (!matched) {
+				pos++;
+			} else {
+				// ⭐ 绝对兜底：禁止原地
+				if (consumedUntil <= pos) pos++;
+				else pos = consumedUntil;
+			}
 		}
 
 		return out;

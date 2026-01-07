@@ -6,18 +6,48 @@ export class NumberStage implements ITokenizerStage {
 	priority = 10;
 	consuming = true;
 
-	private re = /^(\d+(?:\.\d+)?\s*[-~]\s*\d+(?:\.\d+)?|\d+(?:\.\d+)?\s*(?:万|亿|余万|多|成|折|岁以上|以内|系|类)?|[一二三四五六七八九十百千万两伍]+\s*[成折]?|\d+(?:\.\d+)?\s*(?:kg|公斤|英里|米|公里|元钱|元))/;
+	// 连续数字（支持小数、科学计数、百分号、分隔符）
+	private static NUM =
+		/^[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:e[+-]?\d+)?%?/i;
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
-		const m = this.re.exec(text.slice(start));
+	run(
+		text: string,
+		start: number,
+		mode: TokenizeMode
+	): IStageResult {
+		const rest = text.slice(start);
+		const m = NumberStage.NUM.exec(rest);
+
+		// 没命中 → 绝不消费
 		if (!m) {
-			return { tokens: [], unprocessedStart: start, consumed: false };
+			return {
+				tokens: [],
+				unprocessedStart: start,
+				consumed: false
+			};
 		}
 
+		const raw = m[0];
+
+		// 👉 这里开始，不管你要不要这个数字
+		// 👉 指针都必须前进
+		const next = start + raw.length;
+
+		// 例：过滤路径里的版本号 v1
+		if (start > 0 && /[a-zA-Z]/.test(text[start - 1])) {
+			return {
+				tokens: [],
+				unprocessedStart: next,
+				consumed: true
+			};
+		}
+
+		// 正常数字
 		return {
-			tokens: [{ txt: m[0], type: 'number', src: 'number' }],
-			unprocessedStart: start + m[0].length,
-			consumed: mode === TokenizeMode.Tokenize
+			tokens: [{ txt: raw, type: 'number' }],
+			unprocessedStart: next,
+			consumed: true
 		};
 	}
 }
+

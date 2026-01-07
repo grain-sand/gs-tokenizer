@@ -1,35 +1,56 @@
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
+import {IStageResult, ITokenizerStage} from "../type";
 
 export class SymbolSpaceStage implements ITokenizerStage {
 	id = 'symbol-space';
 	order = 7;
 	priority = 0;
-	consuming = true;
+	consuming = false;
 
-	private spaceRe = /^\s+/;
-	private symbolRe = /^[^\p{L}\p{N}\s]+/u;
+	run(text: string, start: number): IStageResult {
+		const len = text.length;
+		let i = start;
+		const ch = text[i];
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
-		const slice = text.slice(start);
+		// 空白
+		if (/\s/.test(ch)) {
+			while (i < len && /\s/.test(text[i])) i++;
 
-		const s = this.spaceRe.exec(slice);
-		if (s) {
 			return {
-				tokens: [{ txt: s[0], type: 'space', src: 'space' }],
-				unprocessedStart: start + s[0].length,
-				consumed: mode === TokenizeMode.Tokenize
+				tokens: [{
+					txt: text.slice(start, i),
+					type: 'space'
+				}],
+				unprocessedStart: i, // ✅ 一定前进
+				consumed: false
 			};
 		}
 
-		const p = this.symbolRe.exec(slice);
-		if (p) {
+		// 符号（非字母数字）
+		if (!/[0-9A-Za-z\u4e00-\u9fff]/.test(ch)) {
+			while (
+				i < len &&
+				!/[0-9A-Za-z\u4e00-\u9fff\s]/.test(text[i])
+				) {
+				i++;
+			}
+
 			return {
-				tokens: [{ txt: p[0], type: 'punctuation', src: 'punctuation' }],
-				unprocessedStart: start + p[0].length,
-				consumed: mode === TokenizeMode.Tokenize
+				tokens: [{
+					txt: text.slice(start, i),
+					type: 'punctuation'
+				}],
+				unprocessedStart: i, // ✅
+				consumed: false
 			};
 		}
 
-		return { tokens: [], unprocessedStart: start, consumed: false };
+		// 不认识，也必须前进
+		return {
+			tokens: [],
+			unprocessedStart: start + 1, // ✅ 兜底推进
+			consumed: false
+		};
 	}
 }
+
+

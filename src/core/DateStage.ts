@@ -3,21 +3,61 @@ import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
 export class DateStage implements ITokenizerStage {
 	id = 'date';
 	order = 5;
-	priority = 10;
+	priority = 0;
 	consuming = true;
 
-	private re = /^(\d{1,4}年代|\d+\s*[-~]\s*\d+\s*(?:年|个月|天|小时)|(?:第|no)\s*\d+|\d+(?:\.\d+)?\s*(?:年|个月|天|小时|点|分钟前|秒钟|年前)|[一二三四五六七八九十百千万两]+(?:年|个月|天|小时))/;
+	private static FULL: RegExp[] = [
+		/^\d{4}年\d{1,2}月\d{1,2}日/,
+		/^\d{4}[-/.]\d{1,2}[-/.]\d{1,2}/,
+		/^\d{1,2}[-/.]\d{1,2}[-/.]\d{4}/
+	];
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
-		const m = this.re.exec(text.slice(start));
-		if (!m) {
-			return {tokens: [], unprocessedStart: start, consumed: false};
+	private static PART: RegExp[] = [
+		/^\d{4}年/,
+		/^\d{1,2}月/,
+		/^\d{1,2}日/
+	];
+
+	run(
+		text: string,
+		start: number,
+		mode: TokenizeMode
+	): IStageResult {
+		const rest = text.slice(start);
+
+		/* ---------- ① 完整日期优先 ---------- */
+		for (const re of DateStage.FULL) {
+			const m = re.exec(rest);
+			if (m) {
+				return {
+					tokens: [{ txt: m[0], type: 'date' }],
+					unprocessedStart: start + m[0].length,
+					consumed: true
+				};
+			}
 		}
 
+		/* ---------- ② extract 才拆字段 ---------- */
+		if (mode === TokenizeMode.Extract) {
+			for (const re of DateStage.PART) {
+				const m = re.exec(rest);
+				if (m) {
+					return {
+						tokens: [{ txt: m[0], type: 'date' }],
+						unprocessedStart: start + m[0].length,
+						consumed: true
+					};
+				}
+			}
+		}
+
+		/* ---------- ③ 明确不处理 ---------- */
 		return {
-			tokens: [{txt: m[0], type: 'date', src: 'date'}],
-			unprocessedStart: start + m[0].length,
-			consumed: mode === TokenizeMode.Tokenize
+			tokens: [],
+			unprocessedStart: start,
+			consumed: false
 		};
 	}
 }
+
+

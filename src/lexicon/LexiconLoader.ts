@@ -1,9 +1,6 @@
-import {IMultilingualTokenizer,ILexiconEntry} from '../type';
+import {IMultilingualTokenizer,ILexiconEntry} from '../old-type';
 import * as lexicons from './data';
-
-// 公开的语言数组
-// 支持的语言包括'zh'作为'zh-CN'的别名
-export const SUPPORTED_LANGUAGES = ['zh', 'zh-CN', 'zh-TW', 'en', 'ja', 'ko'] as const;
+import {SUPPORTED_LANGUAGES, SupportedLanguage} from "../type";
 // 公开的词库类型数组
 export const SUPPORTED_TYPES = [
   'firstName', 'lastName', 'famousName', 'famousWorks', 'honorific', 'nickname',
@@ -13,7 +10,6 @@ export const SUPPORTED_TYPES = [
 ] as const;
 
 // 基于数组的联合类型
-export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 export type SupportedType = typeof SUPPORTED_TYPES[number];
 
 export interface LexiconConfig {

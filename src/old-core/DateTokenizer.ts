@@ -1,4 +1,4 @@
-import { IToken } from '../type';
+import { IToken } from '../old-type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -32,7 +32,7 @@ export class DateTokenizer implements ILanguageTokenizer {
 
     // 收集所有日期匹配
     const dateMatches: Array<{ text: string; index: number }> = [];
-    
+
     // 使用综合正则表达式匹配所有可能的日期格式
     for (const match of text.matchAll(this.comprehensiveDatePattern)) {
       if (match.index !== undefined && match[0]) {
@@ -46,10 +46,10 @@ export class DateTokenizer implements ILanguageTokenizer {
     // 合并重叠或相邻的匹配
     const mergedMatches: Array<{ text: string; index: number }> = [];
     let currentMatch: { text: string; index: number; end: number } | null = null;
-    
+
     for (const match of dateMatches) {
       const matchEnd = match.index + match.text.length;
-      
+
       if (!currentMatch) {
         currentMatch = { ...match, end: matchEnd };
       } else if (match.index <= currentMatch.end) {
@@ -66,7 +66,7 @@ export class DateTokenizer implements ILanguageTokenizer {
         currentMatch = { ...match, end: matchEnd };
       }
     }
-    
+
     if (currentMatch) {
       mergedMatches.push({ text: currentMatch.text, index: currentMatch.index });
     }
@@ -78,17 +78,17 @@ export class DateTokenizer implements ILanguageTokenizer {
         const nonDateText = text.slice(lastIndex, match.index);
         tokens.push({ txt: nonDateText, type: 'other', lang: language, src: '' });
       }
-      
+
       // 添加日期token
       if (this.isValidDate(match.text)) {
         tokens.push({ txt: match.text, type: 'date', lang: language, src: '' });
       } else {
         tokens.push({ txt: match.text, type: 'other', lang: language, src: '' });
       }
-      
+
       lastIndex = match.index + match.text.length;
     }
-    
+
     // 添加剩余的文本
     if (lastIndex < text.length) {
       const remainingText = text.slice(lastIndex);
@@ -104,15 +104,15 @@ export class DateTokenizer implements ILanguageTokenizer {
     if (/^\d+(?:小时|分钟|秒|毫秒|天|周|月|年|\s+(?:hours?|minutes?|seconds?|milliseconds?|days?|weeks?|months?|years?))$/.test(text)) {
       return true;
     }
-    
+
     // 处理时间格式：中文数字+时间单位
     if (/^[零一二三四五六七八九十百千万亿]+(?:小时|分钟|秒|毫秒|天|周|月|年)$/.test(text)) {
       return true;
     }
-    
+
     // 处理不同的日期格式
     let year: number, month: number, day: number;
-    
+
     // 8位数字日期：20231001
     if (/^\d{8}$/.test(text)) {
       year = parseInt(text.slice(0, 4));
@@ -151,7 +151,7 @@ export class DateTokenizer implements ILanguageTokenizer {
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       const match = text.match(/^(\w+)\s+(\d{1,2})(?:,\s+(\d{4}))?$/i);
       if (!match) return false;
-      
+
       month = monthNames.findIndex(m => m.toLowerCase() === match[1].substring(0, 3).toLowerCase()) + 1;
       day = parseInt(match[2]);
       year = match[3] ? parseInt(match[3]) : new Date().getFullYear();
@@ -160,7 +160,7 @@ export class DateTokenizer implements ILanguageTokenizer {
     else if (/^(\d{4})?年?(\d{1,2})月(\d{1,2})日?(\d{4})?$/.test(text)) {
       const match = text.match(/^(\d{4})?年?(\d{1,2})月(\d{1,2})日?(\d{4})?$/);
       if (!match) return false;
-      
+
       year = parseInt(match[1] || match[4] || new Date().getFullYear().toString());
       month = parseInt(match[2]);
       day = parseInt(match[3]);
@@ -168,18 +168,18 @@ export class DateTokenizer implements ILanguageTokenizer {
     else {
       return false;
     }
-    
+
     return this.isValidDateComponents(year, month, day);
   }
-  
 
-  
+
+
   // 验证日期组件是否有效
   private isValidDateComponents(year: number, month: number, day: number): boolean {
     // 验证月和日的范围
     if (month < 1 || month > 12) return false;
     if (day < 1 || day > 31) return false;
-    
+
     // 检查不同月份的天数
     const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     if (month === 2) {
@@ -189,7 +189,7 @@ export class DateTokenizer implements ILanguageTokenizer {
     } else {
       if (day > daysInMonth[month - 1]) return false;
     }
-    
+
     return true;
   }
 }

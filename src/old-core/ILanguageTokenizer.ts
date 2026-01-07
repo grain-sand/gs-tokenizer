@@ -1,4 +1,4 @@
-import { IToken } from '../type';
+import { IToken } from '../old-type';
 
 /**
  * 语言分词器接口
@@ -11,7 +11,7 @@ export interface ILanguageTokenizer {
    * @returns 检测到的语言代码
    */
   detectLanguage(text: string): string;
-  
+
   /**
    * 对文本进行分词
    * @param text - 要分词的文本

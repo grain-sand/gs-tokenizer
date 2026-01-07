@@ -1,4 +1,4 @@
-import { IToken } from '../type';
+import { IToken } from '../old-type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**

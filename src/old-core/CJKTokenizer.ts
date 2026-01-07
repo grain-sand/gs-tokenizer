@@ -1,5 +1,5 @@
 import {ILanguageTokenizer} from './ILanguageTokenizer';
-import {IToken, ILexiconEntry} from '../type';
+import {IToken, ILexiconEntry} from '../old-type';
 
 /**
  * CJK分词器类，实现ILanguageTokenizer接口，用于处理中文、日文和韩文等CJK语言的文本分词
@@ -102,7 +102,7 @@ export class CJKTokenizer implements ILanguageTokenizer {
 						for (const lexicon of customLexicons) {
 							if (lexicon.data.has(candidate)) {
 								// 如果找到匹配词
-								if (!bestMatch || j > bestMatch.length || 
+								if (!bestMatch || j > bestMatch.length ||
 								   (j === bestMatch.length && lexicon.priority > bestPriority)) {
 									// 优先选择更长的词，或者相同长度下优先级更高的词
 									bestMatch = { length: j, text: candidate };

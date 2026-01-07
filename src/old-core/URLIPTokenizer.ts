@@ -1,4 +1,4 @@
-import { IToken } from '../type';
+import { IToken } from '../old-type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -33,7 +33,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
 
     // 首先找出所有主机名和IP地址的匹配位置
     const matches: Array<{ index: number; endIndex: number; type: 'host' | 'ip'; text: string }> = [];
-    
+
     // 查找所有IP地址
     let match;
     while ((match = ipv4Regex.exec(text)) !== null) {
@@ -44,7 +44,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         text: match[0]
       });
     }
-    
+
     // 查找所有主机名
     while ((match = hostRegex.exec(text)) !== null) {
       matches.push({
@@ -54,10 +54,10 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         text: match[0]
       });
     }
-    
+
     // 按位置排序
     matches.sort((a, b) => a.index - b.index);
-    
+
     // 去重：如果一个匹配被另一个包含，保留较长的那个
     // 如果两个匹配完全相同，优先保留IP类型
     const uniqueMatches: typeof matches = [];
@@ -66,15 +66,15 @@ export class HostIPTokenizer implements ILanguageTokenizer {
       for (let j = 0; j < matches.length; j++) {
         if (i !== j) {
           // 检查是否完全相同的匹配
-          const isExactMatch = 
-            matches[i].index === matches[j].index && 
+          const isExactMatch =
+            matches[i].index === matches[j].index &&
             matches[i].endIndex === matches[j].endIndex;
-          
+
           // 检查是否被包含
-          const isIncluded = 
-            matches[i].index >= matches[j].index && 
+          const isIncluded =
+            matches[i].index >= matches[j].index &&
             matches[i].endIndex <= matches[j].endIndex;
-          
+
           if (isExactMatch) {
             // 如果两个匹配完全相同，优先保留IP类型
             if (matches[j].type === 'ip') {
@@ -92,7 +92,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         uniqueMatches.push(matches[i]);
       }
     }
-    
+
     // 生成Token
     for (const match of uniqueMatches) {
       // 添加匹配前的文本
@@ -103,17 +103,17 @@ export class HostIPTokenizer implements ILanguageTokenizer {
           lang: language
         });
       }
-      
+
       // 添加匹配的主机名或IP
       tokens.push({
         txt: match.text,
         type: match.type,
         lang: 'en'
       });
-      
+
       currentIndex = match.endIndex;
     }
-    
+
     // 添加剩余文本
     if (currentIndex < text.length) {
       tokens.push({
@@ -122,7 +122,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         lang: language
       });
     }
-    
+
     return tokens;
   }
 }

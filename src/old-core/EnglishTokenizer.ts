@@ -1,4 +1,4 @@
-import { IToken, ILexiconEntry } from '../type';
+import { IToken, ILexiconEntry } from '../old-type';
 import { ILanguageTokenizer } from './ILanguageTokenizer';
 
 /**
@@ -42,10 +42,10 @@ export class EnglishTokenizer implements ILanguageTokenizer {
     const chars = Array.from(text); // 正确处理Unicode代理对
     let currentIndex = 0;
     const length = chars.length;
-    
+
     while (currentIndex < length) {
       const char = chars[currentIndex];
-      
+
       // 处理空格
       if (char.match(/\s/)) {
         let spaceEnd = currentIndex;
@@ -53,16 +53,16 @@ export class EnglishTokenizer implements ILanguageTokenizer {
           spaceEnd++;
         }
         const tokenText = chars.slice(currentIndex, spaceEnd).join('');
-        tokens.push({ 
-          txt: tokenText, 
-          type: 'space', 
-          lang: language, 
-          src: '' 
+        tokens.push({
+          txt: tokenText,
+          type: 'space',
+          lang: language,
+          src: ''
         });
         currentIndex = spaceEnd;
         continue;
       }
-      
+
       // 处理emoji
       if (this.isEmoji(char)) {
         let emojiEnd = currentIndex;
@@ -70,16 +70,16 @@ export class EnglishTokenizer implements ILanguageTokenizer {
           emojiEnd++;
         }
         const tokenText = chars.slice(currentIndex, emojiEnd).join('');
-        tokens.push({ 
-          txt: tokenText, 
-          type: 'emoji', 
-          lang: language, 
-          src: '' 
+        tokens.push({
+          txt: tokenText,
+          type: 'emoji',
+          lang: language,
+          src: ''
         });
         currentIndex = emojiEnd;
         continue;
       }
-      
+
       // 处理单词（字母数字组合）
       if (char.match(/[a-zA-Z0-9]/)) {
         let wordEnd = currentIndex;
@@ -87,16 +87,16 @@ export class EnglishTokenizer implements ILanguageTokenizer {
           wordEnd++;
         }
         const tokenText = chars.slice(currentIndex, wordEnd).join('');
-        tokens.push({ 
-          txt: tokenText, 
-          type: 'word', 
-          lang: language, 
-          src: '' 
+        tokens.push({
+          txt: tokenText,
+          type: 'word',
+          lang: language,
+          src: ''
         });
         currentIndex = wordEnd;
         continue;
       }
-      
+
       // 处理标点符号
       let punctuationEnd = currentIndex;
       while (punctuationEnd < length) {
@@ -107,19 +107,19 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         punctuationEnd++;
       }
       const tokenText = chars.slice(currentIndex, punctuationEnd).join('');
-      tokens.push({ 
-        txt: tokenText, 
-        type: 'punctuation', 
-        lang: language, 
-        src: '' 
+      tokens.push({
+        txt: tokenText,
+        type: 'punctuation',
+        lang: language,
+        src: ''
       });
       currentIndex = punctuationEnd;
     }
-    
+
     // 标记英文姓名
     return this.tagNameTokens(tokens, language);
   }
-  
+
   /**
    * 判断字符是否为emoji
    * @param char - 要判断的字符
@@ -128,7 +128,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
   private isEmoji(char: string): boolean {
     return /\p{Emoji}/u.test(char) && !/[0-9#]/.test(char);
   }
-  
+
 
 
   private tagNameTokens(tokens: IToken[], language: string): IToken[] {
@@ -157,7 +157,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
           if (matched) continue;
         }
       }
-      
+
       // 如果没有匹配到任何词库，保留原始token
       taggedTokens.push({
         txt: tokens[i].txt,

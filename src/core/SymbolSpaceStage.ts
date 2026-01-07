@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage} from "../type";
+import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class SymbolSpaceStage implements ITokenizerStage {
 	id = 'symbol-space';
@@ -6,7 +6,7 @@ export class SymbolSpaceStage implements ITokenizerStage {
 	priority = 0;
 	consuming = false;
 
-	run(text: string, start: number): IStageResult {
+	best(text: string, start: number): IStageBestResult {
 		const len = text.length;
 		let i = start;
 		const ch = text[i];
@@ -50,6 +50,10 @@ export class SymbolSpaceStage implements ITokenizerStage {
 			unprocessedStart: start + 1, // ✅ 兜底推进
 			consumed: false
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }
 

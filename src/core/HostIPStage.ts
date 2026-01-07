@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage, TokenizeMode, TokenType} from "../type";
+import {IStageBestResult, ITokenizerStage, TokenType} from "../type";
 
 export class HostIPStage implements ITokenizerStage {
 	id = 'host-ip';
@@ -18,11 +18,10 @@ export class HostIPStage implements ITokenizerStage {
 	private static HOST =
 		/^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+(?:\:\d{1,5})?/;
 
-	run(
+	best(
 		text: string,
-		start: number,
-		mode: TokenizeMode
-	): IStageResult {
+		start: number
+	): IStageBestResult {
 		const rest = text.slice(start);
 		let m: RegExpExecArray | null = null;
 		let type: TokenType | null = null;
@@ -67,6 +66,10 @@ export class HostIPStage implements ITokenizerStage {
 			unprocessedStart: start + m[0].length,
 			consumed: true
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }
 

@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
+import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class NumberStage implements ITokenizerStage {
 	id = 'number';
@@ -10,11 +10,10 @@ export class NumberStage implements ITokenizerStage {
 	private static NUM =
 		/^[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:e[+-]?\d+)?%?/i;
 
-	run(
+	best(
 		text: string,
-		start: number,
-		mode: TokenizeMode
-	): IStageResult {
+		start: number
+	): IStageBestResult {
 		const rest = text.slice(start);
 		const m = NumberStage.NUM.exec(rest);
 
@@ -48,6 +47,10 @@ export class NumberStage implements ITokenizerStage {
 			unprocessedStart: next,
 			consumed: true
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }
 

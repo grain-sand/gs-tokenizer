@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
+import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class DateStage implements ITokenizerStage {
 	id = 'date';
@@ -18,11 +18,10 @@ export class DateStage implements ITokenizerStage {
 		/^\d{1,2}日/
 	];
 
-	run(
+	best(
 		text: string,
-		start: number,
-		mode: TokenizeMode
-	): IStageResult {
+		start: number
+	): IStageBestResult {
 		const rest = text.slice(start);
 
 		/* ---------- ① 完整日期优先 ---------- */
@@ -38,18 +37,18 @@ export class DateStage implements ITokenizerStage {
 		}
 
 		/* ---------- ② extract 才拆字段 ---------- */
-		if (mode === TokenizeMode.Extract) {
-			for (const re of DateStage.PART) {
-				const m = re.exec(rest);
-				if (m) {
-					return {
-						tokens: [{ txt: m[0], type: 'date' }],
-						unprocessedStart: start + m[0].length,
-						consumed: true
-					};
-				}
-			}
-		}
+		// if (mode === TokenizeMode.Extract) {
+		// 	for (const re of DateStage.PART) {
+		// 		const m = re.exec(rest);
+		// 		if (m) {
+		// 			return {
+		// 				tokens: [{ txt: m[0], type: 'date' }],
+		// 				unprocessedStart: start + m[0].length,
+		// 				consumed: true
+		// 			};
+		// 		}
+		// 	}
+		// }
 
 		/* ---------- ③ 明确不处理 ---------- */
 		return {
@@ -57,6 +56,10 @@ export class DateStage implements ITokenizerStage {
 			unprocessedStart: start,
 			consumed: false
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }
 

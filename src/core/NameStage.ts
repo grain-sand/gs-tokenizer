@@ -1,9 +1,8 @@
-
 /* =========================================================
  * Stage 2：姓名分词（含中文 老 / 小）
  * ========================================================= */
 
-import {INameLexiconGroup, IStageResult, ITokenizerStage, SupportedLanguage, TokenizeMode} from "../type";
+import {INameLexiconGroup, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../type";
 
 export class NameStage implements ITokenizerStage {
 	id = 'name';
@@ -22,7 +21,7 @@ export class NameStage implements ITokenizerStage {
 		group.title.forEach(v => this.title.add(v));
 	}
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
+	best(text: string, start: number): IStageBestResult {
 		let pos = start;
 		let prefix = '';
 
@@ -50,11 +49,15 @@ export class NameStage implements ITokenizerStage {
 						src: 'name'
 					}],
 					unprocessedStart: afterLast + fn.length,
-					consumed: mode === TokenizeMode.Tokenize
+					consumed: true
 				};
 			}
 		}
 
 		return { tokens: [], unprocessedStart: start, consumed: false };
+	}
+
+	all(text: string) {
+		return [];
 	}
 }

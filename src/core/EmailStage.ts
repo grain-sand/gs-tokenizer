@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
+import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class EmailStage implements ITokenizerStage {
 	id = 'email';
@@ -9,7 +9,7 @@ export class EmailStage implements ITokenizerStage {
 	private re =
 		/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
+	best(text: string, start: number): IStageBestResult {
 		const m = this.re.exec(text.slice(start));
 		if (!m) {
 			return { tokens: [], unprocessedStart: start, consumed: false };
@@ -22,8 +22,12 @@ export class EmailStage implements ITokenizerStage {
 				src: 'email'
 			}],
 			unprocessedStart: start + m[0].length,
-			consumed: mode === TokenizeMode.Tokenize
+			consumed: true
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }
 

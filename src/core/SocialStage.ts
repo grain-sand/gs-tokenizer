@@ -1,4 +1,4 @@
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
+import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class SocialStage implements ITokenizerStage {
 	id = 'social';
@@ -8,7 +8,7 @@ export class SocialStage implements ITokenizerStage {
 
 	private nameRe = /^[\p{L}\p{N}_\-]+/u;
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
+	best(text: string, start: number): IStageBestResult {
 		const ch = text[start];
 		if (ch !== '@' && ch !== '#') {
 			return { tokens: [], unprocessedStart: start, consumed: false };
@@ -28,7 +28,11 @@ export class SocialStage implements ITokenizerStage {
 				src: 'social'
 			}],
 			unprocessedStart: pos + m[0].length,
-			consumed: mode === TokenizeMode.Tokenize
+			consumed: true
 		};
+	}
+
+	all(text: string) {
+		return [];
 	}
 }

@@ -1,7 +1,3 @@
-/* =========================
- * 基础常量
- * ========================= */
-
 export const SUPPORTED_LANGUAGES = [
 	'zh',
 	'zh-CN',
@@ -49,21 +45,7 @@ export interface ISpanToken extends IToken {
 }
 
 
-/* =========================
- * 分词模式（数字枚举，低开销）
- * ========================= */
-
-export const enum TokenizeMode {
-	Tokenize = 0,
-	Extract = 1
-}
-
-
-/* =========================
- * Stage 执行结果
- * ========================= */
-
-export interface IStageResult {
+export interface IStageBestResult {
 	/** 当前阶段识别出的 tokens */
 	tokens: IToken[];
 
@@ -81,10 +63,6 @@ export interface IStageResult {
 	consumed: boolean;
 }
 
-
-/* =========================
- * 通用 Stage 定义（唯一接口）
- * ========================= */
 
 export interface ITokenizerStage {
 	/** 阶段唯一标识（调试 / src / 替换用） */
@@ -110,22 +88,31 @@ export interface ITokenizerStage {
 	consuming: boolean;
 
 	/**
-	 * 执行逻辑
-	 * @param text 原始完整文本
-	 * @param start 上一阶段未处理的起始位置
-	 * @param mode Tokenize | Extract
+	 * 初始化逻辑（可选）
+	 * - 主要用于获取 `IMultilingualTokenizer` 实例
+	 * - 仅在首次加载时调用
+	 * - 也可用于加载词库、初始化模型等
 	 */
-	run(
-		text: string,
-		start: number,
-		mode: TokenizeMode
-	): IStageResult;
+	initialize?: (tokenizer: IMultilingualTokenizer) => void;
 
 	/**
 	 * 可选：能力声明（未来扩展用）
 	 * 例：['dictionary', 'name', 'date']
 	 */
 	capabilities?: readonly string[];
+
+	/**
+	 * 执行逻辑
+	 * @param text 原始完整文本
+	 * @param start 上一阶段未处理的起始位置
+	 * @param mode Tokenize | Extract
+	 */
+	best(
+		text: string,
+		start: number,
+	): IStageBestResult;
+
+	all(text: string, mainPost: number): ISpanToken[];
 }
 
 
@@ -148,7 +135,9 @@ export interface INameLexiconGroup {
 
 export interface IMultilingualTokenizer {
 
-	/* ---------- 词库管理 ---------- */
+	readonly wordIndex: IWordIndex;
+
+	loadedLexiconNames: string[];
 
 	addDictionary(
 		words: string[],
@@ -156,6 +145,8 @@ export interface IMultilingualTokenizer {
 		priority?: number,
 		language?: SupportedLanguage
 	): void;
+
+	/* ---------- Stage 扩展 ---------- */
 
 	/**
 	 * 设置姓名词库
@@ -167,8 +158,6 @@ export interface IMultilingualTokenizer {
 		language: SupportedLanguage
 	): void;
 
-	/* ---------- Stage 扩展 ---------- */
-
 	/**
 	 * 添加自定义分词 Stage
 	 * - 可用于新增能力
@@ -176,42 +165,33 @@ export interface IMultilingualTokenizer {
 	 */
 	addStage(stage: ITokenizerStage): void;
 
-	/**
-	 * 移除指定 Stage
-	 */
-	removeStage(stageId: string): void;
-
-	/* ---------- 执行 ---------- */
-
 	tokenize(text: string): IToken[];
 
-	extractAll(text: string): IToken[];
+	tokenizeAll(text: string): IToken[];
 
 	tokenizeText(text: string): string[];
 
-	extractText(text: string): string[];
-
-	/* ---------- 状态 ---------- */
-
-	loadedLexiconNames: string[];
+	tokenizeTextAll(text: string): string[];
 }
 
 
-/* =========================
- * 执行器配置（可选）
- * ========================= */
+export interface LexiconMeta {
+	name: string;
+	priority: number;
+	lang?: SupportedLanguage;
+}
 
-export interface TokenizerOptions {
-	/**
-	 * 当前前 7 个 stage 执行完后，
-	 * 若仍存在未处理字符，是否使用浏览器原生分词处理剩余文本
-	 *
-	 * tokenize / extract 行为一致
-	 */
-	useNativeSegmenterForRest?: boolean;
+export interface IWordMatch {
+	start?: number;
+	end?: number;
+	word: string;
+	meta: LexiconMeta;
+}
 
-	/**
-	 * extract 模式下是否对结果去重
-	 */
-	deduplicate?: boolean;
+export interface IWordIndex {
+	add(word: string, meta: LexiconMeta): void;
+
+	match(text: string, pos: number): Array<IWordMatch>;
+
+	matches(text: string, mainPos: number): Array<ISpanToken>;
 }

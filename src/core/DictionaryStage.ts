@@ -1,23 +1,23 @@
-
-/* =========================================================
- * Stage 1：纯词库分词
- * ========================================================= */
-
-import {IStageResult, ITokenizerStage, TokenizeMode} from "../type";
-import {WordIndex} from "./WordIndex";
+import {IMultilingualTokenizer, IStageBestResult, ITokenizerStage, IWordIndex} from "../type";
 
 export class DictionaryStage implements ITokenizerStage {
 	id = 'dictionary';
 	order = 1;
 	priority = 0;
 	consuming = true;
+	private index?: IWordIndex
 
-	constructor(private index: WordIndex) {}
+	constructor() {
+	}
 
-	run(text: string, start: number, mode: TokenizeMode): IStageResult {
-		const matches = this.index.match(text, start);
+	initialize(tokenizer: IMultilingualTokenizer) {
+		this.index = tokenizer.wordIndex;
+	}
+
+	best(text: string, start: number): IStageBestResult {
+		const matches = this.index!.match(text, start);
 		if (!matches.length) {
-			return { tokens: [], unprocessedStart: start, consumed: false };
+			return {tokens: [], unprocessedStart: start, consumed: false};
 		}
 
 		const best = matches.sort((a, b) => {
@@ -35,7 +35,11 @@ export class DictionaryStage implements ITokenizerStage {
 				src: best.meta.name
 			}],
 			unprocessedStart: start + best.word.length,
-			consumed: mode === TokenizeMode.Tokenize
+			consumed: true
 		};
+	}
+
+	all(text: string, mainPos: number) {
+		return this.index!.matches(text, mainPos);
 	}
 }

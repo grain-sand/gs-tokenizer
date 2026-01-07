@@ -56,21 +56,47 @@ export class LexiconLoader {
     const loader = LexiconLoader.getInstance(actualConfig);
     const lexicons = loader.getLexicons();
 
-    // 按语言分组添加到tokenizer
+    // 按语言分组，同时分离出特殊的姓名词库
     const lexiconsByLang: Record<string, LexiconEntryExt[]> = {};
+    const nameLexiconsByLang: Record<string, {lastName?: string[], firstName?: string[], title?: string[]}> = {};
+    
     lexicons.forEach(lexicon => {
-      if (!lexiconsByLang[lexicon.lang]) {
-        lexiconsByLang[lexicon.lang] = [];
+      // 提取词库类型，如 'zh_CN_firstName' -> 'firstName'
+      const lexiconType = lexicon.name.split('_').pop();
+      
+      if (lexiconType === 'firstName' || lexiconType === 'lastName' || lexiconType === 'title') {
+        // 处理特殊的姓名词库
+        if (!nameLexiconsByLang[lexicon.lang]) {
+          nameLexiconsByLang[lexicon.lang] = {};
+        }
+        nameLexiconsByLang[lexicon.lang][lexiconType] = lexicon.words;
+      } else {
+        // 处理普通词库
+        if (!lexiconsByLang[lexicon.lang]) {
+          lexiconsByLang[lexicon.lang] = [];
+        }
+        lexiconsByLang[lexicon.lang].push(lexicon);
       }
-      lexiconsByLang[lexicon.lang].push(lexicon);
     });
 
-    // 添加到tokenizer
+    // 添加普通词库到tokenizer
     for (const lang in lexiconsByLang) {
-      // 添加到tokenizer，使用预存储的数组版本避免重复转换
       lexiconsByLang[lang].forEach(lexicon => {
         tokenizer.addDictionary(lexicon.words, lexicon.name, lexicon.priority, lexicon.lang as any);
       });
+    }
+    
+    // 添加姓名词库到tokenizer
+    for (const lang in nameLexiconsByLang) {
+      const nameLexicon = nameLexiconsByLang[lang];
+      // 只有当至少包含一个姓名相关词库时才设置
+      if (nameLexicon.firstName || nameLexicon.lastName || nameLexicon.title) {
+        tokenizer.setNameDictionary({
+          lastName: nameLexicon.lastName || [],
+          firstName: nameLexicon.firstName || [],
+          title: nameLexicon.title || []
+        }, lang as any);
+      }
     }
   }
 

@@ -54,4 +54,5 @@ export interface IMultilingualTokenizer {
 	/* ---------- 状态 ---------- */
 
 	loadedLexiconNames: string[];
+
 }

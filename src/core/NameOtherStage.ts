@@ -2,9 +2,9 @@
  * Stage 2：姓名分词（含中文 老 / 小）
  * ========================================================= */
 
-import {INameLexiconGroup, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../type";
+import {INameLexiconGroup, ISpanToken, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../type";
 
-export class NameStage implements ITokenizerStage {
+export class NameOtherStage implements ITokenizerStage {
 	id = 'name';
 	order = 2;
 	priority = 0;
@@ -23,24 +23,13 @@ export class NameStage implements ITokenizerStage {
 
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;
-		let prefix = '';
-
-		if (this.lang.startsWith('zh')) {
-			const p = text[start];
-			if (p === '老' || p === '小') {
-				prefix = p;
-				pos++;
-			}
-		}
 
 		for (const ln of this.last) {
 			if (!text.startsWith(ln, pos)) continue;
-			const afterLast = pos + ln.length;
-
+			const afterLast = pos + ln.length + 1;
 			for (const fn of this.first) {
 				if (!text.startsWith(fn, afterLast)) continue;
-
-				const name = prefix + ln + fn;
+				const name = ln + ' ' + fn;
 				return {
 					tokens: [{
 						txt: name,
@@ -54,10 +43,27 @@ export class NameStage implements ITokenizerStage {
 			}
 		}
 
-		return { tokens: [], unprocessedStart: start, consumed: false };
+		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(text: string) {
-		return [];
+	all(text: string, mainPos: number): ISpanToken[] {
+		const tokens: ISpanToken[] = [];
+		for (const ln of this.last) {
+			if (!text.startsWith(ln)) continue;
+			const afterLast = ln.length + 1;
+			for (const fn of this.first) {
+				if (!text.startsWith(fn, afterLast)) continue;
+				const name = ln + ' ' + fn;
+				tokens.push({
+					txt: name,
+					type: 'name',
+					lang: this.lang,
+					src: 'name',
+					start: mainPos,
+					end: mainPos + name.length
+				})
+			}
+		}
+		return tokens;
 	}
 }

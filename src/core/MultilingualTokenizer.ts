@@ -6,15 +6,18 @@ import {
 	ITokenizerStage,
 	SupportedLanguage,
 } from "../type";
-import {NameStage} from "./NameStage";
 import {FirstCharWordIndex} from "./FirstCharWordIndex";
 import {DictionaryStage} from "./DictionaryStage";
+import {NameCnStage} from "./NameCnStage";
+import {NameJkStage} from "./NameJkStage";
+import {NameOtherStage} from "./NameOtherStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	readonly wordIndex = new FirstCharWordIndex();
 	#stages: ITokenizerStage[] = [];
 	#lexiconNames = new Set<string>();
+	#nameLexiconNames: string[] = [];
 
 	private nativeSegmenter =
 		typeof Intl !== 'undefined' && 'Segmenter' in Intl
@@ -38,9 +41,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	get loadedNameLexiconNames(): string[] {
-		return this.#stages
-			.filter(s => s instanceof NameStage)
-			.map(s => (s as NameStage).lang);
+		return this.#nameLexiconNames;
 	}
 
 	addDictionary(
@@ -56,7 +57,14 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	setNameDictionary(group: INameLexiconGroup, language: SupportedLanguage) {
-		this.addStage(new NameStage(group, language));
+		this.#nameLexiconNames.push(language);
+		if (/^zh/i.test(language)) {
+			this.addStage(new NameCnStage(group, language));
+		} else if (/^(ko|jp)/i.test(language)) {
+			this.addStage(new NameJkStage(group, language));
+		} else {
+			this.addStage(new NameOtherStage(group, language));
+		}
 	}
 
 	addStage(stage: ITokenizerStage) {

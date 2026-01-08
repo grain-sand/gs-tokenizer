@@ -1,4 +1,4 @@
-import {IMultilingualTokenizer, IStageAllResult, IStageBestResult, ITokenizerStage, IWordIndex} from "../type";
+import {IMultilingualTokenizer, IStageAllResult, IStageBestResult, ITokenizerStage, IWordIndex, TokenType} from "../type";
 
 export class DictionaryStage implements ITokenizerStage {
 	readonly id = 'dictionary';
@@ -45,7 +45,7 @@ export class DictionaryStage implements ITokenizerStage {
 		// 将所有匹配转换为token
 		const tokens = matches.map(match => ({
 			txt: match.word,
-			type: 'word',
+			type: 'word' as TokenType,
 			lang: match.meta.lang,
 			src: match.meta.name
 		}));

@@ -66,6 +66,11 @@ export interface IStageBestResult {
 	consumed: boolean;
 }
 
+export interface IStageAllResult {
+	tokens: IToken[];
+	end: number;
+}
+
 
 export interface ITokenizerStage {
 	/** 阶段唯一标识（调试 / src / 替换用） */
@@ -117,7 +122,7 @@ export interface ITokenizerStage {
 		start: number,
 	): IStageBestResult;
 
-	all(rest: string): IToken[];
+	all(rest: string): IStageAllResult;
 }
 
 

@@ -44,13 +44,13 @@ export class NameJkStage extends NameStageBase{
 	}
 
 
-	all(text: string) {
+	all(rest: string) {
 		const tokens: IToken[] = [];
 		for (const ln of this.last) {
-			if (!text.startsWith(ln)) continue;
+			if (!rest.startsWith(ln)) continue;
 			const afterLast = ln.length + 1;
 			for (const fn of this.first) {
-				if (text.startsWith(fn, afterLast)) {
+				if (rest.startsWith(fn, afterLast)) {
 					const name = ln + ' ' + fn;
 					tokens.push({
 						txt: name,
@@ -59,7 +59,7 @@ export class NameJkStage extends NameStageBase{
 						src:this.id,
 					})
 				}
-				if (text.startsWith(fn, ln.length)) {
+				if (rest.startsWith(fn, ln.length)) {
 					const name = ln + fn;
 					tokens.push({
 						txt: name,

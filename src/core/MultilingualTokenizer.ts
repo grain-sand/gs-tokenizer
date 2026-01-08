@@ -14,6 +14,8 @@ import {NameOtherStage} from "./Name/NameOtherStage";
 import {SocialStage} from "./SocialStage";
 import {EmailStage} from "./EmailStage";
 import {HostIPStage} from "./HostIPStage";
+import {DateStage} from "./com/DateStage";
+import {NumberStage} from "./com/NumberStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -29,12 +31,12 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	constructor() {
 
-		// this.addStage(new DictionaryStage());
+		this.addStage(new DictionaryStage());
 		// this.addStage(new SocialStage());
 		// this.addStage(new EmailStage());
-		this.addStage(new HostIPStage());
+		// this.addStage(new HostIPStage());
 		// this.addStage(new DateStage());
-		// this.addStage(new NumberStage());
+		this.addStage(new NumberStage());
 		// this.addStage(new SymbolSpaceStage());
 		// this.addStage(new FallbackWordStage());
 	}
@@ -104,7 +106,6 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 				break;
 			}
 
-			// ⚠️ 任何 stage 都没推进，强制前进 1
 			if (!advanced) {
 				pos++;
 			}

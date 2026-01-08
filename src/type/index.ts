@@ -106,7 +106,7 @@ export interface ITokenizerStage {
 		start: number,
 	): IStageBestResult;
 
-	all(text: string): IToken[];
+	all(rest: string): IToken[];
 }
 
 

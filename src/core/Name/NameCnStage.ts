@@ -49,18 +49,18 @@ export class NameCnStage extends NameStageBase {
 		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(text: string) {
+	all(rest: string) {
 		const tokens: IToken[] = [];
 		let pos = 0;
 		let prefix = '';
 
-		const p = text[0];
+		const p = rest[0];
 		if (p === '老' || p === '小') {
 			prefix = p;
 			pos++;
 		}
 		for (const ln of this.last) {
-			if (!text.startsWith(ln, pos)) continue;
+			if (!rest.startsWith(ln, pos)) continue;
 			if (pos) {
 				const name = prefix + ln;
 				tokens.push({
@@ -72,7 +72,7 @@ export class NameCnStage extends NameStageBase {
 			}
 			const afterLast = pos + ln.length;
 			for (const fn of this.first) {
-				if (!text.startsWith(fn, afterLast)) continue;
+				if (!rest.startsWith(fn, afterLast)) continue;
 				const name = prefix + ln + fn;
 				tokens.push({
 					txt: name,

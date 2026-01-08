@@ -53,7 +53,7 @@ export class SymbolSpaceStage implements ITokenizerStage {
 		};
 	}
 
-	all(text: string) {
+	all(rest: string) {
 		return [];
 	}
 }

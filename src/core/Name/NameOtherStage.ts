@@ -28,13 +28,13 @@ export class NameOtherStage extends NameStageBase{
 		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(text: string) {
+	all(rest: string) {
 		const tokens: IToken[] = [];
 		for (const ln of this.last) {
-			if (!text.startsWith(ln)) continue;
+			if (!rest.startsWith(ln)) continue;
 			const afterLast = ln.length + 1;
 			for (const fn of this.first) {
-				if (!text.startsWith(fn, afterLast)) continue;
+				if (!rest.startsWith(fn, afterLast)) continue;
 				const name = ln + ' ' + fn;
 				tokens.push({
 					txt: name,

@@ -32,7 +32,7 @@ export class SocialStage implements ITokenizerStage {
 		};
 	}
 
-	all(text: string) {
-		return this.best(text, 0).tokens;
+	all(rest: string) {
+		return this.best(rest, 0).tokens;
 	}
 }

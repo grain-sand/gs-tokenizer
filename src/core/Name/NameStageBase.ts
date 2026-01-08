@@ -17,7 +17,7 @@ export abstract class NameStageBase implements ITokenizerStage {
 		this.id = `name,${this.lang}`;
 	}
 
-	abstract all(text: string): IToken[];
+	abstract all(rest: string): IToken[];
 
 	abstract best(text: string, start: number): IStageBestResult;
 

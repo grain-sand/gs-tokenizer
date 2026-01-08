@@ -26,8 +26,8 @@ export class EmailStage implements ITokenizerStage {
 		};
 	}
 
-	all(text: string): IToken[] {
-		const m = this.re.exec(text);
+	all(rest: string): IToken[] {
+		const m = this.re.exec(rest);
 		if (!m) {
 			return [];
 		}

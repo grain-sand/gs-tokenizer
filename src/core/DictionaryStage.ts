@@ -39,7 +39,7 @@ export class DictionaryStage implements ITokenizerStage {
 		};
 	}
 
-	all(text: string, mainPos: number) {
-		return this.index!.matches(text, mainPos);
+	all(text: string) {
+		return this.index!.matches(text);
 	}
 }

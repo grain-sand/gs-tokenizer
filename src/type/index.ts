@@ -114,9 +114,8 @@ export interface ITokenizerStage {
 		start: number,
 	): IStageBestResult;
 
-	all(text: string, mainPost: number): ISpanToken[];
+	all(text: string): IToken[];
 }
-
 
 
 export interface INameLexiconGroup {
@@ -124,7 +123,6 @@ export interface INameLexiconGroup {
 	firstName: string[];
 	title: string[];
 }
-
 
 
 export interface IMultilingualTokenizer {
@@ -186,8 +184,8 @@ export interface IWordIndex {
 
 	add(word: string, meta: LexiconMeta): void;
 
-	match(text: string, pos: number): Array<IWordMatch>;
+	match(text: string, pos: number): IWordMatch[];
 
-	matches(text: string, mainPos: number): Array<ISpanToken>;
+	matches(text: string): IToken[];
 
 }

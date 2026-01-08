@@ -1,4 +1,4 @@
-import {ISpanToken, IToken, IWordIndex, IWordMatch, LexiconMeta} from "../type";
+import {IToken, IWordIndex, IWordMatch, LexiconMeta} from "../type";
 
 export class FirstCharWordIndex implements IWordIndex {
 
@@ -8,12 +8,12 @@ export class FirstCharWordIndex implements IWordIndex {
 
 
 	add(word: string, meta: LexiconMeta) {
-		let metas = this.#wordMap.get(word);
-		if (!metas) {
-			this.#wordMap.set(word, meta);
+		const ch = word[0];
+		if(this.#sortedCache.has(ch)) {
+			throw new Error(`FirstCharWordIndex: add word ${word} with meta ${meta.name} failed, because it has been added before`);
 		}
 
-		const ch = word[0];
+		this.#wordMap.set(word, meta);
 		const len = word.length;
 
 		let lenMap = this.#firstCharIndex.get(ch);
@@ -64,12 +64,12 @@ export class FirstCharWordIndex implements IWordIndex {
 		return result;
 	}
 
-	matches(text: string, mainPos: number): Array<ISpanToken> {
-		const result: Array<ISpanToken> = [];
+	matches(text: string) {
+		const result: IToken[] = [];
 		const ch = text[0];
 		const lenArr = this.getLenCache(ch);
 		if (!lenArr) return [];
-		for (const [len, words] of lenArr) {
+		for (const [, words] of lenArr) {
 			for (const w of words) {
 				if (text.startsWith(w)) {
 					const meta = this.#wordMap.get(w)!;
@@ -77,9 +77,7 @@ export class FirstCharWordIndex implements IWordIndex {
 						txt: w,
 						type: 'word',
 						lang: meta.lang,
-						src: meta.name,
-						start: mainPos,
-						end: mainPos + len,
+						src: meta.name
 					});
 				}
 			}

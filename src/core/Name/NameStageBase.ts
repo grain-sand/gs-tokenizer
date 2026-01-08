@@ -1,4 +1,4 @@
-import {INameLexiconGroup, ISpanToken, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../../type";
+import {INameLexiconGroup, IStageBestResult, IToken, ITokenizerStage, SupportedLanguage} from "../../type";
 
 export abstract class NameStageBase implements ITokenizerStage {
 	id: string;
@@ -15,10 +15,10 @@ export abstract class NameStageBase implements ITokenizerStage {
 		this.last = group.lastName;
 		this.first = group.firstName;
 		this.title = group.title;
-		this.id = `name-${this.lang}`;
+		this.id = `name,${this.lang}`;
 	}
 
-	abstract all(text: string, mainPost: number): ISpanToken[];
+	abstract all(text: string): IToken[];
 
 	abstract best(text: string, start: number): IStageBestResult;
 

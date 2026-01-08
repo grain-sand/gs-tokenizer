@@ -1,7 +1,7 @@
-import {ISpanToken, IStageBestResult} from "../../type";
+import {IStageBestResult, IToken} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
-export class NameCnStage extends NameStageBase{
+export class NameCnStage extends NameStageBase {
 
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;
@@ -25,20 +25,20 @@ export class NameCnStage extends NameStageBase{
 						txt: name,
 						type: 'name',
 						lang: this.lang,
-						src: 'name'
+						src: this.id
 					}],
 					unprocessedStart: afterLast + fn.length,
 					consumed: true
 				};
 			}
-			if(pos) {
+			if (pos) {
 				const name = prefix + ln;
 				return {
 					tokens: [{
 						txt: name,
 						type: 'name',
 						lang: this.lang,
-						src: 'name'
+						src: this.id
 					}],
 					unprocessedStart: start + name.length,
 					consumed: true
@@ -49,8 +49,8 @@ export class NameCnStage extends NameStageBase{
 		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(text: string, mainPos: number): ISpanToken[] {
-		const tokens: ISpanToken[] = [];
+	all(text: string) {
+		const tokens: IToken[] = [];
 		let pos = 0;
 		let prefix = '';
 
@@ -61,15 +61,15 @@ export class NameCnStage extends NameStageBase{
 		}
 		for (const ln of this.last) {
 			if (!text.startsWith(ln, pos)) continue;
-			const name = prefix + ln;
-			tokens.push({
-				txt: name,
-				type: 'name',
-				lang: this.lang,
-				src: 'name',
-				start: mainPos,
-				end: mainPos + name.length
-			})
+			if (pos) {
+				const name = prefix + ln;
+				tokens.push({
+					txt: name,
+					type: 'name',
+					lang: this.lang,
+					src: this.id,
+				})
+			}
 			const afterLast = pos + ln.length;
 			for (const fn of this.first) {
 				if (!text.startsWith(fn, afterLast)) continue;
@@ -78,9 +78,7 @@ export class NameCnStage extends NameStageBase{
 					txt: name,
 					type: 'name',
 					lang: this.lang,
-					src: 'name',
-					start: mainPos,
-					end: mainPos + name.length
+					src: this.id,
 				})
 			}
 		}

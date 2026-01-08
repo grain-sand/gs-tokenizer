@@ -1,4 +1,4 @@
-import {ISpanToken, IStageBestResult} from "../../type";
+import {IStageBestResult, IToken} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
 export class NameOtherStage extends NameStageBase{
@@ -17,7 +17,7 @@ export class NameOtherStage extends NameStageBase{
 						txt: name,
 						type: 'name',
 						lang: this.lang,
-						src: 'name'
+						src:this.id
 					}],
 					unprocessedStart: afterLast + fn.length,
 					consumed: true
@@ -28,8 +28,8 @@ export class NameOtherStage extends NameStageBase{
 		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(text: string, mainPos: number): ISpanToken[] {
-		const tokens: ISpanToken[] = [];
+	all(text: string) {
+		const tokens: IToken[] = [];
 		for (const ln of this.last) {
 			if (!text.startsWith(ln)) continue;
 			const afterLast = ln.length + 1;
@@ -40,9 +40,7 @@ export class NameOtherStage extends NameStageBase{
 					txt: name,
 					type: 'name',
 					lang: this.lang,
-					src: 'name',
-					start: mainPos,
-					end: mainPos + name.length
+					src:this.id,
 				})
 			}
 		}

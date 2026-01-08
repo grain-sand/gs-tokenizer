@@ -1,6 +1,6 @@
 import {
 	IMultilingualTokenizer,
-	INameLexiconGroup,
+	INameLexiconGroup, IRange,
 	ISpanToken,
 	IToken,
 	ITokenizerStage,
@@ -112,17 +112,26 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenizeAll(text: string): IToken[] {
-		const out: ISpanToken[] = [];
 		let pos = 0;
+		const map: [IRange, IToken[]][] = [];
 
 		while (pos < text.length) {
 			const substr = text.slice(pos);
+			const tokens: IToken[] = [];
 			for (const stage of this.#stages) {
-				out.push(...stage.all(substr, pos));
+				tokens.push(...stage.all(substr));
+			}
+			if (tokens.length) {
+				let max = 0;
+				for (const t of tokens) {
+					if (t.txt.length > max) max = t.txt.length;
+				}
+				const range = {start: pos, end: pos + max};
+				map.push([range, tokens]);
 			}
 			pos++;
 		}
-		return this.#filTokenizeGapsWithNative(text, out);
+		return this.#filTokenizeAllGapsWithNative(text, map);
 	}
 
 	tokenizeText(text: string): string[] {
@@ -135,11 +144,27 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			.map(t => t.txt);
 	}
 
-	#filTokenizeAllGapsWithNative(
-		text: string,
-		tokens: ISpanToken[],
-	): ISpanToken[] {
-		return []
+	#filTokenizeAllGapsWithNative(text: string, rangeTokens: [IRange, IToken[]][]): IToken[] {
+		const out: IToken[] = [];
+		let cursor = 0;
+
+		if (rangeTokens.length) for (const [t, tokens] of rangeTokens) {
+			if (cursor < t.start) {
+				out.push(
+					...this.#nativeSegment(text, cursor, t.start)
+				);
+			}
+			out.push(...tokens);
+			cursor = t.end;
+		}
+
+		if (cursor < text.length) {
+			out.push(
+				...this.#nativeSegment(text, cursor, text.length)
+			);
+		}
+
+		return out;
 	}
 
 	#filTokenizeGapsWithNative(

@@ -136,8 +136,8 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			for (const stage of this.#stages) {
 
 				if (
-					processedPos >= pos && stage.unprocessedOnly
-					|| stage.skipOwnLastMax && pos <= lastMap.get(stage)!
+					processedPos > pos && stage.unprocessedOnly
+					|| stage.skipOwnLastMax && pos < lastMap.get(stage)!
 				) {
 					continue;
 				}

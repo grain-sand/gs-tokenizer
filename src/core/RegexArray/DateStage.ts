@@ -7,6 +7,7 @@ export class DateStage extends RegexArrayStageBase{
 	readonly id = 'date';
 	readonly order = 8;
 	readonly priority = 0;
+	readonly breakIfProcessed: boolean = true;
 
 
 	protected RegexArray: RegExp[] = [

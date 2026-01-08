@@ -1,4 +1,4 @@
-import {IStageBestResult, IToken, ITokenizerStage} from "../type";
+import {IStageAllResult, IStageBestResult, ITokenizerStage} from "../type";
 
 export class EmailStage implements ITokenizerStage {
 	readonly id = 'email';
@@ -26,23 +26,25 @@ export class EmailStage implements ITokenizerStage {
 		};
 	}
 
-	all(rest: string): IToken[] {
+	all(rest: string): IStageAllResult {
 		const m = this.re.exec(rest);
 		if (!m) {
-			return [];
+			return { tokens: [], end: 0 };
 		}
-		return [
-			{
-				txt: m[0],
-				type: 'email',
-				src: 'email'
-			},
-			{
-				txt: m[1],
-				type: 'word',
-				src: 'email-sub'
-			},
-		];
+		return {
+			tokens: [
+				{
+					txt: m[0],
+					type: 'email',
+					src: 'email'
+				},
+				{
+					txt: m[1],
+					type: 'word',
+					src: 'email-sub'
+				},
+			],
+			end: m[0].length
+		};
 	}
 }
-

@@ -1,4 +1,4 @@
-import {INameLexiconGroup, IStageBestResult, IToken, ITokenizerStage, SupportedLanguage} from "../../type";
+import {INameLexiconGroup, IStageAllResult, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../../type";
 
 export abstract class NameStageBase implements ITokenizerStage {
 	id: string;
@@ -17,7 +17,7 @@ export abstract class NameStageBase implements ITokenizerStage {
 		this.id = `name,${this.lang}`;
 	}
 
-	abstract all(rest: string): IToken[];
+	abstract all(rest: string): IStageAllResult;
 
 	abstract best(text: string, start: number): IStageBestResult;
 

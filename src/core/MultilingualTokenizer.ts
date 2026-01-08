@@ -17,8 +17,9 @@ import {SpaceStage} from "./RegexArray/SpaceStage";
 import {PunctuationStage} from "./RegexArray/PunctuationStage";
 import {SocialStage} from "./SocialStage";
 import {EmailStage} from "./EmailStage";
-import {HostIPStage} from "./HostIPStage";
 import {DateStage} from "./RegexArray/DateStage";
+import {UrlStage} from "./RegexArray/UrlStage";
+import {IpStage} from "./RegexArray/IpStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -37,7 +38,8 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.addStage(new DictionaryStage());
 		this.addStage(new SocialStage());
 		this.addStage(new EmailStage());
-		this.addStage(new HostIPStage());
+		this.addStage(new UrlStage());
+		this.addStage(new IpStage());
 		this.addStage(new DateStage());
 		this.addStage(new NumberStage());
 		this.addStage(new PunctuationStage());
@@ -127,6 +129,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		while (pos < text.length) {
 			const substr = text.slice(pos);
 			const tokens: IToken[] = [];
+			let skip = 1;
 			for (const stage of this.#stages) {
 
 				if (
@@ -136,35 +139,27 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 					continue;
 				}
 
-				const all = stage.all(substr);
-				if (!all.length) continue;
+				const result = stage.all(substr);
+				if (!result.end) continue;
 
-				tokens.push(...all);
-				let last = 0;
-
-				for (const t of all) {
-					if (t.txt.length > last) last = t.txt.length;
-				}
+				tokens.push(...result.tokens);
+				let last = result.end;
 				processedPos = Math.max(processedPos, pos + last);
 				if (stage.skipOwnLastMax) {
 					lastMap.set(stage, pos + last);
 				}
 
 				if (stage.breakIfProcessed) {
-					pos += last - 1;
+					skip = last;
 					break;
 				}
 
 			}
 			if (tokens.length) {
-				let max = 0;
-				for (const t of tokens) {
-					if (t.txt.length > max) max = t.txt.length;
-				}
-				const range = {start: pos, end: pos + max};
+				const range = {start: pos, end: processedPos};
 				rangeTokens.push([range, tokens]);
 			}
-			pos++;
+			pos += skip;
 		}
 		return this.#filTokenizeAllGapsWithNative(text, rangeTokens);
 	}

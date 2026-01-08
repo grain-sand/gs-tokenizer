@@ -1,4 +1,4 @@
-import {IMultilingualTokenizer, IStageBestResult, ITokenizerStage, IWordIndex} from "../type";
+import {IMultilingualTokenizer, IStageAllResult, IStageBestResult, ITokenizerStage, IWordIndex} from "../type";
 
 export class DictionaryStage implements ITokenizerStage {
 	readonly id = 'dictionary';
@@ -35,7 +35,8 @@ export class DictionaryStage implements ITokenizerStage {
 		};
 	}
 
-	all(test: string) {
-		return this.index!.matches(test);
+	all(test: string): IStageAllResult {
+		const tokens = this.index!.matches(test);
+		return { tokens, end: tokens.length > 0 ? tokens[0].txt.length : 0 };
 	}
 }

@@ -22,6 +22,7 @@ export type TokenType =
 	| 'mention'
 	| 'host'
 	| 'email'
+	| 'url'
 	| 'ip'
 	| 'date'
 	| 'number'

@@ -1,7 +1,8 @@
-import {IStageBestResult, IToken} from "../../type";
+import {IStageAllResult, IStageBestResult, IToken} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
 export class NameCnStage extends NameStageBase {
+	priority = 1000;
 
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;
@@ -49,7 +50,7 @@ export class NameCnStage extends NameStageBase {
 		return {tokens: [], unprocessedStart: start, consumed: false};
 	}
 
-	all(rest: string) {
+	all(rest: string): IStageAllResult {
 		const tokens: IToken[] = [];
 		let pos = 0;
 		let prefix = '';
@@ -82,6 +83,8 @@ export class NameCnStage extends NameStageBase {
 				})
 			}
 		}
-		return tokens;
+		// 计算最长匹配的长度作为end
+		const end = tokens.length > 0 ? Math.max(...tokens.map(t => t.txt.length)) : 0;
+		return {tokens, end};
 	}
 }

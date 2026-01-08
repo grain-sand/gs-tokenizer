@@ -7,8 +7,8 @@ export class PunctuationStage extends RegexArrayStageBase {
 	readonly id = 'punctuation';
 	readonly order = 10;
 	readonly priority = 0;
-
-	readonly unprocessedOnly = true;
+	readonly skipOwnLastMax = true;
+	readonly breakIfProcessed = true;
 
 	protected types: TokenType[] = ['emoji', 'punctuation'];
 

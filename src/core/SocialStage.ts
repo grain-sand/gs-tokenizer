@@ -1,4 +1,4 @@
-import {IStageBestResult, ITokenizerStage} from "../type";
+import {IStageAllResult, IStageBestResult, ITokenizerStage} from "../type";
 
 export class SocialStage implements ITokenizerStage {
 	readonly id = 'social';
@@ -32,7 +32,8 @@ export class SocialStage implements ITokenizerStage {
 		};
 	}
 
-	all(rest: string) {
-		return this.best(rest, 0).tokens;
+	all(rest: string): IStageAllResult {
+		const result = this.best(rest, 0);
+		return { tokens: result.tokens, end: result.tokens.length > 0 ? result.tokens[0].txt.length : 0 };
 	}
 }

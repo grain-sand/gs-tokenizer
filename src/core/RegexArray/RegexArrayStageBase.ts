@@ -1,4 +1,4 @@
-import {IStageBestResult, IToken, ITokenizerStage, TokenType} from "../../type";
+import {IStageAllResult, IStageBestResult, IToken, ITokenizerStage, TokenType} from "../../type";
 
 export abstract class RegexArrayStageBase implements ITokenizerStage {
 
@@ -8,7 +8,20 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 	readonly skipOwnLastMax: boolean = true;
 
 	protected abstract RegexArray: RegExp[];
+	/**
+	 * 每个正则表达式的匹配组对应的token类型
+	 * @protected
+	 */
+	protected groupTypes?: Record<number, TokenType> = undefined;
+	protected groupSources?: Record<number, string> = undefined;
+	/**
+	 * 每个正则表达式的匹配组对应的token类型
+	 * - 如果未指定，则默认使用id作为token类型
+	 * - 此类型将覆盖 `groupTypes` 中的 `mainGroup`
+	 * @protected
+	 */
 	protected types?: TokenType[] = undefined;
+	protected mainGroup = 0;
 
 	best(
 		text: string,
@@ -18,10 +31,10 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 		for (let i = 0; i < this.RegexArray.length; i++) {
 			const m = this.RegexArray[i].exec(rest);
 			if (m) {
-				const type = this.types?.[i] || this.id as any
+				const type = this.types?.[i] || this.groupTypes?.[this.mainGroup] || this.id as any
 				return {
-					tokens: [{txt: m[0], type, src: type}],
-					unprocessedStart: start + m[0].length,
+					tokens: [{txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type}],
+					unprocessedStart: start + m[this.mainGroup].length,
 					consumed: true
 				};
 			}
@@ -33,8 +46,8 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 		};
 	}
 
-	all(rest: string): IToken[] {
-		let m: RegExpExecArray | null = null, type: TokenType = this.id as any;
+	all(rest: string): IStageAllResult {
+		let m: RegExpExecArray | null = null, type!: TokenType;
 		for (let i = 0; i < this.RegexArray.length; i++) {
 			m = this.RegexArray[i].exec(rest);
 			if (m) {
@@ -42,16 +55,19 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 				break;
 			}
 		}
-		if (!m) return []
-		const token: IToken = {txt: m[0], type, src: type};
-		if (!m[1]) {
-			return [token]
+		type || (type = this.groupTypes?.[this.mainGroup] || this.id as any)
+		if (!m) return {tokens: [], end: 0};
+		const token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+		let tokens: IToken[];
+		if (!m[this.mainGroup + 1]) {
+			tokens = [token];
+		} else {
+			tokens = [token];
+			for (let i = this.mainGroup + 1; Boolean(m[i]); i++) {
+				const st = this.groupTypes?.[i];
+				tokens.push({txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`});
+			}
 		}
-		const arr = [token]
-		for (let i = 1; Boolean(m[i]); i++) {
-			arr.push({txt: m[i], type, src: `${type}-sub`});
-		}
-		return arr;
+		return {tokens, end: m[0].length};
 	}
-
 }

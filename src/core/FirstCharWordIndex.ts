@@ -4,14 +4,14 @@ export class FirstCharWordIndex implements IWordIndex {
 
 	readonly #wordMap = new Map<string, LexiconMeta>();
 	readonly #firstCharIndex = new Map<string, Map<number, string[]>>();
-	readonly #sortedCache = new Map<string, [number, string[]][]>();
+	// readonly #sortedCache = new Map<string, [number, string[]][]>();
 
 
 	add(word: string, meta: LexiconMeta) {
 		const ch = word[0];
-		if(this.#sortedCache.has(ch)) {
-			throw new Error(`FirstCharWordIndex: add word ${word} with meta ${meta.name} failed, because it has been added before`);
-		}
+		// if(this.#sortedCache.has(ch)) {
+		// 	throw new Error(`FirstCharWordIndex: add word ${word} with meta ${meta.name} failed, because it has been added before`);
+		// }
 
 		this.#wordMap.set(word, meta);
 		const len = word.length;
@@ -30,23 +30,23 @@ export class FirstCharWordIndex implements IWordIndex {
 		list.push(word);
 	}
 
-	getLenCache(ch: string): [number, string[]][] {
-		if (this.#sortedCache.has(ch)) {
-			return this.#sortedCache.get(ch)!;
-		}
-		if (!this.#firstCharIndex.has(ch)) {
-			this.#sortedCache.set(ch, []);
-			return [] as any;
-		}
-		const arr = Array.from(this.#firstCharIndex.get(ch)!);
-		this.#firstCharIndex.delete(ch);
-		this.#sortedCache.set(ch, arr.sort((a, b) => b[0] - a[0]));
-		return arr!;
-	}
+	// getLenCache(ch: string): [number, string[]][] {
+	// 	if (this.#sortedCache.has(ch)) {
+	// 		return this.#sortedCache.get(ch)!;
+	// 	}
+	// 	if (!this.#firstCharIndex.has(ch)) {
+	// 		this.#sortedCache.set(ch, []);
+	// 		return [] as any;
+	// 	}
+	// 	const arr = Array.from(this.#firstCharIndex.get(ch)!);
+	// 	this.#firstCharIndex.delete(ch);
+	// 	this.#sortedCache.set(ch, arr.sort((a, b) => b[0] - a[0]));
+	// 	return arr!;
+	// }
 
 	match(text: string, pos: number) {
 		const ch = text[pos];
-		const lenMap = this.getLenCache(ch);
+		const lenMap = this.#firstCharIndex.get(ch);
 		if (!lenMap) return [];
 
 		const result: Array<IWordMatch> = [];
@@ -67,7 +67,7 @@ export class FirstCharWordIndex implements IWordIndex {
 	matches(text: string) {
 		const result: IToken[] = [];
 		const ch = text[0];
-		const lenArr = this.getLenCache(ch);
+		const lenArr = this.#firstCharIndex.get(ch);
 		if (!lenArr) return [];
 		for (const [, words] of lenArr) {
 			for (const w of words) {

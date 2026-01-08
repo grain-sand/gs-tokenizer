@@ -1,3 +1,3 @@
-const value = `Accent ChairArmchairArmoireBar StoolBedBenchBookshelfBuffetCabinetCanopy BedChairChest of DrawersChiffonierCoat RackCoffee TableComputer DeskDaybedDeskDesk ChairDining ChairDining TableDrawerDresserEntertainment CenterFour-poster BedFutonHat RackKitchen IslandLadderLoveseatMirrorNightstandOttomanPantryPlant StandReclinerRocking ChairSectionalShoe RackSide TableSideboardSofaStoolTV StandTableTrundle BedVanityWardrobeWriting Desk`;
+const value = `Accent ChairBar StoolCanopy BedChest of DrawersCoat RackCoffee TableComputer DeskDesk ChairDining ChairDining TableEntertainment CenterFour-poster BedHat RackKitchen IslandPlant StandRocking ChairShoe RackSide TableTV StandTrundle BedWriting Desk`;
 
 export const en_US_Furniture: string = value;

@@ -1,3 +1,3 @@
-const value = `Adm.AdvisorAgentAirmanAmbassadorAnalystAssociateAttorneyAuthorityBr.BrokerCAOCBOCCOCDOCEOCFOCGOCHOCHROCIAOCIOCISOCJOCKOCLOCMOCNOCOOCPOCQOCROCSOCTOCUOCVOCXOCYOCZOCadetCapt.ChairmanChairpersonChairwomanClerkCmdr.CoachCol.ConsulConsultantCounselorDelegateDirectorDr.ExecutiveExpertFr.Gen.Gov.GuideGuruInstructorLadyLeadLecturerLordLt.MadamMaj.ManagerMarineMasterMayorMemberMentorMissMr.Mrs.Ms.OfficerPres.PresidentProf.ProfessorPvt.Rep.RepresentativeRev.SailorSecretarySen.Sgt.SirSoldierSpecialistSr.StudentSupervisorTeacherTrainerTreasurerVPVice President`;
+const value = `Vice President`;
 
 export const en_US_Honorific: string = value;

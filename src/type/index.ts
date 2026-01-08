@@ -84,9 +84,20 @@ export interface ITokenizerStage {
 	readonly priority: number;
 
 	/**
-	 * 是否跳过当前 `Stage` 识别出的最大位置
+	 * 是否跳过当前 `Stage` 上次识别出的最大位置
+	 * - 仅对自己生效
 	 */
 	readonly skipOwnLastMax?: boolean;
+
+	/**
+	 * 是否在当前阶段处理过字符后，短路后续流程
+	 */
+	breakIfProcessed?: boolean;
+
+	/**
+	 * 是否仅处理未处理字符
+	 */
+	unprocessedOnly?: boolean
 
 	/**
 	 * 初始化逻辑（可选）

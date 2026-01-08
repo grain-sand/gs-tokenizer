@@ -5,7 +5,6 @@
 	"scripts": {
 		"build": "rollup -c",
 		"build-copy": "rollup -c --environment COPY:true",
-		"optimize-lexicon": "tsx tool/optimizeLexicon.ts",
 		"test": "vitest run --browser.enabled=false",
 		"test-core": "cross-env VITE_TOKENIZER_TYPE=core vitest run --browser.enabled=false",
 		"test:base": "vitest run test/test-base.ts",

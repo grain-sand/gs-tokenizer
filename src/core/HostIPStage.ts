@@ -9,11 +9,12 @@ export class HostIPStage implements ITokenizerStage {
 		/^(?:\[[0-9a-fA-F:]*:[0-9a-fA-F:]+]|[0-9a-fA-F]*:[0-9a-fA-F:]+)(?::\d{1,5})?/;
 	// host + port（协议可选）
 	private static HOST =
-		/^(?:https?|ftp\/\/)?(?:(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+|localhost)(?::\d{1,5})?/;
+		/^\s*(?:https?|ftp)?:[/]+((?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+|localhost)(?::\d{1,5})?/i
 	readonly id = 'host-ip';
 	readonly order = 7;
 	readonly priority = 10;
 	readonly skipOwnLastMax = true;
+	readonly breakIfProcessed = true;
 	#Sub = /[^a-zA-Z0-9-]+/;
 
 	best(
@@ -78,7 +79,7 @@ export class HostIPStage implements ITokenizerStage {
 			if (m) type = 'ip';
 		}
 		if (!m) return [];
-		const txt = m[0];
+		const txt = m[1] || m[0];
 
 		const token = {txt, type, src: type};
 		if (this.#Sub.test(txt)) {

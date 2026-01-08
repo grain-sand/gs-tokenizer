@@ -122,24 +122,39 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		let pos = 0;
 		const rangeTokens: [IRange, IToken[]][] = [];
 		const lastMap = new Map<ITokenizerStage, number>();
+		let processedPos = 0;
 
 		while (pos < text.length) {
 			const substr = text.slice(pos);
 			const tokens: IToken[] = [];
 			for (const stage of this.#stages) {
-				if (!stage.skipOwnLastMax) {
-					tokens.push(...stage.all(substr));
+
+				if (
+					processedPos >= pos && stage.unprocessedOnly
+					|| stage.skipOwnLastMax && pos <= lastMap.get(stage)!
+				) {
 					continue;
 				}
-				if (pos <= lastMap.get(stage)!) {
-					continue;
-				}
+
 				const all = stage.all(substr);
 				if (!all.length) continue;
+
 				tokens.push(...all);
 				let last = 0;
-				for (const t of all) if (t.txt.length > last) last = t.txt.length;
-				lastMap.set(stage, pos + last);
+
+				for (const t of all) {
+					if (t.txt.length > last) last = t.txt.length;
+				}
+				processedPos = Math.max(processedPos, pos + last);
+				if (stage.skipOwnLastMax) {
+					lastMap.set(stage, pos + last);
+				}
+
+				if (stage.breakIfProcessed) {
+					pos += last - 1;
+					break;
+				}
+
 			}
 			if (tokens.length) {
 				let max = 0;

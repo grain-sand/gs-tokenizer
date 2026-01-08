@@ -192,6 +192,7 @@ export interface IWordMatch {
 export interface IWordIndex {
 
 	add(word: string, meta: LexiconMeta): void;
+	addBatch(words: { word: string; meta: LexiconMeta }[]): void;
 
 	match(text: string, pos: number): IWordMatch[];
 

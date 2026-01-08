@@ -34,7 +34,6 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			: null;
 
 	constructor() {
-
 		this.addStage(new DictionaryStage());
 		this.addStage(new SocialStage());
 		this.addStage(new EmailStage());
@@ -61,9 +60,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		language?: SupportedLanguage
 	) {
 		this.#lexiconNames.add(name);
-		for (const w of words) {
-			this.wordIndex.add(w, {name, priority, lang: language});
-		}
+		// 直接使用addBatch确保批量添加的原子性
+		this.wordIndex.addBatch(
+			words.map(w => ({ word: w, meta: { name, priority, lang: language } }))
+		);
 	}
 
 	setNameDictionary(group: INameLexiconGroup, language: SupportedLanguage) {
@@ -86,6 +86,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenize(text: string): ISpanToken[] {
+		
 		const tokens: ISpanToken[] = [];
 		const len = text.length;
 
@@ -121,6 +122,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenizeAll(text: string): IToken[] {
+		
 		let pos = 0;
 		const rangeTokens: [IRange, IToken[]][] = [];
 		const lastMap = new Map<ITokenizerStage, number>();

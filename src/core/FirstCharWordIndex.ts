@@ -2,86 +2,100 @@ import {IToken, IWordIndex, IWordMatch, LexiconMeta} from "../type";
 
 export class FirstCharWordIndex implements IWordIndex {
 
-	readonly #wordMap = new Map<string, LexiconMeta>();
-	readonly #firstCharIndex = new Map<string, Map<number, string[]>>();
-	// readonly #sortedCache = new Map<string, [number, string[]][]>();
-
+	// 使用普通对象
+	#wordMap: Record<string, LexiconMeta> = {};
+	#firstCharIndex: Record<string, Record<number, string[]>> = {};
 
 	add(word: string, meta: LexiconMeta) {
-		const ch = word[0];
-		// if(this.#sortedCache.has(ch)) {
-		// 	throw new Error(`FirstCharWordIndex: add word ${word} with meta ${meta.name} failed, because it has been added before`);
-		// }
-
-		this.#wordMap.set(word, meta);
-		const len = word.length;
-
-		let lenMap = this.#firstCharIndex.get(ch);
-		if (!lenMap) {
-			lenMap = new Map();
-			this.#firstCharIndex.set(ch, lenMap);
-		}
-
-		let list = lenMap.get(len);
-		if (!list) {
-			list = [];
-			lenMap.set(len, list);
-		}
-		list.push(word);
+		this.addBatch([{word, meta}]);
 	}
 
-	// getLenCache(ch: string): [number, string[]][] {
-	// 	if (this.#sortedCache.has(ch)) {
-	// 		return this.#sortedCache.get(ch)!;
-	// 	}
-	// 	if (!this.#firstCharIndex.has(ch)) {
-	// 		this.#sortedCache.set(ch, []);
-	// 		return [] as any;
-	// 	}
-	// 	const arr = Array.from(this.#firstCharIndex.get(ch)!);
-	// 	this.#firstCharIndex.delete(ch);
-	// 	this.#sortedCache.set(ch, arr.sort((a, b) => b[0] - a[0]));
-	// 	return arr!;
-	// }
+	// 批量添加单词，确保原子性
+	addBatch(words: { word: string; meta: LexiconMeta }[]) {
+
+		// 创建临时副本，确保原子更新
+		const tempWordMap = {...this.#wordMap};
+		const tempFirstCharIndex: Record<string, Record<number, string[]>> = {};
+
+		// 复制现有数据到临时副本
+		for (const ch in this.#firstCharIndex) {
+			if (Object.prototype.hasOwnProperty.call(this.#firstCharIndex, ch)) {
+				tempFirstCharIndex[ch] = {};
+				for (const len in this.#firstCharIndex[ch]) {
+					if (Object.prototype.hasOwnProperty.call(this.#firstCharIndex[ch], len)) {
+						// 深拷贝单词列表
+						tempFirstCharIndex[ch][+len] = [...this.#firstCharIndex[ch][+len]];
+					}
+				}
+			}
+		}
+
+		// 批量添加单词到临时副本
+		for (const {word, meta} of words) {
+			const ch = word[0];
+			const len = word.length;
+
+			// 更新临时词库映射
+			tempWordMap[word] = meta;
+
+			// 更新临时首字符索引
+			if (!tempFirstCharIndex[ch]) {
+				tempFirstCharIndex[ch] = {};
+			}
+
+			if (!tempFirstCharIndex[ch][len]) {
+				tempFirstCharIndex[ch][len] = [];
+			}
+
+			// 检查单词是否已存在，避免重复添加
+			const wordList = tempFirstCharIndex[ch][len];
+			if (!wordList.includes(word)) {
+				wordList.push(word);
+			}
+		}
+
+		// 原子性替换现有数据
+		this.#wordMap = tempWordMap;
+		this.#firstCharIndex = tempFirstCharIndex;
+	}
 
 	match(text: string, pos: number) {
-		const ch = text[pos];
-		const lenMap = this.#firstCharIndex.get(ch);
-		if (!lenMap) return [];
+		// 处理空字符串或超出范围的情况
+		if (pos >= text.length) {
+			return [];
+		}
 
+		const ch = text[pos];
+		const lenMap = this.#firstCharIndex[ch];
 		const result: Array<IWordMatch> = [];
 
-		for (const [len, words] of lenMap) {
-			const end = pos + len;
-			if (end > text.length) continue;
-			const slice = text.slice(pos, end);
-			for (const w of words) {
-				if (w === slice) {
-					result.push({word: w, meta: this.#wordMap.get(w)!});
+		if (lenMap) {
+			for (const len in lenMap) {
+				const words = lenMap[+len];
+				const end = pos + +len;
+				if (end > text.length) continue;
+				const slice = text.slice(pos, end);
+				for (const w of words) {
+					if (w === slice) {
+						result.push({word: w, meta: this.#wordMap[w]});
+					}
 				}
 			}
 		}
+
 		return result;
 	}
 
-	matches(text: string) {
-		const result: IToken[] = [];
-		const ch = text[0];
-		const lenArr = this.#firstCharIndex.get(ch);
-		if (!lenArr) return [];
-		for (const [, words] of lenArr) {
-			for (const w of words) {
-				if (text.startsWith(w)) {
-					const meta = this.#wordMap.get(w)!;
-					result.push({
-						txt: w,
-						type: 'word',
-						lang: meta.lang,
-						src: meta.name
-					});
-				}
-			}
-		}
-		return result;
+	matches(text: string): IToken[] {
+		// 只获取文本开头的所有匹配结果
+		const matches = this.match(text, 0);
+
+		// 将所有匹配转换为token并返回
+		return matches.map(match => ({
+			txt: match.word,
+			type: 'word',
+			lang: match.meta.lang,
+			src: match.meta.name
+		}));
 	}
 }

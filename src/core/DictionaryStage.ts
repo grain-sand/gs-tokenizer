@@ -35,8 +35,24 @@ export class DictionaryStage implements ITokenizerStage {
 		};
 	}
 
-	all(test: string): IStageAllResult {
-		const tokens = this.index!.matches(test);
-		return { tokens, end: tokens.length > 0 ? tokens[0].txt.length : 0 };
+	all(text: string): IStageAllResult {
+		// 获取从文本开头开始的所有可能匹配
+		const matches = this.index!.match(text, 0);
+		if (!matches.length) {
+			return { tokens: [], end: 0 };
+		}
+		
+		// 将所有匹配转换为token
+		const tokens = matches.map(match => ({
+			txt: match.word,
+			type: 'word',
+			lang: match.meta.lang,
+			src: match.meta.name
+		}));
+		
+		// 找到最长匹配的长度作为end值
+		const end = Math.max(...matches.map(match => match.word.length));
+		
+		return { tokens, end };
 	}
 }

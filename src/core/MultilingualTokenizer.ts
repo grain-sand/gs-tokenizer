@@ -1,6 +1,7 @@
 import {
 	IMultilingualTokenizer,
-	INameLexiconGroup, IRange,
+	INameLexiconGroup,
+	IRange,
 	ISpanToken,
 	IToken,
 	ITokenizerStage,
@@ -11,11 +12,13 @@ import {DictionaryStage} from "./DictionaryStage";
 import {NameCnStage} from "./Name/NameCnStage";
 import {NameJkStage} from "./Name/NameJkStage";
 import {NameOtherStage} from "./Name/NameOtherStage";
+import {NumberStage} from "./RegexArray/NumberStage";
+import {SpaceStage} from "./RegexArray/SpaceStage";
+import {PunctuationStage} from "./RegexArray/PunctuationStage";
 import {SocialStage} from "./SocialStage";
 import {EmailStage} from "./EmailStage";
 import {HostIPStage} from "./HostIPStage";
-import {DateStage} from "./com/DateStage";
-import {NumberStage} from "./com/NumberStage";
+import {DateStage} from "./RegexArray/DateStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -32,13 +35,13 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	constructor() {
 
 		this.addStage(new DictionaryStage());
-		// this.addStage(new SocialStage());
-		// this.addStage(new EmailStage());
-		// this.addStage(new HostIPStage());
-		// this.addStage(new DateStage());
+		this.addStage(new SocialStage());
+		this.addStage(new EmailStage());
+		this.addStage(new HostIPStage());
+		this.addStage(new DateStage());
 		this.addStage(new NumberStage());
-		// this.addStage(new SymbolSpaceStage());
-		// this.addStage(new FallbackWordStage());
+		this.addStage(new PunctuationStage());
+		this.addStage(new SpaceStage());
 	}
 
 	get loadedLexiconNames(): string[] {
@@ -128,7 +131,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 					tokens.push(...stage.all(substr));
 					continue;
 				}
-				if (pos<=lastMap.get(stage)!) {
+				if (pos <= lastMap.get(stage)!) {
 					continue;
 				}
 				const all = stage.all(substr);

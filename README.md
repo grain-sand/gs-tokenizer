@@ -22,6 +22,14 @@ A powerful and lightweight multilingual tokenizer library that provides natural 
 - **Multiple Output Formats**: Get detailed token information or just word lists
 - **Lightweight**: Minimal dependencies, designed for browser environments
 - **Quick Use API**: Convenient static methods for easy integration
+- **tokenizeAll**: New feature in core module that returns all possible tokens at each position
+
+## Module Comparison
+
+| Module | Stability | Speed | Tokenization Accuracy | New Features |
+|--------|-----------|-------|-----------------------|--------------|
+| old-core | ✅ More stable | ⚡️ Slower | ✅ More accurate | ❌ No new features |
+| core | ⚠️ Less stable | ⚡️ Faster | ⚠️ May be less accurate | ✅ tokenizeAll, Stage-based architecture |
 
 ## Installation
 
@@ -111,21 +119,28 @@ tokenizer.removeCustomWord('Python', 'en', 'programming');
 ### Advanced Options
 
 ```javascript
-const tokenizer = createTokenizer({
-  defaultLanguage: 'en',
-  customDictionaries: {
-    'zh': [{
-      priority: 10,
-      data: new Set(['自定义词']),
-      name: 'custom',
-      lang: 'zh'
-    }]
-  }
-});
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
-// Tokenize with specified language
+const tokenizer = new MultilingualTokenizer();
+
+// Tokenize text
 const text = '我爱北京天安门';
-const tokens = tokenizer.tokenize(text, 'zh');
+const tokens = tokenizer.tokenize(text);
+
+// Get all possible tokens (core module only)
+const allTokens = tokenizer.tokenizeAll(text);
+```
+
+### Using Old-Core Module
+
+```javascript
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+
+const tokenizer = new OldMultilingualTokenizer();
+
+// Tokenize text (old-core is more stable but slower)
+const text = '我爱北京天安门';
+const tokens = tokenizer.tokenize(text);
 ```
 
 ## API Reference
@@ -150,10 +165,13 @@ const tokenizer = new MultilingualTokenizer(options)
 
 | Method | Description |
 |--------|-------------|
-| `tokenize(text: string, language?: string): Token[]` | Tokenizes the input text and returns detailed token information |
-| `tokenizeText(text: string, language?: string): string[]` | Tokenizes the input text and returns only word tokens |
+| `tokenize(text: string): Token[]` | Tokenizes the input text and returns detailed token information |
+| `tokenizeAll(text: string): Token[]` | Returns all possible tokens at each position (core module only) |
+| `tokenizeText(text: string): string[]` | Tokenizes the input text and returns only word tokens |
+| `tokenizeTextAll(text: string): string[]` | Returns all possible word tokens at each position (core module only) |
 | `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | Adds custom words to the tokenizer |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | Removes a custom word from the tokenizer |
+| `addStage(stage: ITokenizerStage): void` | Adds a custom tokenization stage (core module only) |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
 
@@ -196,6 +214,17 @@ interface Token {
   type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // Language code
   src?: string;             // Source (e.g., custom dictionary name)
+}
+```
+
+### `ITokenizerStage` Interface (core module only)
+
+```typescript
+interface ITokenizerStage {
+  order: number;
+  priority: number;
+  tokenize(text: string, start: number): IStageBestResult;
+  all(text: string): IToken[];
 }
 ```
 

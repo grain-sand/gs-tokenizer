@@ -22,6 +22,14 @@
 - **複数の出力形式**: 詳細なトークン情報または単語リストのみを取得
 - **軽量**: 最小限の依存関係で、ブラウザ環境向けに設計
 - **クイック使用API**: 簡単に統合できる便利な静的メソッド
+- **tokenizeAll**: coreモジュールの新機能で、各位置の全ての可能なトークンを返します
+
+## モジュール比較
+
+| モジュール | 安定性 | 速度 | トークン化精度 | 新機能 |
+|----------|--------|------|----------------|--------|
+| old-core | ✅ より安定 | ⚡️ より遅い | ✅ より正確 | ❌ 新機能なし |
+| core | ⚠️ 安定性が低い | ⚡️ より速い | ⚠️ 精度が低い可能性あり | ✅ tokenizeAll、ステージベースのアーキテクチャ |
 
 ## インストール
 
@@ -111,21 +119,28 @@ okenizer.removeCustomWord('Python', 'en', 'programming');
 ### 高度なオプション
 
 ```javascript
-const tokenizer = createTokenizer({
-  defaultLanguage: 'ja',
-  customDictionaries: {
-    'ja': [{
-      priority: 10,
-      data: new Set(['カスタム単語']),
-      name: 'custom',
-      lang: 'ja'
-    }]
-  }
-});
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
-// 指定した言語でトークン化
+const tokenizer = new MultilingualTokenizer();
+
+// テキストをトークン化
 const text = '私は北京の天安門が好きです';
-const tokens = tokenizer.tokenize(text, 'zh');
+const tokens = tokenizer.tokenize(text);
+
+// 全ての可能なトークンを取得 (coreモジュールのみ)
+const allTokens = tokenizer.tokenizeAll(text);
+```
+
+### Old-Coreモジュールの使用
+
+```javascript
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+
+const tokenizer = new OldMultilingualTokenizer();
+
+// テキストをトークン化 (old-coreはより安定だが速度が遅い)
+const text = '私は北京の天安門が好きです';
+const tokens = tokenizer.tokenize(text);
 ```
 
 ## API リファレンス
@@ -150,10 +165,13 @@ const tokenizer = new MultilingualTokenizer(options)
 
 | メソッド | 説明 |
 |------|------|
-| `tokenize(text: string, language?: string): Token[]` | 入力テキストをトークン化し、詳細なトークン情報を返します |
-| `tokenizeText(text: string, language?: string): string[]` | 入力テキストをトークン化し、単語リストのみを返します |
-| `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | トークナイザーにカスタム単語を追加します |
+| `tokenize(text: string): Token[]` | 入力テキストをトークン化し、詳細なトークン情報を返します |
+| `tokenizeAll(text: string): Token[]` | 各位置の全ての可能なトークンを返します (coreモジュールのみ) |
+| `tokenizeText(text: string): string[]` | 入力テキストをトークン化し、単語リストのみを返します |
+| `tokenizeTextAll(text: string): string[]` | 各位置の全ての可能な単語トークンを返します (coreモジュールのみ) |
+| `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | トークナイザーにカスタム単語を追加します |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | トークナイザーからカスタム単語を削除します |
+| `addStage(stage: ITokenizerStage): void` | カスタムトークン化ステージを追加します (coreモジュールのみ) |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
 
@@ -196,6 +214,17 @@ interface Token {
   type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 言語コード
   src?: string;             // ソース（例：カスタム辞書名）
+}
+```
+
+### `ITokenizerStage` インターフェース (coreモジュールのみ)
+
+```typescript
+interface ITokenizerStage {
+  order: number;
+  priority: number;
+  tokenize(text: string, start: number): IStageBestResult;
+  all(text: string): IToken[];
 }
 ```
 

@@ -1,7 +1,8 @@
 import {IStageBestResult, IToken} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
-export class NameOtherStage extends NameStageBase{
+export class NameOtherStage extends NameStageBase {
+	order = 4;
 
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;
@@ -17,7 +18,7 @@ export class NameOtherStage extends NameStageBase{
 						txt: name,
 						type: 'name',
 						lang: this.lang,
-						src:this.id
+						src: this.id
 					}],
 					unprocessedStart: afterLast + fn.length,
 					consumed: true
@@ -40,7 +41,7 @@ export class NameOtherStage extends NameStageBase{
 					txt: name,
 					type: 'name',
 					lang: this.lang,
-					src:this.id,
+					src: this.id,
 				})
 			}
 		}

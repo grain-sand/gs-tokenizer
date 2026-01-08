@@ -3,6 +3,7 @@ import {NameStageBase} from "./NameStageBase";
 
 export class NameJkStage extends NameStageBase{
 
+	order = 3;
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;
 

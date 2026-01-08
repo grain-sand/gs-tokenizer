@@ -5,8 +5,9 @@ import {FillCnNum} from "./NumberStage";
 export class DateStage extends RegexArrayStageBase{
 
 	readonly id = 'date';
-	readonly order = 5;
+	readonly order = 8;
 	readonly priority = 0;
+
 
 	protected RegexArray: RegExp[] = [
 		/^(\d{4}年)\s*(\d{1,2}月)\s*(\d{1,2}日)/,

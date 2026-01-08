@@ -22,6 +22,14 @@
 - **多种输出格式**：获取详细的分词信息或仅获取词语列表
 - **轻量级**：最小依赖，专为浏览器环境设计
 - **快速使用API**：便捷的静态方法，易于集成
+- **tokenizeAll**：core模块中的新特性，返回每个位置的所有可能tokens
+
+## 模块比较
+
+| 模块 | 稳定性 | 速度 | 分词准确性 | 新特性 |
+|------|--------|------|------------|--------|
+| old-core | ✅ 更稳定 | ⚡️ 较慢 | ✅ 更准确 | ❌ 无新特性 |
+| core | ⚠️ 较不稳定 | ⚡️ 更快 | ⚠️ 可能不够准确 | ✅ tokenizeAll, 基于Stage的架构 |
 
 ## 安装
 
@@ -111,21 +119,28 @@ tokenizer.removeCustomWord('Python', 'en', 'programming');
 ### 高级选项
 
 ```javascript
-const tokenizer = createTokenizer({
-  defaultLanguage: 'en',
-  customDictionaries: {
-    'zh': [{
-      priority: 10,
-      data: new Set(['自定义词']),
-      name: 'custom',
-      lang: 'zh'
-    }]
-  }
-});
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
-// 使用指定语言分词
+const tokenizer = new MultilingualTokenizer();
+
+// 分词文本
 const text = '我爱北京天安门';
-const tokens = tokenizer.tokenize(text, 'zh');
+const tokens = tokenizer.tokenize(text);
+
+// 获取所有可能的tokens (仅core模块)
+const allTokens = tokenizer.tokenizeAll(text);
+```
+
+### 使用Old-Core模块
+
+```javascript
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+
+const tokenizer = new OldMultilingualTokenizer();
+
+// 分词文本 (old-core更稳定但速度较慢)
+const text = '我爱北京天安门';
+const tokens = tokenizer.tokenize(text);
 ```
 
 ## API 参考
@@ -150,10 +165,13 @@ const tokenizer = new MultilingualTokenizer(options)
 
 | 方法 | 描述 |
 |------|------|
-| `tokenize(text: string, language?: string): Token[]` | 对输入文本进行分词，返回详细的Token信息 |
-| `tokenizeText(text: string, language?: string): string[]` | 对输入文本进行分词，只返回单词Token |
+| `tokenize(text: string): Token[]` | 对输入文本进行分词，返回详细的Token信息 |
+| `tokenizeAll(text: string): Token[]` | 返回每个位置的所有可能tokens (仅core模块) |
+| `tokenizeText(text: string): string[]` | 对输入文本进行分词，只返回单词Token |
+| `tokenizeTextAll(text: string): string[]` | 返回每个位置的所有可能单词tokens (仅core模块) |
 | `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | 向分词器添加自定义单词 |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 从分词器中移除自定义单词 |
+| `addStage(stage: ITokenizerStage): void` | 添加自定义分词阶段 (仅core模块) |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
 
@@ -196,6 +214,17 @@ interface Token {
   type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 语言代码
   src?: string;             // 来源（例如：自定义词典名称）
+}
+```
+
+### `ITokenizerStage` 接口 (仅core模块)
+
+```typescript
+interface ITokenizerStage {
+  order: number;
+  priority: number;
+  tokenize(text: string, start: number): IStageBestResult;
+  all(text: string): IToken[];
 }
 ```
 

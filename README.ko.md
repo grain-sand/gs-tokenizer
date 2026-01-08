@@ -22,6 +22,14 @@
 - **다양한 출력 형식**: 상세한 토큰 정보 또는 단어 목록만 가져오기
 - **가벼움**: 최소한의 종속성, 브라우저 환경에 최적화
 - **빠른 사용 API**: 쉽게 통합할 수 있는 편리한 정적 메서드
+- **tokenizeAll**: core 모듈의 새로운 기능으로 각 위치의 모든 가능한 토큰을 반환합니다
+
+## 모듈 비교
+
+| 모듈 | 안정성 | 속도 | 토큰화 정확도 | 새로운 기능 |
+|------|--------|------|--------------|------------|
+| old-core | ✅ 보다 안정 | ⚡️ 보다 느림 | ✅ 보다 정확 | ❌ 새로운 기능 없음 |
+| core | ⚠️ 보다 불안정 | ⚡️ 보다 빠름 | ⚠️ 정확도가 낮을 수 있음 | ✅ tokenizeAll, 스테이지 기반 아키텍처 |
 
 ## 설치
 
@@ -111,21 +119,28 @@ okenizer.removeCustomWord('Python', 'en', 'programming');
 ### 고급 옵션
 
 ```javascript
-const tokenizer = createTokenizer({
-  defaultLanguage: 'ko',
-  customDictionaries: {
-    'ko': [{
-      priority: 10,
-      data: new Set(['사용자정의단어']),
-      name: 'custom',
-      lang: 'ko'
-    }]
-  }
-});
+import { MultilingualTokenizer } from 'gs-tokenizer';
 
-// 지정된 언어로 토큰화
+const tokenizer = new MultilingualTokenizer();
+
+// 텍스트 토큰화
 const text = '나는 북경 천안문을 좋아합니다';
-const tokens = tokenizer.tokenize(text, 'zh');
+const tokens = tokenizer.tokenize(text);
+
+// 모든 가능한 토큰 가져오기 (core 모듈만 해당)
+const allTokens = tokenizer.tokenizeAll(text);
+```
+
+### Old-Core 모듈 사용
+
+```javascript
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+
+const tokenizer = new OldMultilingualTokenizer();
+
+// 텍스트 토큰화 (old-core가 더 안정적이지만 더 느림)
+const text = '나는 북경 천안문을 좋아합니다';
+const tokens = tokenizer.tokenize(text);
 ```
 
 ## API 참조
@@ -150,10 +165,13 @@ const tokenizer = new MultilingualTokenizer(options)
 
 | 메서드 | 설명 |
 |------|------|
-| `tokenize(text: string, language?: string): Token[]` | 입력 텍스트를 토큰화하고 상세한 토큰 정보를 반환합니다 |
-| `tokenizeText(text: string, language?: string): string[]` | 입력 텍스트를 토큰화하고 단어 목록만 반환합니다 |
-| `addCustomDictionary(words: string[], language: string, priority: number, name: string): void` | 토크나이저에 사용자 정의 단어를 추가합니다 |
+| `tokenize(text: string): Token[]` | 입력 텍스트를 토큰화하고 상세한 토큰 정보를 반환합니다 |
+| `tokenizeAll(text: string): Token[]` | 각 위치의 모든 가능한 토큰을 반환합니다 (core 모듈만 해당) |
+| `tokenizeText(text: string): string[]` | 입력 텍스트를 토큰화하고 단어 목록만 반환합니다 |
+| `tokenizeTextAll(text: string): string[]` | 각 위치의 모든 가능한 단어 토큰을 반환합니다 (core 모듈만 해당) |
+| `addCustomDictionary(words: string[], name: string, priority?: number, language?: string): void` | 토크나이저에 사용자 정의 단어를 추가합니다 |
 | `removeCustomWord(word: string, language?: string, lexiconName?: string): void` | 토크나이저에서 사용자 정의 단어를 제거합니다 |
+| `addStage(stage: ITokenizerStage): void` | 사용자 정의 토큰화 스테이지를 추가합니다 (core 모듈만 해당) |
 
 ### `createTokenizer(options?: TokenizerOptions): MultilingualTokenizer`
 
@@ -196,6 +214,17 @@ interface Token {
   type: 'word' | 'punctuation' | 'space' | 'other' | 'emoji' | 'date' | 'host' | 'ip' | 'number' | 'hashtag' | 'mention';
   lang?: string;            // 언어 코드
   src?: string;             // 소스 (예: 사용자 정의 사전 이름)
+}
+```
+
+### `ITokenizerStage` 인터페이스 (core 모듈만 해당)
+
+```typescript
+interface ITokenizerStage {
+  order: number;
+  priority: number;
+  tokenize(text: string, start: number): IStageBestResult;
+  all(text: string): IToken[];
 }
 ```
 

@@ -2,7 +2,7 @@ import {IStageBestResult, IToken, ITokenizerStage} from "../type";
 
 export class EmailStage implements ITokenizerStage {
 	readonly id = 'email';
-	readonly order = 3;
+	readonly order = 6;
 	readonly priority = 20;
 	readonly skipOwnLastMax = true;
 

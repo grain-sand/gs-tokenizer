@@ -2,7 +2,7 @@ import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class SocialStage implements ITokenizerStage {
 	readonly id = 'social';
-	readonly order = 3;
+	readonly order = 5;
 	readonly priority = 10;
 	readonly skipOwnLastMax = true;
 

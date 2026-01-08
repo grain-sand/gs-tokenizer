@@ -9,9 +9,9 @@ export class HostIPStage implements ITokenizerStage {
 		/^(?:\[[0-9a-fA-F:]*:[0-9a-fA-F:]+]|[0-9a-fA-F]*:[0-9a-fA-F:]+)(?::\d{1,5})?/;
 	// host + port（协议可选）
 	private static HOST =
-		/^(?:https\/\/)?(?:(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+|localhost)(?::\d{1,5})?/;
+		/^(?:https?|ftp\/\/)?(?:(?:[a-zA-Z0-9-]+\.)+[a-zA-Z0-9-]+|localhost)(?::\d{1,5})?/;
 	readonly id = 'host-ip';
-	readonly order = 4;
+	readonly order = 7;
 	readonly priority = 10;
 	readonly skipOwnLastMax = true;
 	#Sub = /[^a-zA-Z0-9-]+/;
@@ -24,17 +24,17 @@ export class HostIPStage implements ITokenizerStage {
 		let m: RegExpExecArray | null;
 		let type: TokenType | null = null;
 
-		m = HostIPStage.IPV6.exec(rest);
-		if (m) type = 'ip';
+		m = HostIPStage.HOST.exec(rest);
+		if (m) type = 'host';
 
 		if (!m) {
-			m = HostIPStage.IPV4.exec(rest);
+			m = HostIPStage.IPV6.exec(rest);
 			if (m) type = 'ip';
 		}
 
 		if (!m) {
-			m = HostIPStage.HOST.exec(rest);
-			if (m) type = 'host';
+			m = HostIPStage.IPV4.exec(rest);
+			if (m) type = 'ip';
 		}
 
 		if (!m) {
@@ -65,12 +65,12 @@ export class HostIPStage implements ITokenizerStage {
 		let m: RegExpExecArray | null;
 		let type!: TokenType;
 
-		m = HostIPStage.IPV6.exec(rest);
-		if (m) type = 'ip';
+		m = HostIPStage.HOST.exec(rest);
+		if (m) type = 'host';
 
 		if (!m) {
-			m = HostIPStage.HOST.exec(rest);
-			if (m) type = 'host';
+			m = HostIPStage.IPV6.exec(rest);
+			if (m) type = 'ip';
 		}
 
 		if (!m) {

@@ -20,6 +20,7 @@ import {EmailStage} from "./EmailStage";
 import {DateStage} from "./RegexArray/DateStage";
 import {UrlStage} from "./RegexArray/UrlStage";
 import {IpStage} from "./RegexArray/IpStage";
+import {tokenText} from "./util/tokenText";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -62,7 +63,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.#lexiconNames.add(name);
 		// 直接使用addBatch确保批量添加的原子性
 		this.wordIndex.addBatch(
-			words.map(w => ({ word: w, meta: { name, priority, lang: language } }))
+			words.map(w => ({word: w, meta: {name, priority, lang: language}}))
 		);
 	}
 
@@ -86,7 +87,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenize(text: string): ISpanToken[] {
-		
+
 		const tokens: ISpanToken[] = [];
 		const len = text.length;
 
@@ -122,7 +123,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenizeAll(text: string): IToken[] {
-		
+
 		let pos = 0;
 		const rangeTokens: [IRange, IToken[]][] = [];
 		const lastMap = new Map<ITokenizerStage, number>();
@@ -167,13 +168,11 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenizeText(text: string): string[] {
-		return this.tokenize(text).map(t => t.txt);
+		return tokenText(this.tokenize(text));
 	}
 
 	tokenizeTextAll(text: string): string[] {
-		return this.tokenizeAll(text)
-			.filter(t => t.type === 'punctuation' && t.txt.length > 1 || t.type !== 'space')
-			.map(t => t.txt);
+		return tokenText(this.tokenizeAll(text))
 	}
 
 	#filTokenizeAllGapsWithNative(text: string, rangeTokens: [IRange, IToken[]][]): IToken[] {

@@ -1,42 +1,41 @@
 {
   "name": "gs-tokenizer",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "type": "module",
-  "main": "lib/index.cjs",
-  "module": "lib/index.js",
+  "main": "./lib/index.cjs",
+  "module": "./lib/index.js",
   "exports": {
     ".": {
+      "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
-      "require": "./lib/index.cjs",
-      "types": "./lib/index.d.ts"
+      "require": "./lib/index.cjs"
     },
     "./core": {
+      "types": "./lib/core.d.ts",
       "import": "./lib/core.js",
-      "require": "./lib/core.cjs",
-      "types": "./lib/core.d.ts"
+      "require": "./lib/core.cjs"
     },
-    "./next": {
-      "import": "./lib/next.js",
-      "require": "./lib/next.cjs",
-      "types": "./lib/next.d.ts"
+    "./old": {
+      "types": "./lib/old.d.ts",
+      "import": "./lib/old.js",
+      "require": "./lib/old.cjs"
     },
     "./lexicon": {
-		"import": "./lib/lexicon.js",
-		"require": "./lib/lexicon.cjs",
-		"types": "./lib/lexicon.d.ts"
-	}
+      "types": "./lib/lexicon.d.ts",
+      "import": "./lib/lexicon.js",
+      "require": "./lib/lexicon.cjs"
+    }
   },
-  "types": "lib/index.d.ts",
   "keywords": [
     "tokenizer",
     "multilingual",
-    "nlp",
-    "natural-language-processing",
-    "english",
-    "chinese",
-    "japanese",
-    "korean",
-    "cjk"
+    "Chinese",
+    "Japanese",
+    "Korean",
+    "English",
+    "NLP",
+    "Natural Language Processing",
+    "text processing"
   ],
   "homepage": "https://github.com/grain-sand/gs-tokenizer",
   "repository": {
@@ -46,7 +45,7 @@
   "bugs": {
     "url": "https://github.com/grain-sand/gs-tokenizer/issues"
   },
-  "author": "grain-sand",
+  "author": "",
   "license": "MIT",
   "dependencies": {}
 }

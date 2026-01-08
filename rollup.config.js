@@ -26,7 +26,7 @@ const regexReplace = (patterns) => ({
 });
 
 const external = (id) => {
-	return id.includes('/lexicon') || id.includes('/core') || id.includes('/type')|| id.includes('/old-core');
+	return id.includes('/lexicon') || id.includes('/core') || id.includes('/type')|| id.includes('/old');
 };
 
 const tsConfig = {
@@ -36,7 +36,7 @@ const tsConfig = {
 
 // const aliasIns = alias({entries: {find: '../core', replacement: './core'}});
 const replace = regexReplace([
-	{find: /(['"])(?:[.]+\/)+(core|type|lexicon|old-core)\1/g, replacement: `'./$2'`},
+	{find: /(['"])(?:[.]+\/)+(core|type|lexicon|old)\1/g, replacement: `'./$2'`}
 ]);
 
 const defaultPlugins = [
@@ -64,9 +64,6 @@ function createConfig(output, plugins=defaultPlugins, input) {
 		],
 		plugins: [dts(tsConfig), replace],
 	};
-	if(output==='type'){
-		return [ts]
-	}
 	return [
 		ts
 		,
@@ -103,7 +100,7 @@ if (process.env.COPY) {
 export default [
 	...createConfig('type'),
 	...createConfig('core'),
-	...createConfig('old-core'),
+	...createConfig('old'),
 	...createConfig('lexicon'),
 	...createConfig('index',mainConfigJsPlugins,'src/index.ts'),
 ];

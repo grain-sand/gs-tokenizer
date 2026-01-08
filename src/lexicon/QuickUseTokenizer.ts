@@ -1,4 +1,4 @@
-import {OldMultilingualTokenizer} from '../old-core';
+import {OldMultilingualTokenizer} from '../old';
 import {IMultilingualTokenizer, SUPPORTED_LANGUAGES, SupportedLanguage} from '../type';
 import {LexiconLoader, SUPPORTED_TYPES, SupportedType} from './LexiconLoader';
 

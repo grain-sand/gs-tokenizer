@@ -28,7 +28,7 @@
 
 | 模块 | 稳定性 | 速度 | 分词准确性 | 新特性 |
 |------|--------|------|------------|--------|
-| old-core | ✅ 更稳定 | ⚡️ 较慢 | ✅ 更准确 | ❌ 无新特性 |
+| old | ✅ 更稳定 | ⚡️ 较慢 | ✅ 更准确 | ❌ 无新特性 |
 | core | ⚠️ 较不稳定 | ⚡️ 更快 | ⚠️ 可能不够准确 | ✅ tokenizeAll, 基于Stage的架构 |
 
 ## 安装
@@ -131,14 +131,14 @@ const tokens = tokenizer.tokenize(text);
 const allTokens = tokenizer.tokenizeAll(text);
 ```
 
-### 使用Old-Core模块
+### 使用Old模块
 
 ```javascript
-import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old';
 
 const tokenizer = new OldMultilingualTokenizer();
 
-// 分词文本 (old-core更稳定但速度较慢)
+// 分词文本 (old更稳定但速度较慢)
 const text = '我爱北京天安门';
 const tokens = tokenizer.tokenize(text);
 ```

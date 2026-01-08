@@ -9,7 +9,7 @@ const tokenizerCache: Record<string, IMultilingualTokenizer> = {};
  * @param options - 工厂配置选项
  */
 export function createTokenizer(options?: {
-  type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
+  type?: 'core' | 'old'; // 支持'core'和'old'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
   // 从环境变量（支持Vite的import.meta.env和Node.js的process.env）或选项获取配置，默认使用'old-core'
@@ -19,7 +19,7 @@ export function createTokenizer(options?: {
   const tokenizerType = options?.type ||
                        viteEnv.VITE_TOKENIZER_TYPE ||
                        viteEnv.VITE_TOKENIZER_TARGET ||
-                       'old-core';
+                       'old';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);
@@ -46,7 +46,7 @@ export function createTokenizer(options?: {
  * @param options - 工厂配置选项
  */
 export function getCachedTokenizer(options?: {
-  type?: 'core' | 'old-core'; // 支持'core'和'old-core'类型
+  type?: 'core' | 'old'; // 支持'core'和'old'类型
   loadBuiltinLexicons?: boolean;
 }): IMultilingualTokenizer {
   // 从环境变量（支持Vite的import.meta.env和Node.js的process.env）或选项获取配置，默认使用'old-core'
@@ -58,7 +58,7 @@ export function getCachedTokenizer(options?: {
                        viteEnv.VITE_TOKENIZER_TARGET ||
                        process.env.TOKENIZER_TYPE ||
                        process.env.TOKENIZER_TARGET ||
-                       'old-core';
+                       'old';
   const loadBuiltinLexicons = options?.loadBuiltinLexicons ?? true;
 
   console.log(`Creating tokenizer: type=${tokenizerType}, loadBuiltinLexicons=${loadBuiltinLexicons}`);

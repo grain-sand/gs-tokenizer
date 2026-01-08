@@ -28,7 +28,7 @@ A powerful and lightweight multilingual tokenizer library that provides natural 
 
 | Module | Stability | Speed | Tokenization Accuracy | New Features |
 |--------|-----------|-------|-----------------------|--------------|
-| old-core | ✅ More stable | ⚡️ Slower | ✅ More accurate | ❌ No new features |
+| old | ✅ More stable | ⚡️ Slower | ✅ More accurate | ❌ No new features |
 | core | ⚠️ Less stable | ⚡️ Faster | ⚠️ May be less accurate | ✅ tokenizeAll, Stage-based architecture |
 
 ## Installation
@@ -131,14 +131,14 @@ const tokens = tokenizer.tokenize(text);
 const allTokens = tokenizer.tokenizeAll(text);
 ```
 
-### Using Old-Core Module
+### Using Old Module
 
 ```javascript
-import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old';
 
 const tokenizer = new OldMultilingualTokenizer();
 
-// Tokenize text (old-core is more stable but slower)
+// Tokenize text (old is more stable but slower)
 const text = '我爱北京天安门';
 const tokens = tokenizer.tokenize(text);
 ```

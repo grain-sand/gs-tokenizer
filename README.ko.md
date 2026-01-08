@@ -28,7 +28,7 @@
 
 | 모듈 | 안정성 | 속도 | 토큰화 정확도 | 새로운 기능 |
 |------|--------|------|--------------|------------|
-| old-core | ✅ 보다 안정 | ⚡️ 보다 느림 | ✅ 보다 정확 | ❌ 새로운 기능 없음 |
+| old | ✅ 보다 안정 | ⚡️ 보다 느림 | ✅ 보다 정확 | ❌ 새로운 기능 없음 |
 | core | ⚠️ 보다 불안정 | ⚡️ 보다 빠름 | ⚠️ 정확도가 낮을 수 있음 | ✅ tokenizeAll, 스테이지 기반 아키텍처 |
 
 ## 설치
@@ -131,14 +131,14 @@ const tokens = tokenizer.tokenize(text);
 const allTokens = tokenizer.tokenizeAll(text);
 ```
 
-### Old-Core 모듈 사용
+### Old 모듈 사용
 
 ```javascript
-import { OldMultilingualTokenizer } from 'gs-tokenizer/old-core';
+import { OldMultilingualTokenizer } from 'gs-tokenizer/old';
 
 const tokenizer = new OldMultilingualTokenizer();
 
-// 텍스트 토큰화 (old-core가 더 안정적이지만 더 느림)
+// 텍스트 토큰화 (old가 더 안정적이지만 더 느림)
 const text = '나는 북경 천안문을 좋아합니다';
 const tokens = tokenizer.tokenize(text);
 ```

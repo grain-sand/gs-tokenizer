@@ -3,7 +3,7 @@ import {cnNumber} from "gs-base";
 
 export const FillCnNum = `壹贰叁肆伍陆柒捌玖拾佰仟十百千万亿萬億兆${cnNumber}`;
 
-const unitArray = ['公斤', '英里', '千克', '厘米', '毫米', '公里', '小时', '分钟', '折扣', '美元', '人民币', '公顷', '平方米', '平方分米', '平方厘米', '立方厘米', '毫升', '千瓦', '安培', '伏特', '欧姆', '焦耳', '卡路里', '千克力', '牛顿', '帕斯卡', '标准大气压', '毫米汞柱', '摄氏度', '华氏度', '弧度', '角度', 'kg', 'mg', 'km', 'cm', 'mm', 'μm', 'nm', 'mL', 'ml', 'min', '°C', '°F', 'rad', 'deg', 'Hz', 'kHz', 'MHz', 'GHz', 'bit', 'Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'lb', 'oz', 'pound', 'pounds', '次'];
+const unitArray = ['公斤', '英里', '千克', '厘米', '毫米', '公里', '毫秒', '小时', '分钟', '折扣', '美元', '人民币', '公顷', '平方米', '平方分米', '平方厘米', '立方厘米', '毫升', '千瓦', '安培', '伏特', '欧姆', '焦耳', '卡路里', '千克力', '牛顿', '帕斯卡', '标准大气压', '毫米汞柱', '摄氏度', '华氏度', '弧度', '角度', 'kg', 'mg', 'km', 'cm', 'mm', 'μm', 'nm', 'mL', 'ml', 'min', '°C', '°F', 'rad', 'deg', 'Hz', 'kHz', 'MHz', 'GHz', 'bit', 'Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'lb', 'oz', 'pound', 'pounds', '次'];
 const unitChars = '片元名場场个克吨米斤两元角分秒折卷券元角分亩升天周月年岁度瓦牛巴gtmLlhsdwyB次章节';
 
 export class NumberStage extends RegexArrayStageBase {

@@ -8,6 +8,7 @@ export class UrlStage extends RegexArrayStageBase {
 	readonly priority = 1000;
 	readonly skipOwnLastMax = true;
 	readonly breakIfProcessed = true;
+	mainGroup = 1;
 
 	protected groupTypes: Record<number, TokenType> = {
 		1: 'host',

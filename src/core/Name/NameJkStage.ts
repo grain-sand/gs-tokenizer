@@ -1,25 +1,7 @@
-/* =========================================================
- * Stage 2：姓名分词（含中文 老 / 小）
- * ========================================================= */
+import {ISpanToken, IStageBestResult} from "../../type";
+import {NameStageBase} from "./NameStageBase";
 
-import {INameLexiconGroup, ISpanToken, IStageBestResult, ITokenizerStage, SupportedLanguage} from "../type";
-
-export class NameJkStage implements ITokenizerStage {
-	id = 'name';
-	order = 2;
-	priority = 0;
-	consuming = true;
-
-	private last = new Set<string>();
-	private first = new Set<string>();
-	private title = new Set<string>();
-
-
-	constructor(group: INameLexiconGroup, public lang: SupportedLanguage) {
-		group.lastName.forEach(v => this.last.add(v));
-		group.firstName.forEach(v => this.first.add(v));
-		group.title.forEach(v => this.title.add(v));
-	}
+export class NameJkStage extends NameStageBase{
 
 	best(text: string, start: number): IStageBestResult {
 		let pos = start;

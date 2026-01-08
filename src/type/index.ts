@@ -39,9 +39,12 @@ export interface IToken {
 	src?: string;
 }
 
-export interface ISpanToken extends IToken {
+export interface IRange {
 	start: number;
 	end: number;
+}
+
+export interface ISpanToken extends IToken, IRange {
 }
 
 
@@ -105,7 +108,6 @@ export interface ITokenizerStage {
 	 * 执行逻辑
 	 * @param text 原始完整文本
 	 * @param start 上一阶段未处理的起始位置
-	 * @param mode Tokenize | Extract
 	 */
 	best(
 		text: string,
@@ -116,11 +118,6 @@ export interface ITokenizerStage {
 }
 
 
-/* =========================
- * 姓名词库定义
- * - 字段必选
- * - 未设置则不加载姓名处理 stage
- * ========================= */
 
 export interface INameLexiconGroup {
 	lastName: string[];
@@ -129,9 +126,6 @@ export interface INameLexiconGroup {
 }
 
 
-/* =========================
- * 多语言分词器接口
- * ========================= */
 
 export interface IMultilingualTokenizer {
 
@@ -189,9 +183,11 @@ export interface IWordMatch {
 }
 
 export interface IWordIndex {
+
 	add(word: string, meta: LexiconMeta): void;
 
 	match(text: string, pos: number): Array<IWordMatch>;
 
 	matches(text: string, mainPos: number): Array<ISpanToken>;
+
 }

@@ -8,9 +8,9 @@ import {
 } from "../type";
 import {FirstCharWordIndex} from "./FirstCharWordIndex";
 import {DictionaryStage} from "./DictionaryStage";
-import {NameCnStage} from "./NameCnStage";
-import {NameJkStage} from "./NameJkStage";
-import {NameOtherStage} from "./NameOtherStage";
+import {NameCnStage} from "./Name/NameCnStage";
+import {NameJkStage} from "./Name/NameJkStage";
+import {NameOtherStage} from "./Name/NameOtherStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -108,7 +108,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		}
 
 		// 🔧 用 span 补齐所有被跳过的区间
-		return this.fillGapsWithNative(text, tokens);
+		return this.#filTokenizeGapsWithNative(text, tokens);
 	}
 
 	tokenizeAll(text: string): IToken[] {
@@ -122,7 +122,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			}
 			pos++;
 		}
-		return this.fillGapsWithNative(text, out);
+		return this.#filTokenizeGapsWithNative(text, out);
 	}
 
 	tokenizeText(text: string): string[] {
@@ -135,9 +135,16 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			.map(t => t.txt);
 	}
 
-	private fillGapsWithNative(
+	#filTokenizeAllGapsWithNative(
 		text: string,
-		tokens: ISpanToken[]
+		tokens: ISpanToken[],
+	): ISpanToken[] {
+		return []
+	}
+
+	#filTokenizeGapsWithNative(
+		text: string,
+		tokens: ISpanToken[],
 	): ISpanToken[] {
 		if (!this.nativeSegmenter) return tokens;
 
@@ -147,7 +154,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		for (const t of tokens) {
 			if (cursor < t.start) {
 				out.push(
-					...this.nativeSegment(text, cursor, t.start)
+					...this.#nativeSegment(text, cursor, t.start)
 				);
 			}
 			out.push(t);
@@ -156,14 +163,14 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 		if (cursor < text.length) {
 			out.push(
-				...this.nativeSegment(text, cursor, text.length)
+				...this.#nativeSegment(text, cursor, text.length)
 			);
 		}
 
 		return out;
 	}
 
-	private nativeSegment(
+	#nativeSegment(
 		text: string,
 		start: number,
 		end: number

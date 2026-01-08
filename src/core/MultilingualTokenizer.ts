@@ -11,6 +11,9 @@ import {DictionaryStage} from "./DictionaryStage";
 import {NameCnStage} from "./Name/NameCnStage";
 import {NameJkStage} from "./Name/NameJkStage";
 import {NameOtherStage} from "./Name/NameOtherStage";
+import {SocialStage} from "./SocialStage";
+import {EmailStage} from "./EmailStage";
+import {HostIPStage} from "./HostIPStage";
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
@@ -26,10 +29,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	constructor() {
 
-		this.addStage(new DictionaryStage());
+		// this.addStage(new DictionaryStage());
 		// this.addStage(new SocialStage());
 		// this.addStage(new EmailStage());
-		// this.addStage(new HostIPStage());
+		this.addStage(new HostIPStage());
 		// this.addStage(new DateStage());
 		// this.addStage(new NumberStage());
 		// this.addStage(new SymbolSpaceStage());
@@ -113,13 +116,26 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	tokenizeAll(text: string): IToken[] {
 		let pos = 0;
-		const map: [IRange, IToken[]][] = [];
+		const rangeTokens: [IRange, IToken[]][] = [];
+		const lastMap = new Map<ITokenizerStage, number>();
 
 		while (pos < text.length) {
 			const substr = text.slice(pos);
 			const tokens: IToken[] = [];
 			for (const stage of this.#stages) {
-				tokens.push(...stage.all(substr));
+				if (!stage.skipOwnLastMax) {
+					tokens.push(...stage.all(substr));
+					continue;
+				}
+				if (pos<=lastMap.get(stage)!) {
+					continue;
+				}
+				const all = stage.all(substr);
+				if (!all.length) continue;
+				tokens.push(...all);
+				let last = 0;
+				for (const t of all) if (t.txt.length > last) last = t.txt.length;
+				lastMap.set(stage, pos + last);
 			}
 			if (tokens.length) {
 				let max = 0;
@@ -127,11 +143,11 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 					if (t.txt.length > max) max = t.txt.length;
 				}
 				const range = {start: pos, end: pos + max};
-				map.push([range, tokens]);
+				rangeTokens.push([range, tokens]);
 			}
 			pos++;
 		}
-		return this.#filTokenizeAllGapsWithNative(text, map);
+		return this.#filTokenizeAllGapsWithNative(text, rangeTokens);
 	}
 
 	tokenizeText(text: string): string[] {

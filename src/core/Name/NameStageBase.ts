@@ -4,7 +4,6 @@ export abstract class NameStageBase implements ITokenizerStage {
 	id: string;
 	order = 2;
 	priority = 0;
-	consuming = true;
 
 	protected last: string[];
 	protected first: string[];

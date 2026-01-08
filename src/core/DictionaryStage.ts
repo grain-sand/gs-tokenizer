@@ -1,14 +1,10 @@
 import {IMultilingualTokenizer, IStageBestResult, ITokenizerStage, IWordIndex} from "../type";
 
 export class DictionaryStage implements ITokenizerStage {
-	id = 'dictionary';
-	order = 1;
-	priority = 0;
-	consuming = true;
+	readonly id = 'dictionary';
+	readonly order = 1;
+	readonly priority = 0;
 	private index?: IWordIndex
-
-	constructor() {
-	}
 
 	initialize(tokenizer: IMultilingualTokenizer) {
 		this.index = tokenizer.wordIndex;

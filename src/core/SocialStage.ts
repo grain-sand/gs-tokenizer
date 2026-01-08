@@ -1,10 +1,10 @@
 import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class SocialStage implements ITokenizerStage {
-	id = 'social';
-	order = 3;
-	priority = 10;
-	consuming = true;
+	readonly id = 'social';
+	readonly order = 3;
+	readonly priority = 10;
+	readonly skipOwnLastMax = true;
 
 	private nameRe = /^[\p{L}\p{N}_\-]+/u;
 
@@ -33,6 +33,6 @@ export class SocialStage implements ITokenizerStage {
 	}
 
 	all(text: string) {
-		return [];
+		return this.best(text, 0).tokens;
 	}
 }

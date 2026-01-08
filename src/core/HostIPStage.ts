@@ -4,7 +4,7 @@ export class HostIPStage implements ITokenizerStage {
 	id = 'host-ip';
 	order = 4;
 	priority = 10;
-	consuming = true;
+	readonly skipOwnLastMax = true;
 
 	// IPv4 + port
 	private static IPV4 =

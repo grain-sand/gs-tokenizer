@@ -69,26 +69,24 @@ export interface IStageBestResult {
 
 export interface ITokenizerStage {
 	/** 阶段唯一标识（调试 / src / 替换用） */
-	id: string;
+	readonly id: string;
 
 	/**
 	 * 流程顺序（1~8）
 	 * 表达：词库 → 姓名 → 社交 → 主机/IP → 日期 → 数字 → 符号 → 原生
 	 */
-	order: number;
+	readonly order: number;
 
 	/**
 	 * 同一 order 内的优先级
 	 * 数值越大越优先
 	 */
-	priority: number;
+	readonly priority: number;
 
 	/**
-	 * 是否会在 tokenize 模式下消耗字符
-	 * - false：仅 extract 候选
-	 * - true：可短路后续流程
+	 * 是否跳过当前 `Stage` 识别出的最大位置
 	 */
-	consuming: boolean;
+	readonly skipOwnLastMax?: boolean;
 
 	/**
 	 * 初始化逻辑（可选）
@@ -97,12 +95,6 @@ export interface ITokenizerStage {
 	 * - 也可用于加载词库、初始化模型等
 	 */
 	initialize?: (tokenizer: IMultilingualTokenizer) => void;
-
-	/**
-	 * 可选：能力声明（未来扩展用）
-	 * 例：['dictionary', 'name', 'date']
-	 */
-	capabilities?: readonly string[];
 
 	/**
 	 * 执行逻辑

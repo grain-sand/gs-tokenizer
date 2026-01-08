@@ -1,10 +1,11 @@
 import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class SymbolSpaceStage implements ITokenizerStage {
-	id = 'symbol-space';
-	order = 7;
-	priority = 0;
-	consuming = false;
+
+	readonly id = 'symbol-space';
+	readonly order = 7;
+	readonly priority = 0;
+	readonly skipOwnLastMax = true;
 
 	best(text: string, start: number): IStageBestResult {
 		const len = text.length;

@@ -1,10 +1,10 @@
 import {IStageBestResult, ITokenizerStage} from "../type";
 
 export class NumberStage implements ITokenizerStage {
-	id = 'number';
-	order = 6;
-	priority = 10;
-	consuming = true;
+	readonly id = 'number';
+	readonly order = 6;
+	readonly priority = 10;
+	readonly skipOwnLastMax = true;
 
 	// 连续数字（支持小数、科学计数、百分号、分隔符）
 	private static NUM =

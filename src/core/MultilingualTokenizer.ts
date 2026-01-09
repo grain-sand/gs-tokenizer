@@ -54,7 +54,36 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	initialize(option?: ITokenizerOption): void {
-		option = this.#option = {...DefaultTokenizerOption, ...this.#option, ...option};
+		// 合并选项，使用默认值作为基础
+		const mergedOption = {...DefaultTokenizerOption, ...this.#option, ...option};
+		// 断言为Required类型，因为我们已经合并了默认值
+		const validatedOption = mergedOption as Required<ITokenizerOption>;
+		
+		// 验证选项值范围
+		if (validatedOption.minTokenLength < 0) {
+			throw new Error('minTokenLength must be greater than or equal to 0');
+		}
+		if (validatedOption.cjkTokenLengthLimit <= 0) {
+			throw new Error('cjkTokenLengthLimit must be greater than 0');
+		}
+		if (validatedOption.enTokenLengthLimit <= 0) {
+			throw new Error('enTokenLengthLimit must be greater than 0');
+		}
+		if (validatedOption.urlPathLengthLimit <= 0) {
+			throw new Error('urlPathLengthLimit must be greater than 0');
+		}
+		if (validatedOption.urlQueryLengthLimit <= 0) {
+			throw new Error('urlQueryLengthLimit must be greater than 0');
+		}
+		
+		// 验证cjkTokenLengthLimit < enTokenLengthLimit
+		if (validatedOption.cjkTokenLengthLimit >= validatedOption.enTokenLengthLimit) {
+			throw new Error('cjkTokenLengthLimit must be less than enTokenLengthLimit');
+		}
+		
+		// 设置验证后的选项
+		this.#option = validatedOption;
+		
 		if (this.#urlStage) {
 			this.#urlStage.setOption(this.#option);
 			return;
@@ -62,7 +91,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		this.addStage(new DictionaryStage());
 		this.addStage(new SocialStage());
 		this.addStage(new EmailStage());
-		this.addStage(this.#urlStage = new UrlStage(option));
+		this.addStage(this.#urlStage = new UrlStage(validatedOption));
 		this.addStage(new IpStage());
 		this.addStage(new DateStage());
 		this.addStage(new NumberStage());
@@ -200,33 +229,43 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	#applyTokenizerOptions(tokens: (IToken | ISpanToken)[]): (IToken | ISpanToken)[] {
-		const {minTokenLength, cjkTokenLengthLimit,enTokenLengthLimit} = this.#option;
-		const hasMinLengthCheck = minTokenLength > 0;
-		const hasCJKLengthLimit = cjkTokenLengthLimit > 0;
+		const { minTokenLength, cjkTokenLengthLimit, enTokenLengthLimit } = this.#option;
+		
+		// 定义CJK字符的正则表达式
 		const cjkRegex = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
 
-		return tokens.filter(token => {
-
+		const result: (IToken | ISpanToken)[] = [];
+		for (let i = 0; i < tokens.length; i++) {
+			const token = tokens[i];
 			const tokenLength = token.txt.length;
 
-			if (tokenLength >= cjkTokenLengthLimit || token.type === 'host' || (token as IToken).src === 'url-path' || (token as IToken).src === 'url-query-string') {
-				return true;
+			// 跳过 host、url path、url query 的长度检测
+			if (token.type === 'host' || (token as IToken).src === 'url-path' || (token as IToken).src === 'url-query-string') {
+				result.push(token);
+				continue;
 			}
 
-			if (hasMinLengthCheck && tokenLength < minTokenLength) {
-				return false;
+			// 应用最小token长度限制
+			if (tokenLength < minTokenLength) {
+				continue;
 			}
 
-			if (hasCJKLengthLimit && tokenLength > cjkTokenLengthLimit) {
-				// 使用正则表达式检测CJK字符，避免依赖TokenType
-				if (cjkRegex.test(token.txt) || (token as any).meta?.lang?.startsWith('zh') || (token as any).meta?.lang?.startsWith('ja') || (token as any).meta?.lang?.startsWith('ko')) {
-					// 修正：如果长度超过限制，截断而不是过滤
-					token.txt = token.txt.slice(0, cjkTokenLengthLimit);
-				}
+			// 检查是否为CJK字符或语言
+			const isCJK = cjkRegex.test(token.txt) || (token as any).meta?.lang?.startsWith('zh') || (token as any).meta?.lang?.startsWith('ja') || (token as any).meta?.lang?.startsWith('ko');
+
+			// 对超过长度限制的token进行截断处理
+			if (isCJK && tokenLength > cjkTokenLengthLimit) {
+				// CJK字符按cjkTokenLengthLimit截断
+				token.txt = token.txt.slice(0, cjkTokenLengthLimit);
+			} else if (!isCJK && tokenLength > enTokenLengthLimit) {
+				// 非CJK字符按enTokenLengthLimit截断
+				token.txt = token.txt.slice(0, enTokenLengthLimit);
 			}
 
-			return true;
-		});
+			result.push(token);
+		}
+
+		return result;
 	}
 
 	#filTokenizeAllGapsWithNative(text: string, rangeTokens: [IRange, IToken[]][]): IToken[] {

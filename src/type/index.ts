@@ -170,9 +170,9 @@ export interface IMultilingualTokenizer {
 
 	tokenizeAll(text: string): IToken[];
 
-	tokenizeText(text: string): string[];
+	tokenizeText(text: string, exclude?: TokenType[]): string[];
 
-	tokenizeTextAll(text: string): string[];
+	tokenizeTextAll(text: string, exclude?: TokenType[]): string[];
 }
 
 

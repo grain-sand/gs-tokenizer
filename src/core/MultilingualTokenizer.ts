@@ -5,7 +5,7 @@ import {
 	ISpanToken,
 	IToken,
 	ITokenizerStage,
-	SupportedLanguage,
+	SupportedLanguage, TokenType,
 } from "../type";
 import {FirstCharWordIndex} from "./FirstCharWordIndex";
 import {DictionaryStage} from "./DictionaryStage";
@@ -167,12 +167,12 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		return this.#filTokenizeAllGapsWithNative(text, rangeTokens);
 	}
 
-	tokenizeText(text: string): string[] {
-		return tokenText(this.tokenize(text));
+	tokenizeText(text: string, exclude?: TokenType[]): string[] {
+		return tokenText(this.tokenize(text), exclude);
 	}
 
-	tokenizeTextAll(text: string): string[] {
-		return tokenText(this.tokenizeAll(text))
+	tokenizeTextAll(text: string, exclude?: TokenType[]): string[] {
+		return tokenText(this.tokenizeAll(text), exclude);
 	}
 
 	#filTokenizeAllGapsWithNative(text: string, rangeTokens: [IRange, IToken[]][]): IToken[] {

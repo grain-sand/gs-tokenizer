@@ -75,9 +75,9 @@ export abstract class BaseRegexArrayStage implements ITokenizerStage {
 			tokens = [token];
 			for (let i = this.mainGroup + 1; Boolean(m[i]); i++) {
 				const st = this.groupTypes?.[i];
-				const sToken = {txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`}
+				let sToken:IToken = {txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`}
 				if (this.groupAfter?.[i]) {
-					token = this.groupAfter[i](token)
+					sToken = this.groupAfter[i](sToken)
 				}
 				tokens.push(sToken);
 			}

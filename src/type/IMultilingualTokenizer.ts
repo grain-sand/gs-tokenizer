@@ -15,10 +15,10 @@ export interface ITokenizerOption {
 	 */
 	cjkTokenLengthLimit?: number
 	/**
-	 * 中文分词长度限制
+	 * 英文分词长度限制,它应该 >= cjkTokenLengthLimit,否则会出错
 	 * - 超过该长度的 token 会被截断
 	 */
-	cnTokenLengthLimit?: number
+	enTokenLengthLimit?: number
 	/**
 	 * URL 路径 Token 长度限制
 	 * - 超过该长度的 token 会被截断
@@ -33,10 +33,10 @@ export interface ITokenizerOption {
 
 export const DefaultTokenizerOption: Required<ITokenizerOption> = {
 	minTokenLength: 1,
-	cnTokenLengthLimit: 32,
+	enTokenLengthLimit: 64,
 	cjkTokenLengthLimit: 32,
-	urlPathLengthLimit: 32,
-	urlQueryLengthLimit: 32
+	urlPathLengthLimit: 64,
+	urlQueryLengthLimit: 64
 }
 
 export interface IMultilingualTokenizer {

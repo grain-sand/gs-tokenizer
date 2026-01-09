@@ -49,6 +49,11 @@ export class OldMultilingualTokenizer implements IMultilingualTokenizer {
 		];
 	}
 
+	// 实现IMultilingualTokenizer接口的initialize方法
+	initialize(options: any): void {
+		// 旧版分词器不使用新的选项格式，此处留空
+	}
+
 	/**
 	 * 获取当前已加载的所有词库名称
 	 * @returns 词库名称数组

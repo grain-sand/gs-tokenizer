@@ -20,7 +20,7 @@ export class QuickUseTokenizer {
 	 */
 	public static getInstance(): IMultilingualTokenizer {
 		if (!QuickUseTokenizer.instance) {
-			QuickUseTokenizer.instance = new OldMultilingualTokenizer();
+			QuickUseTokenizer.instance = new OldMultilingualTokenizer() as IMultilingualTokenizer;
 
 			// 使用LexiconLoader.loadTo方法加载默认词库
 			LexiconLoader.loadTo(QuickUseTokenizer.instance, {
@@ -28,7 +28,7 @@ export class QuickUseTokenizer {
 				languages: QuickUseTokenizer.defaultLanguages
 			});
 		}
-		return QuickUseTokenizer.instance;
+		return QuickUseTokenizer.instance as IMultilingualTokenizer;
 	}
 
 	/**

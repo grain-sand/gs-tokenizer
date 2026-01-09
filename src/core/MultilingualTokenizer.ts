@@ -39,7 +39,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			? new Intl.Segmenter('und', {granularity: 'word'})
 			: null;
 
-	#option!: ITokenizerOption;
+	#option!: Required<ITokenizerOption>;
 
 	constructor(option?: ITokenizerOption) {
 		this.initialize({...DefaultTokenizerOption, ...option});
@@ -135,7 +135,12 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		}
 
 		// 🔧 用 span 补齐所有被跳过的区间
-		return this.#filTokenizeGapsWithNative(text, tokens);
+		let result = this.#filTokenizeGapsWithNative(text, tokens);
+
+		// 应用 ITokenizerOption 逻辑
+		result = this.#applyTokenizerOptions(result) as ISpanToken[];
+
+		return result;
 	}
 
 	tokenizeAll(text: string): IToken[] {
@@ -180,7 +185,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			}
 			pos += skip;
 		}
-		return this.#filTokenizeAllGapsWithNative(text, rangeTokens);
+		// 应用 ITokenizerOption 逻辑
+		let result = this.#filTokenizeAllGapsWithNative(text, rangeTokens);
+		result = this.#applyTokenizerOptions(result);
+		return result;
 	}
 
 	tokenizeText(text: string, exclude?: TokenType[]): string[] {
@@ -191,14 +199,43 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		return tokenText(this.tokenizeAll(text), exclude);
 	}
 
+	#applyTokenizerOptions(tokens: (IToken | ISpanToken)[]): (IToken | ISpanToken)[] {
+		const {minTokenLength, cjkTokenLengthLimit,enTokenLengthLimit} = this.#option;
+		const hasMinLengthCheck = minTokenLength > 0;
+		const hasCJKLengthLimit = cjkTokenLengthLimit > 0;
+		const cjkRegex = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
+
+		return tokens.filter(token => {
+
+			const tokenLength = token.txt.length;
+
+			if (tokenLength >= cjkTokenLengthLimit || token.type === 'host' || (token as IToken).src === 'url-path' || (token as IToken).src === 'url-query-string') {
+				return true;
+			}
+
+			if (hasMinLengthCheck && tokenLength < minTokenLength) {
+				return false;
+			}
+
+			if (hasCJKLengthLimit && tokenLength > cjkTokenLengthLimit) {
+				// 使用正则表达式检测CJK字符，避免依赖TokenType
+				if (cjkRegex.test(token.txt) || (token as any).meta?.lang?.startsWith('zh') || (token as any).meta?.lang?.startsWith('ja') || (token as any).meta?.lang?.startsWith('ko')) {
+					// 修正：如果长度超过限制，截断而不是过滤
+					token.txt = token.txt.slice(0, cjkTokenLengthLimit);
+				}
+			}
+
+			return true;
+		});
+	}
+
 	#filTokenizeAllGapsWithNative(text: string, rangeTokens: [IRange, IToken[]][]): IToken[] {
 		const out: IToken[] = [];
 		let cursor = 0;
 
 		if (rangeTokens.length) for (const [t, tokens] of rangeTokens) {
 			if (cursor < t.start) {
-				out.push(
-					...this.#nativeSegment(text, cursor, t.start)
+				out.push(...this.#nativeSegment(text, cursor, t.start)
 				);
 			}
 			out.push(...tokens);

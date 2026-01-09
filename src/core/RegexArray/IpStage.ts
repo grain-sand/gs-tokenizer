@@ -1,6 +1,6 @@
-import {RegexArrayStageBase} from "./RegexArrayStageBase";
+import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
 
-export class IpStage extends RegexArrayStageBase {
+export class IpStage extends BaseRegexArrayStage {
 
 	readonly id = 'ip';
 	readonly order = 7;

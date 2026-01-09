@@ -1,11 +1,13 @@
 import {
+	DefaultTokenizerOption,
 	IMultilingualTokenizer,
 	INameLexiconGroup,
 	IRange,
 	ISpanToken,
-	IToken,
+	IToken, ITokenizerOption,
 	ITokenizerStage,
-	SupportedLanguage, TokenType,
+	SupportedLanguage,
+	TokenType,
 } from "../type";
 import {FirstCharWordIndex} from "./FirstCharWordIndex";
 import {DictionaryStage} from "./DictionaryStage";
@@ -22,6 +24,7 @@ import {UrlStage} from "./RegexArray/UrlStage";
 import {IpStage} from "./RegexArray/IpStage";
 import {tokenText} from "./util/tokenText";
 
+
 export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	readonly wordIndex = new FirstCharWordIndex();
@@ -29,21 +32,17 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	#lexiconNames = new Set<string>();
 	#nameLexiconNames: string[] = [];
 
-	private nativeSegmenter =
+	#urlStage?: UrlStage;
+
+	#nativeSegmenter =
 		typeof Intl !== 'undefined' && 'Segmenter' in Intl
 			? new Intl.Segmenter('und', {granularity: 'word'})
 			: null;
 
-	constructor() {
-		this.addStage(new DictionaryStage());
-		this.addStage(new SocialStage());
-		this.addStage(new EmailStage());
-		this.addStage(new UrlStage());
-		this.addStage(new IpStage());
-		this.addStage(new DateStage());
-		this.addStage(new NumberStage());
-		this.addStage(new PunctuationStage());
-		this.addStage(new SpaceStage());
+	#option!: ITokenizerOption;
+
+	constructor(option?: ITokenizerOption) {
+		this.initialize({...DefaultTokenizerOption, ...option});
 	}
 
 	get loadedLexiconNames(): string[] {
@@ -52,6 +51,23 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 	get loadedNameLexiconNames(): string[] {
 		return this.#nameLexiconNames;
+	}
+
+	initialize(option?: ITokenizerOption): void {
+		option = this.#option = {...DefaultTokenizerOption, ...this.#option, ...option};
+		if (this.#urlStage) {
+			this.#urlStage.setOption(this.#option);
+			return;
+		}
+		this.addStage(new DictionaryStage());
+		this.addStage(new SocialStage());
+		this.addStage(new EmailStage());
+		this.addStage(this.#urlStage = new UrlStage(option));
+		this.addStage(new IpStage());
+		this.addStage(new DateStage());
+		this.addStage(new NumberStage());
+		this.addStage(new PunctuationStage());
+		this.addStage(new SpaceStage());
 	}
 
 	addDictionary(
@@ -202,7 +218,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		text: string,
 		tokens: ISpanToken[],
 	): ISpanToken[] {
-		if (!this.nativeSegmenter) return tokens;
+		if (!this.#nativeSegmenter) return tokens;
 
 		const out: ISpanToken[] = [];
 		let cursor = 0;
@@ -234,7 +250,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		const slice = text.slice(start, end);
 		const res: ISpanToken[] = [];
 
-		for (const seg of this.nativeSegmenter!.segment(slice)) {
+		for (const seg of this.#nativeSegmenter!.segment(slice)) {
 			const s = start + seg.index;
 			const e = s + seg.segment.length;
 

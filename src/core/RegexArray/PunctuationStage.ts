@@ -1,8 +1,8 @@
-import {RegexArrayStageBase} from "./RegexArrayStageBase";
+import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
 import {TokenType} from "../../type";
 
 
-export class PunctuationStage extends RegexArrayStageBase {
+export class PunctuationStage extends BaseRegexArrayStage {
 
 	readonly id = 'punctuation';
 	readonly order = 10;

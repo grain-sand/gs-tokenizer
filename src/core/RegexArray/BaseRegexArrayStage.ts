@@ -1,6 +1,8 @@
 import {IStageAllResult, IStageBestResult, IToken, ITokenizerStage, TokenType} from "../../type";
 
-export abstract class RegexArrayStageBase implements ITokenizerStage {
+export type GroupAfter = (token: IToken) => IToken;
+
+export abstract class BaseRegexArrayStage implements ITokenizerStage {
 
 	abstract readonly id: string;
 	abstract readonly order: number;
@@ -14,6 +16,7 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 	 */
 	protected groupTypes?: Record<number, TokenType> = undefined;
 	protected groupSources?: Record<number, string> = undefined;
+	protected groupAfter?: Record<number, GroupAfter> = undefined;
 	/**
 	 * 每个正则表达式的匹配组对应的token类型
 	 * - 如果未指定，则默认使用id作为token类型
@@ -32,8 +35,12 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 			const m = this.RegexArray[i].exec(rest);
 			if (m) {
 				const type = this.types?.[i] || this.groupTypes?.[this.mainGroup] || this.id as any
+				let token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+				if (this.groupAfter?.[this.mainGroup]) {
+					token = this.groupAfter[this.mainGroup](token)
+				}
 				return {
-					tokens: [{txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type}],
+					tokens: [token],
 					unprocessedStart: start + m[this.mainGroup].length,
 					consumed: true
 				};
@@ -57,7 +64,10 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 		}
 		type || (type = this.groupTypes?.[this.mainGroup] || this.id as any)
 		if (!m) return {tokens: [], end: 0};
-		const token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+		let token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+		if (this.groupAfter?.[this.mainGroup]) {
+			token = this.groupAfter[this.mainGroup](token)
+		}
 		let tokens: IToken[];
 		if (!m[this.mainGroup + 1]) {
 			tokens = [token];
@@ -65,7 +75,11 @@ export abstract class RegexArrayStageBase implements ITokenizerStage {
 			tokens = [token];
 			for (let i = this.mainGroup + 1; Boolean(m[i]); i++) {
 				const st = this.groupTypes?.[i];
-				tokens.push({txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`});
+				const sToken = {txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`}
+				if (this.groupAfter?.[i]) {
+					token = this.groupAfter[i](token)
+				}
+				tokens.push(sToken);
 			}
 		}
 		return {tokens, end: m[0].length};

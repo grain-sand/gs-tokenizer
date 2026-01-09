@@ -1,8 +1,8 @@
-import {RegexArrayStageBase} from "./RegexArrayStageBase";
+import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
 import {FillCnNum} from "./NumberStage";
 
 
-export class DateStage extends RegexArrayStageBase{
+export class DateStage extends BaseRegexArrayStage{
 
 	readonly id = 'date';
 	readonly order = 8;

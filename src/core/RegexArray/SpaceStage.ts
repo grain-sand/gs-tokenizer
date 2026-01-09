@@ -1,7 +1,7 @@
-import {RegexArrayStageBase} from "./RegexArrayStageBase";
+import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
 
 
-export class SpaceStage extends RegexArrayStageBase{
+export class SpaceStage extends BaseRegexArrayStage{
 
 	readonly id = 'space';
 	readonly order = 100;

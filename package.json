@@ -6,18 +6,7 @@
 		"build": "rollup -c",
 		"build-copy": "rollup -c --environment COPY:true",
 		"test": "vitest run --browser.enabled=false",
-		"test-core": "cross-env VITE_TOKENIZER_TYPE=core vitest run --browser.enabled=false",
-		"test:base": "vitest run test/test-base.ts",
-		"test:english": "vitest run test/test-english.ts",
-		"test:cjk": "vitest run test/test-cjk.ts",
-		"test:custom-dictionary": "vitest run test/test-custom-dictionary.ts",
-		"test:chinese": "vitest run test/test-chinese.ts",
-		"test:japanese": "vitest run test/test-japanese.ts",
-		"test:korean": "vitest run test/test-korean.ts",
-		"test:emoji": "vitest run test/test-emoji.ts",
-		"test:mixed": "vitest run test/test-mixed.ts",
-		"test:date": "vitest run test/test-date.ts",
-		"test:name": "vitest run test/test-name.ts"
+		"test-core": "cross-env VITE_TOKENIZER_TYPE=core vitest run --browser.enabled=false"
 	},
 	"dependencies": {},
 	"devDependencies": {

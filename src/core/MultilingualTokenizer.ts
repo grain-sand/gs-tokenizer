@@ -58,7 +58,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		const mergedOption = {...DefaultTokenizerOption, ...this.#option, ...option};
 		// 断言为Required类型，因为我们已经合并了默认值
 		const validatedOption = mergedOption as Required<ITokenizerOption>;
-		
+
 		// 验证选项值范围
 		if (validatedOption.minTokenLength < 0) {
 			throw new Error('minTokenLength must be greater than or equal to 0');
@@ -75,15 +75,15 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		if (validatedOption.urlQueryLengthLimit <= 0) {
 			throw new Error('urlQueryLengthLimit must be greater than 0');
 		}
-		
+
 		// 验证cjkTokenLengthLimit < enTokenLengthLimit
 		if (validatedOption.cjkTokenLengthLimit >= validatedOption.enTokenLengthLimit) {
 			throw new Error('cjkTokenLengthLimit must be less than enTokenLengthLimit');
 		}
-		
+
 		// 设置验证后的选项
 		this.#option = validatedOption;
-		
+
 		if (this.#urlStage) {
 			this.#urlStage.setOption(this.#option);
 			return;
@@ -132,6 +132,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenize(text: string): ISpanToken[] {
+		// 分词前处理：如果需要转小写，直接对整个文本转小写
+		if (this.#option.lowercaseEnglish) {
+			text = text.toLowerCase();
+		}
 
 		const tokens: ISpanToken[] = [];
 		const len = text.length;
@@ -173,6 +177,10 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	tokenizeAll(text: string): IToken[] {
+		// 分词前处理：如果需要转小写，直接对整个文本转小写
+		if (this.#option.lowercaseEnglish) {
+			text = text.toLowerCase();
+		}
 
 		let pos = 0;
 		const rangeTokens: [IRange, IToken[]][] = [];
@@ -229,8 +237,8 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 	}
 
 	#applyTokenizerOptions(tokens: (IToken | ISpanToken)[]): (IToken | ISpanToken)[] {
-		const { minTokenLength, cjkTokenLengthLimit, enTokenLengthLimit } = this.#option;
-		
+		const {minTokenLength, cjkTokenLengthLimit, enTokenLengthLimit} = this.#option;
+
 		// 定义CJK字符的正则表达式
 		const cjkRegex = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
 
@@ -239,18 +247,24 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 			const token = tokens[i];
 			const tokenLength = token.txt.length;
 
-			// 跳过 host、url path、url query 的长度检测
-			if (token.type === 'host' || (token as IToken).src === 'url-path' || (token as IToken).src === 'url-query-string') {
+			// 快速跳过不需要处理的token
+			if (tokenLength <= cjkTokenLengthLimit) {
 				result.push(token);
 				continue;
 			}
 
-			// 应用最小token长度限制
 			if (tokenLength < minTokenLength) {
 				continue;
 			}
 
-			// 检查是否为CJK字符或语言
+			const isURLToken = token.type === 'host' || (token as IToken).src === 'url-path' || (token as IToken).src === 'url-query-string';
+
+
+			// 优先处理URL相关token
+			if (isURLToken) {
+				result.push(token);
+				continue;
+			}
 			const isCJK = cjkRegex.test(token.txt) || (token as any).meta?.lang?.startsWith('zh') || (token as any).meta?.lang?.startsWith('ja') || (token as any).meta?.lang?.startsWith('ko');
 
 			// 对超过长度限制的token进行截断处理

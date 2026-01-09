@@ -29,6 +29,11 @@ export interface ITokenizerOption {
 	 * - 超过该长度的 token 会被截断
 	 */
 	urlQueryLengthLimit?: number
+
+	/**
+	 * 是否将英文分词转换为小写
+	 */
+	lowercaseEnglish?: boolean
 }
 
 export const DefaultTokenizerOption: Required<ITokenizerOption> = {
@@ -36,7 +41,8 @@ export const DefaultTokenizerOption: Required<ITokenizerOption> = {
 	enTokenLengthLimit: 64,
 	cjkTokenLengthLimit: 32,
 	urlPathLengthLimit: 64,
-	urlQueryLengthLimit: 64
+	urlQueryLengthLimit: 64,
+	lowercaseEnglish: true
 }
 
 export interface IMultilingualTokenizer {

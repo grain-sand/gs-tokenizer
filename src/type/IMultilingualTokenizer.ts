@@ -42,7 +42,7 @@ export const DefaultTokenizerOption: Required<ITokenizerOption> = {
 	cjkTokenLengthLimit: 32,
 	urlPathLengthLimit: 64,
 	urlQueryLengthLimit: 64,
-	lowercaseEnglish: true
+	lowercaseEnglish: false
 }
 
 export interface IMultilingualTokenizer {

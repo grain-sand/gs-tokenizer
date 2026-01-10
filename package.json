@@ -1,37 +1,29 @@
 {
-	"name": "gs-tokenizer-dev",
-	"version": "1.0.0",
-	"description": "一个纯前端的极小体积的简单分词器，受限于体积有各种不完善，好处是能够以极少体积在浏览器运行",
-	"scripts": {
-		"build": "rollup -c",
-		"build-copy": "rollup -c --environment COPY:true",
-		"test": "vitest run --browser.enabled=false",
-		"test-core": "cross-env VITE_TOKENIZER_TYPE=core vitest run --browser.enabled=false"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^16.0.1",
-		"@rollup/plugin-terser": "^0.4.4",
-		"@tsconfig/node20": "^20.1.6",
-		"@types/mockjs": "^1.0.10",
-		"@types/node": "^24.3.3",
-		"@vitejs/plugin-vue": "^6.0.1",
-		"@vitest/browser": "^3.2.4",
-		"@vue/test-utils": "^2.4.6",
-		"@vue/tsconfig": "^0.8.1",
-		"cross-env": "^10.1.0",
-		"esbuild": "0.25.9",
-		"gs-base": "^0.1.19",
-		"rollup": "^4.50.1",
-		"rollup-plugin-copy": "^3.5.0",
-		"rollup-plugin-dts": "^6.2.3",
-		"rollup-plugin-esbuild": "^6.2.1",
-		"rollup-plugin-typescript2": "^0.36.0",
-		"typescript": "^5.9.2",
-		"util": "^0.12.5",
-		"vite": "7.1.11",
-		"vitest": "^3.2.4",
-		"vue": "^3.5.21"
-	},
-	"type": "module"
+  "name": "gs-tokenizer-dev",
+  "version": "1.0.0",
+  "description": "一个纯前端的极小体积的简单分词器，受限于体积有各种不完善，好处是能够以极少体积在浏览器运行",
+  "scripts": {
+	"build": "rollup -c",
+	"build-copy": "rollup -c --environment COPY:true",
+	"test": "vitest run --browser.enabled=false",
+	"test-core": "cross-env VITE_TOKENIZER_TYPE=core vitest run --browser.enabled=false"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+	"@rollup/plugin-node-resolve": "^16.0.1",
+	"@vitejs/plugin-vue": "^6.0.1",
+	"@vitest/browser": "^3.2.4",
+	"@vue/test-utils": "^2.4.6",
+	"esbuild": "0.25.9",
+	"gs-base": "^0.1.19",
+	"rollup": "^4.50.1",
+	"rollup-plugin-copy": "^3.5.0",
+	"rollup-plugin-dts": "^6.2.3",
+	"rollup-plugin-esbuild": "^6.2.1",
+	"typescript": "^5.9.3",
+	"vitest": "^3.2.4",
+	"vue": "^3.5.26"
+  },
+  "type": "module"
 }

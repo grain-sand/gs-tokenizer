@@ -11,15 +11,15 @@ export default defineConfig({
 		include: ['util'], // 确保 util 包在依赖优化中被打包
 	},
 	test: {
-		// browser: {
-		// 	enabled: true,
-		// 	instances:[
-		// 		{
-		// 			browser: "1",
-		// 		} as any
-		// 	]
-		// },
-		include: ['./test/test-*.ts'],
+		browser: {
+			enabled: true,
+			instances:[
+				{
+					browser: "1",
+				} as any
+			]
+		},
+		include: ['./test/*test*.ts'],
 		silent: true
 	},
 	logLevel: "error"

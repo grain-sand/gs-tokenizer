@@ -1,5 +1,5 @@
 import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
-import {TokenType} from "../../type";
+import {Lang, TokenType} from "../../type";
 
 
 export class PunctuationStage extends BaseRegexArrayStage {
@@ -11,6 +11,7 @@ export class PunctuationStage extends BaseRegexArrayStage {
 	readonly breakIfProcessed = true;
 
 	protected types: TokenType[] = ['emoji', 'punctuation'];
+	protected langArr: Lang[] = [Lang.EMOJI, Lang.SYMBOL_HALF];
 
 	protected RegexArray: RegExp[] = [
 		/^\p{Emoji_Presentation}+/u,

@@ -23,6 +23,7 @@ import {DateStage} from "./RegexArray/DateStage";
 import {UrlStage} from "./RegexArray/UrlStage";
 import {IpStage} from "./RegexArray/IpStage";
 import {tokenText} from "./util/tokenText";
+import {detectLang} from "./util/detectLang";
 
 
 export class MultilingualTokenizer implements IMultilingualTokenizer {
@@ -337,7 +338,7 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 		start: number,
 		end: number
 	): ISpanToken[] {
-		const slice = text.slice(start, end);
+		const slice = start === 0 && end === text.length ? text : text.slice(start, end);
 		const res: ISpanToken[] = [];
 
 		for (const seg of this.#nativeSegmenter!.segment(slice)) {
@@ -346,8 +347,9 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 			res.push({
 				txt: seg.segment,
-				type: 'word',
+				type: seg.isWordLike ? 'word' : 'other',
 				src: 'native',
+				lang: detectLang(seg.segment),
 				start: s,
 				end: e
 			});

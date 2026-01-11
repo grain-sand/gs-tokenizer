@@ -1,4 +1,5 @@
 import {BaseRegexArrayStage} from "./BaseRegexArrayStage";
+import {Lang} from "../../type";
 
 export class IpStage extends BaseRegexArrayStage {
 
@@ -7,6 +8,8 @@ export class IpStage extends BaseRegexArrayStage {
 	readonly priority = 100;
 	readonly skipOwnLastMax = true;
 	readonly breakIfProcessed = true;
+
+	protected lang?: Lang = Lang.EN;
 
 	protected RegexArray: RegExp[] = [
 		/^(?:\[[0-9a-fA-F:]*:[0-9a-fA-F:]+]|[0-9a-fA-F]*:[0-9a-fA-F:]+)(?::\d{1,5})?/,

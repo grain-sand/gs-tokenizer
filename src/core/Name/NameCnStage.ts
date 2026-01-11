@@ -1,4 +1,4 @@
-import {IStageAllResult, IStageBestResult, IToken} from "../../type";
+import {IStageAllResult, IStageBestResult, IToken, Lang} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
 export class NameCnStage extends NameStageBase {
@@ -26,7 +26,8 @@ export class NameCnStage extends NameStageBase {
 						txt: name,
 						type: 'name',
 						supLang: this.lang,
-						src: this.id
+						src: this.id,
+						lang: Lang.CJK
 					}],
 					unprocessedStart: afterLast + fn.length,
 					consumed: true
@@ -39,7 +40,8 @@ export class NameCnStage extends NameStageBase {
 						txt: name,
 						type: 'name',
 						supLang: this.lang,
-						src: this.id
+						src: this.id,
+						lang: Lang.CJK
 					}],
 					unprocessedStart: start + name.length,
 					consumed: true
@@ -69,6 +71,7 @@ export class NameCnStage extends NameStageBase {
 					type: 'name',
 					supLang: this.lang,
 					src: this.id,
+					lang: Lang.CJK
 				})
 			}
 			const afterLast = pos + ln.length;
@@ -80,6 +83,7 @@ export class NameCnStage extends NameStageBase {
 					type: 'name',
 					supLang: this.lang,
 					src: this.id,
+					lang: Lang.CJK
 				})
 			}
 		}

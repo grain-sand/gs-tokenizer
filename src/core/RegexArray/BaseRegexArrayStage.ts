@@ -1,4 +1,4 @@
-import {IStageAllResult, IStageBestResult, IToken, ITokenizerStage, TokenType} from "../../type";
+import {IStageAllResult, IStageBestResult, IToken, ITokenizerStage, Lang, TokenType} from "../../type";
 
 export type GroupAfter = (token: IToken) => IToken;
 
@@ -24,7 +24,9 @@ export abstract class BaseRegexArrayStage implements ITokenizerStage {
 	 * @protected
 	 */
 	protected types?: TokenType[] = undefined;
+	protected langArr?: Lang[] = undefined;
 	protected mainGroup = 0;
+	protected lang?: Lang = undefined;
 
 	best(
 		text: string,
@@ -35,7 +37,11 @@ export abstract class BaseRegexArrayStage implements ITokenizerStage {
 			const m = this.RegexArray[i].exec(rest);
 			if (m) {
 				const type = this.types?.[i] || this.groupTypes?.[this.mainGroup] || this.id as any
+				const lang = this.langArr?.[i] || this.lang;
 				let token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+				if (lang) {
+					token.lang = lang;
+				}
 				if (this.groupAfter?.[this.mainGroup]) {
 					token = this.groupAfter[this.mainGroup](token)
 				}
@@ -54,17 +60,21 @@ export abstract class BaseRegexArrayStage implements ITokenizerStage {
 	}
 
 	all(rest: string): IStageAllResult {
-		let m: RegExpExecArray | null = null, type!: TokenType;
+		let m: RegExpExecArray | null = null, type!: TokenType, lang: Lang | undefined;
 		for (let i = 0; i < this.RegexArray.length; i++) {
 			m = this.RegexArray[i].exec(rest);
 			if (m) {
 				this.types?.[i] && (type = this.types![i])
+				lang = this.langArr?.[i] || this.lang;
 				break;
 			}
 		}
 		type || (type = this.groupTypes?.[this.mainGroup] || this.id as any)
 		if (!m) return {tokens: [], end: 0};
 		let token: IToken = {txt: m[this.mainGroup], type, src: this.groupSources?.[this.mainGroup] || type};
+		if (lang) {
+			token.lang = lang;
+		}
 		if (this.groupAfter?.[this.mainGroup]) {
 			token = this.groupAfter[this.mainGroup](token)
 		}
@@ -75,7 +85,10 @@ export abstract class BaseRegexArrayStage implements ITokenizerStage {
 			tokens = [token];
 			for (let i = this.mainGroup + 1; Boolean(m[i]); i++) {
 				const st = this.groupTypes?.[i];
-				let sToken:IToken = {txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`}
+				let sToken: IToken = {txt: m[i], type: st || type, src: this.groupSources?.[i] || st || `${type}-sub`};
+				if (lang) {
+					sToken.lang = lang;
+				}
 				if (this.groupAfter?.[i]) {
 					sToken = this.groupAfter[i](sToken)
 				}

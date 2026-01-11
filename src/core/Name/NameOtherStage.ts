@@ -1,4 +1,4 @@
-import {IStageAllResult, IStageBestResult, IToken} from "../../type";
+import {IStageAllResult, IStageBestResult, IToken, Lang} from "../../type";
 import {NameStageBase} from "./NameStageBase";
 
 export class NameOtherStage extends NameStageBase {
@@ -18,7 +18,8 @@ export class NameOtherStage extends NameStageBase {
 						txt: name,
 						type: 'name',
 						supLang: this.lang,
-						src: this.id
+						src: this.id,
+						lang: Lang.EN
 					}],
 					unprocessedStart: afterLast + fn.length,
 					consumed: true
@@ -42,6 +43,7 @@ export class NameOtherStage extends NameStageBase {
 					type: 'name',
 					supLang: this.lang,
 					src: this.id,
+					lang: Lang.EN
 				})
 			}
 		}

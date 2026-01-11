@@ -5,7 +5,7 @@ import {
 	IRange,
 	ISpanToken,
 	IToken, ITokenizerOption,
-	ITokenizerStage,
+	ITokenizerStage, Lang,
 	SupportedLanguage,
 	TokenType,
 } from "../type";
@@ -218,6 +218,13 @@ export class MultilingualTokenizer implements IMultilingualTokenizer {
 
 			}
 			if (tokens.length) {
+				const [tk] = this.#nativeSegment(text, pos, processedPos);
+				if (tk?.type === 'word' && detectLang(tk.txt) === Lang.CJK) {
+					if(tokens.find(t=>t.txt!==tk.txt)) {
+						tk.lang = Lang.CJK;
+						tokens.push(tk);
+					}
+				}
 				const range = {start: pos, end: processedPos};
 				rangeTokens.push([range, tokens]);
 			}

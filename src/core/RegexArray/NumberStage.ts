@@ -14,8 +14,8 @@ export class NumberStage extends BaseRegexArrayStage {
 	readonly breakIfProcessed: boolean = true;
 
 	protected RegexArray: RegExp[] = [
-		new RegExp(`^(?:第|No)?[${FillCnNum}0-9]+(\.[${FillCnNum}0-9]+)?(?:${unitArray.join('|')})`, 'i'),
-		new RegExp(`^(?:第|No)?[${FillCnNum}0-9]+(\.[${FillCnNum}0-9]+)?[${unitChars}]`, 'i'),
+		new RegExp(`^(?:第|No)?[${FillCnNum}0-9]+(?:\.[${FillCnNum}0-9]+)?(?:${unitArray.join('|')})`, 'i'),
+		new RegExp(`^(?:第|No)?[${FillCnNum}0-9]+(?:\.[${FillCnNum}0-9]+)?[${unitChars}]`, 'i'),
 		/^[+-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?:e[+-]?\d+)?%?/i,
 		new RegExp(`^[${FillCnNum}]+`, 'i')
 	]

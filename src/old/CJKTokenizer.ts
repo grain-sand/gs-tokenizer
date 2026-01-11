@@ -56,15 +56,15 @@ export class CJKTokenizer implements ILanguageTokenizer {
 			const {segment: segText, isWordLike} = segment;
 
 			if (segText.match(/^\s+$/)) {
-			tokens.push({txt: segText, type: 'space', lang: language as SupportedLanguage, src: ''});
+			tokens.push({txt: segText, type: 'space', supLang: language as SupportedLanguage, src: ''});
 		} else if (/^\p{Emoji}+$/u.test(segText) && !/[0-9#]/.test(segText)) {
-			tokens.push({txt: segText, type: 'emoji', lang: language as SupportedLanguage, src: ''});
+			tokens.push({txt: segText, type: 'emoji', supLang: language as SupportedLanguage, src: ''});
 		} else if (segText.match(/^[^\p{L}\p{N}]+$/u)) {
-			tokens.push({txt: segText, type: 'punctuation', lang: language as SupportedLanguage, src: ''});
+			tokens.push({txt: segText, type: 'punctuation', supLang: language as SupportedLanguage, src: ''});
 		} else if (isWordLike) {
-			tokens.push({txt: segText, type: 'word', lang: language as SupportedLanguage, src: ''});
+			tokens.push({txt: segText, type: 'word', supLang: language as SupportedLanguage, src: ''});
 		} else {
-			tokens.push({txt: segText, type: 'other', lang: language as SupportedLanguage, src: ''});
+			tokens.push({txt: segText, type: 'other', supLang: language as SupportedLanguage, src: ''});
 		}
 		}
 
@@ -126,7 +126,7 @@ export class CJKTokenizer implements ILanguageTokenizer {
 					mergedTokens.push({
 					txt: bestMatch.text,
 					type: 'word',
-					lang: language as SupportedLanguage,
+					supLang: language as SupportedLanguage,
 					src: ''
 				});
 					i += bestMatch.length;

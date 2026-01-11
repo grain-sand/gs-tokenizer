@@ -57,7 +57,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'space',
-          lang: language as SupportedLanguage,
+          supLang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = spaceEnd;
@@ -74,7 +74,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'emoji',
-          lang: language as SupportedLanguage,
+          supLang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = emojiEnd;
@@ -91,7 +91,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: tokenText,
           type: 'word',
-          lang: language as SupportedLanguage,
+          supLang: language as SupportedLanguage,
           src: ''
         });
         currentIndex = wordEnd;
@@ -111,7 +111,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
       tokens.push({
           txt: tokenText,
           type: 'punctuation',
-          lang: language as SupportedLanguage,
+          supLang: language as SupportedLanguage,
           src: ''
         });
       currentIndex = punctuationEnd;
@@ -147,7 +147,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
               taggedTokens.push({
                 txt: word,
                 type: 'word',
-                lang: language as SupportedLanguage,
+                supLang: language as SupportedLanguage,
                 src: lexicon.name
               });
               i++;
@@ -163,7 +163,7 @@ export class EnglishTokenizer implements ILanguageTokenizer {
       taggedTokens.push({
         txt: tokens[i].txt,
         type: tokens[i].type,
-        lang: language as SupportedLanguage,
+        supLang: language as SupportedLanguage,
         src: tokens[i].src || ''
       });
       i++;

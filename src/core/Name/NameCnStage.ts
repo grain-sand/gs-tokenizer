@@ -25,7 +25,7 @@ export class NameCnStage extends NameStageBase {
 					tokens: [{
 						txt: name,
 						type: 'name',
-						lang: this.lang,
+						supLang: this.lang,
 						src: this.id
 					}],
 					unprocessedStart: afterLast + fn.length,
@@ -38,7 +38,7 @@ export class NameCnStage extends NameStageBase {
 					tokens: [{
 						txt: name,
 						type: 'name',
-						lang: this.lang,
+						supLang: this.lang,
 						src: this.id
 					}],
 					unprocessedStart: start + name.length,
@@ -67,7 +67,7 @@ export class NameCnStage extends NameStageBase {
 				tokens.push({
 					txt: name,
 					type: 'name',
-					lang: this.lang,
+					supLang: this.lang,
 					src: this.id,
 				})
 			}
@@ -78,7 +78,7 @@ export class NameCnStage extends NameStageBase {
 				tokens.push({
 					txt: name,
 					type: 'name',
-					lang: this.lang,
+					supLang: this.lang,
 					src: this.id,
 				})
 			}

@@ -94,7 +94,7 @@ export class FirstCharWordIndex implements IWordIndex {
 		return matches.map(match => ({
 			txt: match.word,
 			type: 'word',
-			lang: match.meta.lang,
+			supLang: match.meta.lang,
 			src: match.meta.name
 		}));
 	}

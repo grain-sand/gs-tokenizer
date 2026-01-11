@@ -27,7 +27,7 @@ export class DictionaryStage implements ITokenizerStage {
 			tokens: [{
 				txt: best.word,
 				type: 'word',
-				lang: best.meta.lang,
+				supLang: best.meta.lang,
 				src: best.meta.name
 			}],
 			unprocessedStart: start + best.word.length,
@@ -46,7 +46,7 @@ export class DictionaryStage implements ITokenizerStage {
 		const tokens = matches.map(match => ({
 			txt: match.word,
 			type: 'word' as TokenType,
-			lang: match.meta.lang,
+			supLang: match.meta.lang,
 			src: match.meta.name
 		}));
 		

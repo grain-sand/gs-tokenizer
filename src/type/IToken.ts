@@ -1,4 +1,5 @@
-import { SupportedLanguage } from './SupportedLanguage';
+import {SupportedLanguage} from './SupportedLanguage';
+import {Lang} from './Lang';
 
 export type TokenType =
 	| 'word'
@@ -21,7 +22,8 @@ export interface IToken {
 	txt: string;
 	type: TokenType;
 
-	lang?: SupportedLanguage;
+	supLang?: SupportedLanguage;
+	lang?: Lang;
 	src?: string;
 }
 

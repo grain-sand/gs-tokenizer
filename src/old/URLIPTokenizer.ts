@@ -100,7 +100,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
         tokens.push({
           txt: text.substring(currentIndex, match.index),
           type: 'other',
-          lang: language as any
+          supLang: language as any
         });
       }
 
@@ -108,7 +108,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: match.text,
         type: match.type,
-        lang: 'en'
+        supLang: 'en'
       });
 
       currentIndex = match.endIndex;
@@ -119,7 +119,7 @@ export class HostIPTokenizer implements ILanguageTokenizer {
       tokens.push({
         txt: text.substring(currentIndex),
         type: 'other',
-        lang: language as any
+        supLang: language as any
       });
     }
 

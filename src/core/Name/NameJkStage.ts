@@ -18,7 +18,7 @@ export class NameJkStage extends NameStageBase{
 						tokens: [{
 							txt: name,
 							type: 'name',
-							lang: this.lang,
+							supLang: this.lang,
 							src:this.id
 						}],
 						unprocessedStart: afterLast + fn.length,
@@ -31,7 +31,7 @@ export class NameJkStage extends NameStageBase{
 						tokens: [{
 							txt: name,
 							type: 'name',
-							lang: this.lang,
+							supLang: this.lang,
 							src:this.id
 						}],
 						unprocessedStart: afterLast + fn.length,
@@ -56,7 +56,7 @@ export class NameJkStage extends NameStageBase{
 					tokens.push({
 						txt: name,
 						type: 'name',
-						lang: this.lang,
+						supLang: this.lang,
 						src:this.id,
 					})
 				}
@@ -65,7 +65,7 @@ export class NameJkStage extends NameStageBase{
 					tokens.push({
 						txt: name,
 						type: 'name',
-						lang: this.lang,
+						supLang: this.lang,
 						src:this.id,
 					})
 				}

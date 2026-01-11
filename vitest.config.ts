@@ -19,7 +19,7 @@ export default defineConfig({
 				} as any
 			]
 		},
-		include: ['./test/*test*.ts'],
+		include: ['./test/**/*test*.ts'],
 		silent: true
 	},
 	logLevel: "error"

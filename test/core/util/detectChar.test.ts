@@ -64,18 +64,18 @@ describe('detectChar', () => {
 
   describe('CJK字符', () => {
     it('应该识别中文字符', () => {
-      expect(detectChar('中'.codePointAt(0)!)).toBe(Lang.CJK);
-      expect(detectChar('文'.codePointAt(0)!)).toBe(Lang.CJK);
+      expect(detectChar('中'.codePointAt(0)!)).toBe(Lang.ZH);
+      expect(detectChar('文'.codePointAt(0)!)).toBe(Lang.ZH);
     });
 
-    it('应该识别日文假名', () => {
-      expect(detectChar('あ'.codePointAt(0)!)).toBe(Lang.CJK); // 平假名
-      expect(detectChar('ア'.codePointAt(0)!)).toBe(Lang.CJK); // 片假名
+    it('应该识别日文字符', () => {
+      expect(detectChar('あ'.codePointAt(0)!)).toBe(Lang.JA); // 平假名
+      expect(detectChar('ア'.codePointAt(0)!)).toBe(Lang.JA); // 片假名
     });
 
     it('应该识别韩文字符', () => {
-      expect(detectChar('한'.codePointAt(0)!)).toBe(Lang.CJK);
-      expect(detectChar('글'.codePointAt(0)!)).toBe(Lang.CJK);
+      expect(detectChar('한'.codePointAt(0)!)).toBe(Lang.KO);
+      expect(detectChar('글'.codePointAt(0)!)).toBe(Lang.KO);
     });
   });
 

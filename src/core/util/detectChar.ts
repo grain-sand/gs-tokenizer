@@ -66,13 +66,15 @@ export function detectChar(cp: number): Lang {
     }
 
     // CJK（中、日、韩）
-    if (
-        (cp >= 0x4e00 && cp <= 0x9fff) || // 汉字
-        (cp >= 0x3400 && cp <= 0x4dbf) || // 汉字扩展A
-        (cp >= 0x3040 && cp <= 0x30ff) || // 日文假名
-        (cp >= 0xac00 && cp <= 0xd7af)    // 韩文
-    ) {
-        return Lang.CJK;
+    if ((cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0x3400 && cp <= 0x4dbf)) {
+        // 中文：汉字及汉字扩展A
+        return Lang.ZH;
+    } else if (cp >= 0x3040 && cp <= 0x30ff) {
+        // 日文：日文假名
+        return Lang.JA;
+    } else if (cp >= 0xac00 && cp <= 0xd7af) {
+        // 韩文：韩文字母
+        return Lang.KO;
     }
 
     // Emoji

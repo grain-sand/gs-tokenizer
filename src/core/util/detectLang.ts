@@ -44,6 +44,7 @@ export function detectLang(str: string, fastCJK = true): Lang {
 	}
 
 	let lang: Lang = Lang.NONE;
+	let secondLang: Lang = Lang.NONE;
 
 	// 预处理：检查是否纯空白字符
 	if (/^\s+$/.test(str)) {
@@ -65,7 +66,12 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			if (lang === Lang.NONE) {
 				lang = Lang.NUMERIC_HALF;
 			} else if (lang !== Lang.NUMERIC_HALF) {
-				return Lang.OTHER;
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+				} else if (secondLang !== Lang.NUMERIC_HALF) {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.NUMERIC_HALF;
+				}
 			}
 			i++;
 			continue;
@@ -76,7 +82,12 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			if (lang === Lang.NONE) {
 				lang = Lang.NUMERIC_FULL;
 			} else if (lang !== Lang.NUMERIC_FULL) {
-				return Lang.OTHER;
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+				} else if (secondLang !== Lang.NUMERIC_FULL) {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.NUMERIC_FULL;
+				}
 			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
@@ -87,33 +98,48 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			if (lang === Lang.NONE) {
 				lang = Lang.NUMERIC_OTHER;
 			} else if (lang !== Lang.NUMERIC_OTHER) {
-				return Lang.OTHER;
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+				} else if (secondLang !== Lang.NUMERIC_OTHER) {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.NUMERIC_OTHER;
+				}
 			}
-			i += cp > 0xffff ? 2 : 1;
-			continue;
-		}
+		i += cp > 0xffff ? 2 : 1;
+		continue;
+	}
 
-		// 圆圈内数字检测
-		if ((cp >= 0x2460 && cp <= 0x249b) || (cp >= 0x3220 && cp <= 0x325f) || (cp >= 0x32b1 && cp <= 0x32bf)) {
-			if (lang === Lang.NONE) {
-				lang = Lang.NUMERIC_OTHER;
-			} else if (lang !== Lang.NUMERIC_OTHER) {
-				return Lang.OTHER;
+	// 圆圈内数字检测
+	if ((cp >= 0x2460 && cp <= 0x249b) || (cp >= 0x3220 && cp <= 0x325f) || (cp >= 0x32b1 && cp <= 0x32bf)) {
+		if (lang === Lang.NONE) {
+			lang = Lang.NUMERIC_OTHER;
+		} else if (lang !== Lang.NUMERIC_OTHER) {
+			if (secondLang === Lang.NONE) {
+				secondLang = lang;
+			} else if (secondLang !== Lang.NUMERIC_OTHER) {
+				// 如果已经有两种不同语言，返回这两种语言的逻辑或
+				return secondLang | lang | Lang.NUMERIC_OTHER;
 			}
-			i += cp > 0xffff ? 2 : 1;
-			continue;
 		}
+		i += cp > 0xffff ? 2 : 1;
+		continue;
+	}
 
-		// 其他特殊数字检测
-		if ((cp >= 0x2070 && cp <= 0x209f) || (cp >= 0x00b2 && cp <= 0x00b3) || cp === 0x00b9) {
-			if (lang === Lang.NONE) {
-				lang = Lang.NUMERIC_OTHER;
-			} else if (lang !== Lang.NUMERIC_OTHER) {
-				return Lang.OTHER;
+	// 其他特殊数字检测
+	if ((cp >= 0x2070 && cp <= 0x209f) || (cp >= 0x00b2 && cp <= 0x00b3) || cp === 0x00b9) {
+		if (lang === Lang.NONE) {
+			lang = Lang.NUMERIC_OTHER;
+		} else if (lang !== Lang.NUMERIC_OTHER) {
+			if (secondLang === Lang.NONE) {
+				secondLang = lang;
+			} else if (secondLang !== Lang.NUMERIC_OTHER) {
+				// 如果已经有两种不同语言，返回这两种语言的逻辑或
+				return secondLang | lang | Lang.NUMERIC_OTHER;
 			}
-			i += cp > 0xffff ? 2 : 1;
-			continue;
 		}
+		i += cp > 0xffff ? 2 : 1;
+		continue;
+	}
 
 		// 然后检测大类
 		// ASCII字符（英文、半角符号）
@@ -123,7 +149,13 @@ export function detectLang(str: string, fastCJK = true): Lang {
 				if (lang === Lang.NONE) {
 					lang = Lang.EN;
 				} else if (lang !== Lang.EN) {
-					return Lang.OTHER;
+					if (secondLang === Lang.NONE) {
+						secondLang = lang;
+						lang = Lang.EN;
+					} else {
+						// 如果已经有两种不同语言，返回这两种语言的逻辑或
+						return secondLang | lang | Lang.EN;
+					}
 				}
 				i++;
 				continue;
@@ -132,22 +164,68 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			if (lang === Lang.NONE) {
 				lang = Lang.SYMBOL_HALF;
 			} else if (lang !== Lang.SYMBOL_HALF) {
-				return Lang.OTHER;
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.SYMBOL_HALF;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.SYMBOL_HALF;
+				}
 			}
 			i++;
 			continue;
 		}
 
 		// CJK（中、日、韩）
-		if (
-			(cp >= 0x4e00 && cp <= 0x9fff) || // 汉字
-			(cp >= 0x3400 && cp <= 0x4dbf) || // 汉字扩展A
-			(cp >= 0x3040 && cp <= 0x30ff) || // 日文假名
-			(cp >= 0xac00 && cp <= 0xd7af)    // 韩文
-		) {
-			if (fastCJK) return Lang.CJK;
-			if (lang === Lang.NONE) lang = Lang.CJK;
-			else if (lang !== Lang.CJK) return Lang.OTHER;
+		if ((cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0x3400 && cp <= 0x4dbf)) {
+			// 中文
+			const currentCJKLang = Lang.ZH;
+			if (fastCJK) return currentCJKLang;
+			if (lang === Lang.NONE) {
+				lang = currentCJKLang;
+			} else if (lang !== currentCJKLang) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = currentCJKLang;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | currentCJKLang;
+				}
+			}
+			i += cp > 0xffff ? 2 : 1;
+			continue;
+		} else if (cp >= 0x3040 && cp <= 0x30ff) {
+			// 日文
+			const currentCJKLang = Lang.JA;
+			if (fastCJK) return currentCJKLang;
+			if (lang === Lang.NONE) {
+				lang = currentCJKLang;
+			} else if (lang !== currentCJKLang) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = currentCJKLang;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | currentCJKLang;
+				}
+			}
+			i += cp > 0xffff ? 2 : 1;
+			continue;
+		} else if (cp >= 0xac00 && cp <= 0xd7af) {
+			// 韩文
+			const currentCJKLang = Lang.KO;
+			if (fastCJK) return currentCJKLang;
+			if (lang === Lang.NONE) {
+				lang = currentCJKLang;
+			} else if (lang !== currentCJKLang) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = currentCJKLang;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | currentCJKLang;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
@@ -162,8 +240,17 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			(cp >= 0x200D && cp <= 0x200D) ||
 			// 变体选择器
 			(cp >= 0xFE00 && cp <= 0xFE0F)) {
-			if (lang === Lang.NONE) lang = Lang.EMOJI;
-			else if (lang !== Lang.EMOJI) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.EMOJI;
+			} else if (lang !== Lang.EMOJI) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.EMOJI;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.EMOJI;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
@@ -171,50 +258,104 @@ export function detectLang(str: string, fastCJK = true): Lang {
 		// 其他语言类型
 		// 俄语 / 西里尔
 		if (cp >= 0x0400 && cp <= 0x04ff) {
-			if (lang === Lang.NONE) lang = Lang.RU;
-			else if (lang !== Lang.RU) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.RU;
+			} else if (lang !== Lang.RU) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.RU;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.RU;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 阿拉伯
 		if (cp >= 0x0600 && cp <= 0x06ff) {
-			if (lang === Lang.NONE) lang = Lang.AR;
-			else if (lang !== Lang.AR) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.AR;
+			} else if (lang !== Lang.AR) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.AR;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.AR;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 印地语（天城文）
 		if (cp >= 0x0900 && cp <= 0x097f) {
-			if (lang === Lang.NONE) lang = Lang.HI;
-			else if (lang !== Lang.HI) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.HI;
+			} else if (lang !== Lang.HI) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.HI;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.HI;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 泰语
 		if (cp >= 0x0e00 && cp <= 0x0e7f) {
-			if (lang === Lang.NONE) lang = Lang.TH;
-			else if (lang !== Lang.TH) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.TH;
+			} else if (lang !== Lang.TH) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.TH;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.TH;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 希伯来
 		if (cp >= 0x0590 && cp <= 0x05ff) {
-			if (lang === Lang.NONE) lang = Lang.HE;
-			else if (lang !== Lang.HE) return Lang.OTHER;
+			if (lang === Lang.NONE) {
+				lang = Lang.HE;
+			} else if (lang !== Lang.HE) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.HE;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.HE;
+				}
+			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 希腊
 		if (cp >= 0x0370 && cp <= 0x03ff) {
-			if (lang === Lang.NONE) lang = Lang.EL;
-			else if (lang !== Lang.EL) return Lang.OTHER;
-			i += cp > 0xffff ? 2 : 1;
-			continue;
+			if (lang === Lang.NONE) {
+				lang = Lang.EL;
+			} else if (lang !== Lang.EL) {
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.EL;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.EL;
+				}
+			}
+		i += cp > 0xffff ? 2 : 1;
+		continue;
 		}
 
 		// 全角符号
@@ -230,15 +371,31 @@ export function detectLang(str: string, fastCJK = true): Lang {
 			if (lang === Lang.NONE) {
 				lang = Lang.SYMBOL_FULL;
 			} else if (lang !== Lang.SYMBOL_FULL) {
-				return Lang.OTHER;
+				if (secondLang === Lang.NONE) {
+					secondLang = lang;
+					lang = Lang.SYMBOL_FULL;
+				} else {
+					// 如果已经有两种不同语言，返回这两种语言的逻辑或
+					return secondLang | lang | Lang.SYMBOL_FULL;
+				}
 			}
 			i += cp > 0xffff ? 2 : 1;
 			continue;
 		}
 
 		// 无法识别的字符
-		return Lang.OTHER;
+		if (secondLang !== Lang.NONE) {
+			return secondLang | lang | Lang.OTHER;
+		}
+		if (lang !== Lang.NONE) {
+			secondLang = lang;
+		}
+		lang = Lang.OTHER;
 	}
 
+	// 如果检测到两种语言，返回它们的逻辑或
+	if (secondLang !== Lang.NONE) {
+		return secondLang | lang;
+	}
 	return lang === Lang.NONE ? Lang.EN : lang;
 }

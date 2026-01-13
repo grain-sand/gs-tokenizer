@@ -1,6 +1,6 @@
 {
   "name": "gs-tokenizer",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "type": "module",
   "main": "./lib/index.cjs",
   "module": "./lib/index.js",
@@ -9,6 +9,11 @@
       "types": "./lib/index.d.ts",
       "import": "./lib/index.js",
       "require": "./lib/index.cjs"
+    },
+    "./type": {
+      "types": "./lib/type.d.ts",
+      "import": "./lib/type.js",
+      "require": "./lib/type.cjs"
     },
     "./core": {
       "types": "./lib/core.d.ts",

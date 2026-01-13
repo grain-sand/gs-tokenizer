@@ -1,19 +1,32 @@
 export const enum Lang {
-	NONE          = 0,
-	EN            = 1,
-	CJK           = 2,
-	EMOJI         = 3,
-	RU            = 4,
-	AR            = 5,
-	HI            = 6,
-	TH            = 7,
-	HE            = 8,
-	EL            = 9,
-	NUMERIC_HALF  = 10,  // 半角数字 (0-9)
-	NUMERIC_FULL  = 11,  // 全角数字 (０-９)
-	NUMERIC_OTHER = 12,  // 其他数字（如罗马数字、分数等）
-	SYMBOL_HALF   = 13, // 半角符号
-	SYMBOL_FULL   = 14,  // 全角符号
-	WHITESPACE    = 15,
-	OTHER         = 99,
+	// 基础类别 - NONE使用明确的位掩码值避免歧义
+	NONE          = 1 << 0,  // 无类型（使用明确的位掩码避免与0的歧义）
+	EN            = 1 << 1,
+	RU            = 1 << 2,
+	AR            = 1 << 3,
+	HI            = 1 << 4,
+	TH            = 1 << 5,
+	HE            = 1 << 6,
+	EL            = 1 << 7,
+	WHITESPACE    = 1 << 8,
+	OTHER         = 1 << 9,
+
+	// 可能存在子类别的类别
+	// CJK 及其子类别
+	CJK           = (1 << 10) | (1 << 11) | (1 << 12),  // 中日韩统一表意文字 (仅包含已定义的 ZH, JA, KO)
+	ZH            = 1 << 10,  // 中文
+	JA            = 1 << 11,  // 日文
+	KO            = 1 << 12,  // 韩文
+
+	// 数字及其子类别
+	NUMERIC       = (1 << 13) | (1 << 14) | (1 << 15),  // 数字父类别 (仅包含已定义的子类别)
+	NUMERIC_HALF  = 1 << 13,  // 半角数字 (0-9)
+	NUMERIC_FULL  = 1 << 14,  // 全角数字 (０-９)
+	NUMERIC_OTHER = 1 << 15,  // 其他数字（如罗马数字、分数等）
+
+	// 符号及其子类别（包含表情符号）
+	SYMBOL        = (1 << 1) | (1 << 16) | (1 << 17),  // 符号父类别 (包含 EMOJI, SYMBOL_HALF, SYMBOL_FULL)
+	EMOJI         = 1 << 1,   // 表情符号
+	SYMBOL_HALF   = 1 << 16,  // 半角符号
+	SYMBOL_FULL   = 1 << 17,  // 全角符号
 }

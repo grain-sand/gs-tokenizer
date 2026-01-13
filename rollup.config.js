@@ -43,8 +43,8 @@ const defaultPlugins = [
 		target: 'es2022', // 设置为 ES2022 以确保使用 const/let
 		minifySyntax: true, // 压缩时保留现代语法、
 		charset: 'utf8',
-		minifyWhitespace: true,
-		minifyIdentifiers: true,
+		// minifyWhitespace: true,
+		// minifyIdentifiers: true,
 	}),
 	replace
 ];

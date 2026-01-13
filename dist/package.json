@@ -1,6 +1,6 @@
 {
   "name": "gs-tokenizer",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "type": "module",
   "main": "./lib/index.cjs",
   "module": "./lib/index.js",

@@ -25,8 +25,8 @@ export const enum Lang {
 	NUMERIC_OTHER = 1 << 15,  // 其他数字（如罗马数字、分数等）
 
 	// 符号及其子类别（包含表情符号）
-	SYMBOL        = (1 << 1) | (1 << 16) | (1 << 17),  // 符号父类别 (包含 EMOJI, SYMBOL_HALF, SYMBOL_FULL)
-	EMOJI         = 1 << 1,   // 表情符号
+	SYMBOL        = (1 << 16) | (1 << 17) | (1 << 18), // 符号父类别 (包含 EMOJI, SYMBOL_HALF, SYMBOL_FULL)
 	SYMBOL_HALF   = 1 << 16,  // 半角符号
 	SYMBOL_FULL   = 1 << 17,  // 全角符号
+	EMOJI         = 1 << 18,   // 表情符号
 }
